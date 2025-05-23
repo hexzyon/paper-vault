@@ -17,6 +17,11 @@ const config: Config = {
   			orange: '#F24738',
   			light_pink: '#FBC6C1',
   			white: '#FFFAF9',
+        dark_black: '#0B0C0E',
+        dark_grey: '#212529',
+        dark_grey_500: '#495057',
+        dark_grey_100: '#ADB5BD',
+        dark_white:'#F8F9FA',
   			card: {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'

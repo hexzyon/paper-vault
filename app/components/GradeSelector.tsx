@@ -1,10 +1,12 @@
 'use client'
 import Image from 'next/image'
 import { useState } from 'react'
-import ArrowL from '../../public/arrowL.png';
-import ArrowR from '../../public/arrowR.png';
+import { useTheme } from '@/context/theme-context';
 
 const GradeSelector = () => {
+    const { isDark, toggleTheme } = useTheme()
+    const ArrowLeft = isDark?"/darkArrowL.png":"/arrowL.png"
+    const ArrowRight = isDark?"/darkArrowR.png":"/arrowR.png"
     const totalGrades = 13
     const [centerIndex, setCenterIndex] = useState(12) 
 
@@ -30,9 +32,9 @@ const GradeSelector = () => {
     return (
         <div className='font-anek'>
             <div className="flex items-center justify-center my-6">
-                <div className="w-1/12 border-t-2 border-dark_brown mx-4"></div>
-                <h2 className="text-2xl text-dark_brown text-center">Select Grade</h2>
-                <div className="w-1/12 border-t-2 border-dark_brown mx-4"></div>
+                <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4"></div>
+                <h2 className="text-3xl text-dark_brown dark:text-white text-center">Select Grade</h2>
+                <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4"></div>
             </div>
 
             <div className="flex items-center justify-center gap-2">
@@ -42,7 +44,7 @@ const GradeSelector = () => {
                     className="text-dark_brown text-xl px-6 hover:scale-110 transition"
                 >
                     <Image
-                        src={ArrowL}
+                        src={ArrowLeft}
                         alt="Arrow"
                         width={10}
                         height={10}
@@ -54,7 +56,7 @@ const GradeSelector = () => {
                     {getVisibleGrades().map((grade, i) => {
                         const size = sizes[i]
                         let classes =
-                            'bg-[url("/gradeBack.png")] bg-no-repeat bg-center bg-[length:80%_60%] flex items-center justify-center text-dark-brown rounded-md'
+                            'bg-[url("/gradeBack.png")] dark:bg-[url("/darkGradeBack.png")] bg-no-repeat bg-center bg-[length:80%_60%] flex items-center justify-center text-dark-brown rounded-md'
 
                         if (size === 'small') {
                             classes += ' w-24 h-20 text-2xl font-semibold shadow-md'
@@ -79,7 +81,7 @@ const GradeSelector = () => {
                     className="text-dark-brown text-2xl px-6 hover:scale-110 transition"
                 >
                     <Image
-                        src={ArrowR}
+                        src={ArrowRight}
                         alt="Arrow"
                         width={10}
                         height={10}

@@ -65,7 +65,7 @@ export default function Header() {
     const logoSrc = isDark ? '/Logo_dark.png' : '/Logo.png'
 
     return (
-        <header className="flex justify-between items-center p-4 shadow-xl bg-white text-black rounded-xl">
+        <header className="flex justify-between items-center p-4 shadow-xl bg-white dark:bg-dark_black text-black rounded-xl">
             <Image
                 src={logoSrc}
                 alt="A descriptive alt text"
@@ -73,7 +73,7 @@ export default function Header() {
                 height={100}
                 className=""
             />
-            <nav className="flex space-x-10 font-anek font-normal">
+            <nav className="flex space-x-10 font-anek font-normal text-dark_brown dark:text-dark_white">
                 <a href="#" className="text-2xl">Home</a>
                 <a href="#" className="text-2xl">Markings</a>
                 <div className="relative z-50">
@@ -103,7 +103,7 @@ export default function Header() {
                     onClick={toggleTheme}
                     className="flex items-center overflow-hidden rounded-full shadow transition hover:opacity-90"
                 >
-                    <div className={`w-10 h-10 flex items-center justify-center ${isDark ? 'bg-light_pink' : 'bg-dark_brown'}`}>
+                    <div className={`w-10 h-10 flex items-center justify-center ${isDark ? 'bg-orange' : 'bg-dark_brown'}`}>
                         <img
                             src={isDark ? '/moon.png' : '/sun.png'}
                             alt="Theme Icon"
