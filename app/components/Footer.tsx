@@ -6,7 +6,7 @@ import Whatsapp from '../../public/wtzp.png';
 
 export default function Footer() {
     return (
-        <footer className="bg-dark_brown py-8 text-sm text-white font-anek">
+        <footer className="bg-dark_grey_100 bg-opacity-20 dark:bg-black dark:bg-opacity-10 py-8 text-sm text-dark_brown dark:text-white font-anek">
             <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div>
                     <h4 className="font-medium text-dark-brown text-4xl">Paper Vault</h4>
