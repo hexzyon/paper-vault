@@ -9,7 +9,7 @@ import Footer from "./components/Footer";
 export default function Home() {
   return (
     <main className="bg-white dark:bg-dark_grey min-h-screen text-black">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 pt-4">
+      <div className="px-4 sm:px-6 lg:px-12 pt-4 max-w-[1440px] w-full mx-auto">
         <Header />
         <HeroSection />
         <PopularExams/>

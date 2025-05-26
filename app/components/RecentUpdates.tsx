@@ -9,7 +9,7 @@ const papers = [
       <section className="py-8 font-anek">
         <div className="flex items-center justify-center my-6">
                 <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4"></div>
-                <h2 className="text-2xl text-dark_brown dark:text-white text-center">Recently Updated</h2>
+                <h2 className="text-3xl text-dark_brown dark:text-white text-center">Recently Updated</h2>
                 <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4"></div>
             </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
