@@ -1,6 +1,6 @@
 'use client'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTheme } from '@/context/theme-context'
 
 const GradeSelector = () => {
@@ -30,6 +30,15 @@ const GradeSelector = () => {
 
   const sizes = ['w-24 h-20 text-2xl shadow-md', 'w-28 h-24 text-3xl shadow-lg', 'w-32 h-24 text-4xl shadow-xl', 'w-28 h-24 text-3xl shadow-lg', 'w-24 h-20 text-2xl shadow-md']
 
+  // 🛑 AUTO MOVE PART
+  useEffect(() => {
+    const interval = setInterval(() => {
+      next()
+    }, 2000) // 2 seconds
+
+    return () => clearInterval(interval) // Cleanup on unmount
+  }, [])
+
   return (
     <div className="font-anek">
       <div className="flex items-center justify-center my-6">
@@ -51,11 +60,12 @@ const GradeSelector = () => {
               <div
                 key={i}
                 className={`
+                  bg-white dark:bg-dark_grey_500
                   bg-[url('/gradeBack.png')] 
                   dark:bg-[url('/darkGradeBack.png')]
                   bg-no-repeat bg-center bg-[length:80%_60%]
                   flex items-center justify-center 
-                  rounded-md text-dark_brown dark:text-white font-semibold 
+                  rounded-md shadow-lg text-dark_brown dark:text-white font-semibold 
                   ${sizes[i]} transition-all duration-300 ease-in-out
                 `}
               >

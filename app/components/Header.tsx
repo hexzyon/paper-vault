@@ -65,7 +65,7 @@ export default function Header() {
     const logoSrc = isDark ? '/Logo_dark.png' : '/Logo.png'
 
     return (
-        <header className="flex justify-between items-center p-4 shadow-xl bg-white dark:bg-dark_black text-black rounded-xl">
+        <header className="flex justify-between items-center p-4 shadow-2xl bg-white dark:bg-dark_grey text-black rounded-xl">
             <Image
                 src={logoSrc}
                 alt="A descriptive alt text"
@@ -80,7 +80,7 @@ export default function Header() {
                     <NavigationMenu>
                         <NavigationMenuList>
                             <NavigationMenuItem>
-                                <NavigationMenuTrigger className="text-[25px]">Exams</NavigationMenuTrigger>
+                                <NavigationMenuTrigger className="text-[25px] text-dark_brown dark:text-white bg-white dark:bg-dark_grey">Exams</NavigationMenuTrigger>
                                 <NavigationMenuContent className="z-50">
                                     <ul className="grid w-[200px] gap-3 p-4">
                                         {components.map((component) => (
