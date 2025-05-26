@@ -10,6 +10,13 @@ const GradeSelector = () => {
 
   const totalGrades = 13
   const [centerIndex, setCenterIndex] = useState(12) // Starting from 13 (0-based index 12)
+  const [visibleCount, setVisibleCount] = useState(3) // Default to mobile
+
+  // Sizes adjust based on visible count
+  const sizes =
+    visibleCount === 5
+      ? ['w-24 h-20 text-2xl shadow-md', 'w-28 h-24 text-3xl shadow-lg', 'w-32 h-24 text-4xl shadow-xl', 'w-28 h-24 text-3xl shadow-lg', 'w-24 h-20 text-2xl shadow-md']
+      : ['w-28 h-24 text-3xl shadow-lg', 'w-32 h-24 text-4xl shadow-xl', 'w-28 h-24 text-3xl shadow-lg']
 
   const next = () => {
     setCenterIndex((prev) => (prev + 1) % totalGrades)
@@ -21,22 +28,35 @@ const GradeSelector = () => {
 
   const getVisibleGrades = () => {
     const grades = []
-    for (let offset = -2; offset <= 2; offset++) {
+    const half = Math.floor(visibleCount / 2)
+    for (let offset = -half; offset <= half; offset++) {
       const index = (centerIndex + offset + totalGrades) % totalGrades
-      grades.push(index + 1) // Convert 0-based to 1-based grade number
+      grades.push(index + 1) 
     }
     return grades
   }
 
-  const sizes = ['w-24 h-20 text-2xl shadow-md', 'w-28 h-24 text-3xl shadow-lg', 'w-32 h-24 text-4xl shadow-xl', 'w-28 h-24 text-3xl shadow-lg', 'w-24 h-20 text-2xl shadow-md']
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setVisibleCount(5) 
+      } else {
+        setVisibleCount(3) 
+      }
+    }
 
-  // 🛑 AUTO MOVE PART
+    handleResize()
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   useEffect(() => {
     const interval = setInterval(() => {
       next()
-    }, 2000) // 2 seconds
+    }, 2000)
 
-    return () => clearInterval(interval) // Cleanup on unmount
+    return () => clearInterval(interval)
   }, [])
 
   return (
@@ -55,24 +75,22 @@ const GradeSelector = () => {
 
         {/* Cards */}
         <div className="flex gap-6 items-center overflow-hidden transition-all duration-300 ease-in-out">
-          {getVisibleGrades().map((grade, i) => {
-            return (
-              <div
-                key={i}
-                className={`
-                  bg-white dark:bg-dark_grey_500
-                  bg-[url('/gradeBack.png')] 
-                  dark:bg-[url('/darkGradeBack.png')]
-                  bg-no-repeat bg-center bg-[length:80%_60%]
-                  flex items-center justify-center 
-                  rounded-md shadow-lg text-dark_brown dark:text-white font-semibold 
-                  ${sizes[i]} transition-all duration-300 ease-in-out
-                `}
-              >
-                {grade}
-              </div>
-            )
-          })}
+          {getVisibleGrades().map((grade, i) => (
+            <div
+              key={i}
+              className={`
+                bg-white dark:bg-dark_grey_500
+                bg-[url('/gradeBack.png')] 
+                dark:bg-[url('/darkGradeBack.png')]
+                bg-no-repeat bg-center bg-[length:80%_60%]
+                flex items-center justify-center 
+                rounded-md shadow-lg text-dark_brown dark:text-white font-semibold 
+                ${sizes[i]} transition-all duration-300 ease-in-out
+              `}
+            >
+              {grade}
+            </div>
+          ))}
         </div>
 
         {/* Right Arrow */}

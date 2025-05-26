@@ -6,7 +6,7 @@ import Whatsapp from '../../public/wtzp.png';
 
 export default function Footer() {
     return (
-        <footer className="bg-dark_grey_100 bg-opacity-20 dark:bg-black dark:bg-opacity-10 py-8 text-sm text-dark_brown dark:text-white font-anek">
+        <footer className="bg-dark_grey_100 bg-opacity-20 text-center md:text-start dark:bg-black dark:bg-opacity-10 py-8 text-sm text-dark_brown dark:text-white font-anek">
             <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div>
                     <h4 className="font-medium text-dark-brown text-4xl">Paper Vault</h4>
@@ -23,7 +23,7 @@ export default function Footer() {
                 </div>
                 <div>
                     <h4 className="font-medium text-dark-brown text-xl mb-2">Contact</h4>
-                    <div className="flex mb-1">
+                    <div className="flex mb-1 justify-center md:justify-start">
                         <Image
                             src={Email}
                             alt="Arrow"
@@ -33,7 +33,7 @@ export default function Footer() {
                         <p className="ml-4"> papervault@gmail.com</p>
 
                     </div>
-                    <div className="flex mb-1">
+                    <div className="flex mb-1 justify-center md:justify-start">
                         <Image
                             src={Mobile}
                             alt="Arrow"
@@ -46,7 +46,7 @@ export default function Footer() {
                 </div>
                 <div>
                     <h4 className="font-medium text-dark-brown text-xl mb-2">Follow Us</h4>
-                    <div className="flex">
+                    <div className="flex justify-center md:justify-start">
                     <Image
                             src={Facebook}
                             alt="Arrow"
