@@ -1,10 +1,15 @@
+"use client"
 import Image from "next/image";
-import Email from '../../public/mail.png';
-import Mobile from '../../public/mobile.png';
 import Facebook from '../../public/fb.png';
 import Whatsapp from '../../public/wtzp.png';
+import { useTheme } from "@/context/theme-context";
 
 export default function Footer() {
+    const { isDark, toggleTheme } = useTheme();
+
+    const Email = isDark ? '/mail.png' : '/mailL.png';
+    const Mobile = isDark ? '/mobile.png' : '/mobileL.png';
+
     return (
         <footer className="bg-dark_grey_100 bg-opacity-20 text-center md:text-start dark:bg-black dark:bg-opacity-10 py-8 text-sm text-dark_brown dark:text-white font-anek">
             <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-5 gap-4">
