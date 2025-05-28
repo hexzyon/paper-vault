@@ -77,13 +77,13 @@ export default function Header() {
 
                 {/* Desktop Nav */}
                 <nav className="hidden md:flex space-x-10 font-anek font-normal text-dark_brown dark:text-dark_white">
-                    <a href="#" className="text-2xl">Home</a>
-                    <a href="#" className="text-2xl">Markings</a>
+                    <a href="#" className="text-2xl 2xl:text-4xl">Home</a>
+                    <a href="#" className="text-2xl 2xl:text-4xl">Markings</a>
                     <div className="relative z-50">
                         <NavigationMenu>
                             <NavigationMenuList>
                                 <NavigationMenuItem>
-                                    <NavigationMenuTrigger className="text-[25px] text-dark_brown dark:text-white bg-white dark:bg-dark_grey">
+                                    <NavigationMenuTrigger className="text-[25px] 2xl:text-4xl text-dark_brown dark:text-white bg-white dark:bg-dark_grey">
                                         Exams
                                     </NavigationMenuTrigger>
                                     <NavigationMenuContent className="z-50">
@@ -101,7 +101,7 @@ export default function Header() {
                             </NavigationMenuList>
                         </NavigationMenu>
                     </div>
-                    <a href="#" className="text-2xl">About Us</a>
+                    <a href="#" className="text-2xl 2xl:text-4xl">About Us</a>
                 </nav>
 
                 <div className="flex items-center gap-4">
