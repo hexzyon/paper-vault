@@ -9,10 +9,9 @@ const GradeSelector = () => {
   const ArrowRight = isDark ? "/darkArrowR.png" : "/arrowR.png"
 
   const totalGrades = 13
-  const [centerIndex, setCenterIndex] = useState(12) // Starting from 13 (0-based index 12)
-  const [visibleCount, setVisibleCount] = useState(3) // Default to mobile
+  const [centerIndex, setCenterIndex] = useState(12) // Starting from 13
+  const [visibleCount, setVisibleCount] = useState(3) 
 
-  // Sizes adjust based on visible count
   const sizes =
     visibleCount === 5
       ? ['w-24 h-12 text-3xl shadow-lg 2xl:h-28 2xl:w-44 2xl:text-4xl xl:h-24 xl:w-40 xl:text-4xl lg:w-36 lg:h-20 lg:text-3xl', 
@@ -80,7 +79,7 @@ const GradeSelector = () => {
         </button>
 
         {/* Cards */}
-        <div className="flex gap-6 items-center justify-center overflow-hidden w-full transition-all duration-300 ease-in-out">
+        <div className="flex gap-6 items-center justify-center overflow-hidden w-full transition-transform duration-500 ease-in-out" >
           {getVisibleGrades().map((grade, i) => (
             <div
               key={i}
