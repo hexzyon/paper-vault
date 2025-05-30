@@ -1,69 +1,43 @@
-'use client'
-import Image from 'next/image'
-import { useState, useEffect } from 'react'
-import { useTheme } from '@/context/theme-context'
+'use client';
+
+import React, { useCallback, useEffect, useState } from 'react';
+import useEmblaCarousel from 'embla-carousel-react';
+import Autoplay from 'embla-carousel-autoplay';
+import Image from 'next/image';
+import { useTheme } from '@/context/theme-context';
 
 const GradeSelector = () => {
-  const { isDark } = useTheme()
-  const ArrowLeft = isDark ? "/darkArrowL.png" : "/arrowL.png"
-  const ArrowRight = isDark ? "/darkArrowR.png" : "/arrowR.png"
+  const { isDark } = useTheme();
+  const ArrowLeft = isDark ? '/darkArrowL.png' : '/arrowL.png';
+  const ArrowRight = isDark ? '/darkArrowR.png' : '/arrowR.png';
 
-  const totalGrades = 13
-  const [centerIndex, setCenterIndex] = useState(12) // Starting from 13 (0-based index 12)
-  const [visibleCount, setVisibleCount] = useState(3) // Default to mobile
+  const totalGrades = 13;
+  const grades = Array.from({ length: totalGrades }, (_, i) => i + 1);
 
-  // Sizes adjust based on visible count
-  const sizes =
-    visibleCount === 5
-      ? ['w-24 h-12 text-3xl shadow-lg 2xl:h-28 2xl:w-44 2xl:text-4xl xl:h-24 xl:w-40 xl:text-4xl lg:w-36 lg:h-20 lg:text-3xl', 
-        'w-32 h-20 text-4xl shadow-xl 2xl:h-40 2xl:w-60 2xl:text-6xl xl:h-32 xl:w-52 xl:text-5xl lg:w-44 lg:h-28 lg:text-4xl', 
-        'w-44 h-28 text-5xl shadow-2xl 2xl:h-52 2xl:w-72 2xl:text-7xl xl:h-44 xl:w-64 xl:text-6xl lg:w-52 lg:h-36 lg:text-5xl', 
-        'w-32 h-20 text-4xl shadow-xl 2xl:h-40 2xl:w-60 2xl:text-6xl xl:h-32 xl:w-52 xl:text-5xl lg:w-44 lg:h-28 lg:text-4xl', 
-        'w-24 h-12 text-3xl shadow-lg 2xl:h-28 2xl:w-44 2xl:text-4xl xl:h-24 xl:w-40 xl:text-4xl lg:w-36 lg:h-20 lg:text-3xl']
-      : ['w-32 h-20 text-4xl shadow-lg', 
-        'w-44 h-28 text-5xl shadow-xl', 
-        'w-32 h-20 text-4xl shadow-lg']
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    {
+      loop: true,
+      align: 'center',
+      slidesToScroll: 1,
+    },
+    [Autoplay({ delay: 3000, stopOnInteraction: false })]
+  );
 
-  const next = () => {
-    setCenterIndex((prev) => (prev + 1) % totalGrades)
-  }
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const prev = () => {
-    setCenterIndex((prev) => (prev - 1 + totalGrades) % totalGrades)
-  }
+  const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
 
-  const getVisibleGrades = () => {
-    const grades = []
-    const half = Math.floor(visibleCount / 2)
-    for (let offset = -half; offset <= half; offset++) {
-      const index = (centerIndex + offset + totalGrades) % totalGrades
-      grades.push(index + 1)
-    }
-    return grades
-  }
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
 
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setVisibleCount(5)
-      } else {
-        setVisibleCount(3)
-      }
-    }
-
-    handleResize()
-
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      next()
-    }, 2000)
-
-    return () => clearInterval(interval)
-  }, [])
+    if (!emblaApi) return;
+    onSelect();
+    emblaApi.on('select', onSelect);
+  }, [emblaApi, onSelect]);
 
   return (
     <div className="font-anek">
@@ -73,39 +47,71 @@ const GradeSelector = () => {
         <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4" />
       </div>
 
-      <div className="flex items-center justify-center gap-2 w-full">
-        {/* Left Arrow */}
-        <button onClick={prev} className="text-dark_brown text-xl px-6 hover:scale-110 transition">
-          <Image src={ArrowLeft} alt="Arrow Left" width={10} height={10} className="w-[10px] h-auto" />
-        </button>
+      <div className="relative w-full">
+        <div className="overflow-hidden" ref={emblaRef}>
+          <div className="flex items-center h-36 sm:h-44 md:h-36 lg:h-48 xl:h-52 2xl:h-56">
+            {grades.map((grade, index) => {
+              const total = grades.length;
+              const center = selectedIndex;
+              const rawDiff = Math.abs(index - center);
+              const diff = Math.min(rawDiff, total - rawDiff);
 
-        {/* Cards */}
-        <div className="flex gap-6 items-center justify-center overflow-hidden w-full transition-all duration-300 ease-in-out">
-          {getVisibleGrades().map((grade, i) => (
-            <div
-              key={i}
-              className={`
-               bg-white dark:bg-dark_grey_500
-                bg-[url('/gradeBack.png')] 
-                dark:bg-[url('/darkGradeBack.png')]
-                bg-no-repeat bg-center bg-[length:60%_50%]
-                flex items-center justify-center 
-                rounded-md shadow-lg text-dark_brown dark:text-white font-semibold 
-                ${sizes[i]} transition-all duration-300 ease-in-out
-              `}
-            >
-              {grade}
-            </div>
-          ))}
+              const baseWidth = 'w-32 sm:w-40 md:w-32 lg:w-44 xl:w-56 2xl:w-64 w-28';
+
+              let sizeClass = '';
+
+              if (diff === 0) {
+                sizeClass = `h-28 sm:h-36 md:h-28 lg:h-36 xl:h-44 2xl:h-48 scale-100 z-0 shadow-2xl ${baseWidth} text-5xl md:text-6xl xl:text-7xl 2xl:text-8xl`;
+              } else if (diff === 1) {
+                sizeClass = `h-20 sm:h-28 md:h-24 lg:h-28 xl:h-36 2xl:h-40 scale-100 z-0 shadow-xl ${baseWidth} text-3xl md:text-4xl xl:text-5xl 2xl:text-6xl`;
+              } else if (diff === 2) {
+                sizeClass = `h-20 sm:h-28 md:h-20 lg:h-24 xl:h-32 2xl:h-36 scale-100 z-0 shadow-lg ${baseWidth} text-2xl md:text-3xl xl:text-4xl 2xl:text-5xl`;
+              } else {
+                sizeClass = `h-16 scale-80 z-0 shadow ${baseWidth}`;
+              }
+
+              return (
+                <div
+                  key={grade}
+                  className="
+                    flex-[0_0_33%] sm:flex-[0_0_33%] md:flex-[0_0_20%]
+                    px-2 flex items-center justify-center transition-transform duration-300 ease-in-out
+                  "
+                >
+                  <div
+                    className={`
+                      bg-white dark:bg-dark_grey_500
+                      bg-[url('/gradeBack.png')]
+                      dark:bg-[url('/darkGradeBack.png')]
+                      bg-no-repeat bg-center bg-[length:60%_50%]
+                      flex items-center justify-center
+                      rounded-md text-dark_brown dark:text-white font-semibold
+                      transition-all duration-300 ease-in-out
+                      ${sizeClass}
+                    `}
+                  >
+                    {grade}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Right Arrow */}
-        <button onClick={next} className="text-dark_brown text-xl px-6 hover:scale-110 transition">
-          <Image src={ArrowRight} alt="Arrow Right" width={10} height={10} className="w-[10px] h-auto" />
-        </button>
+        <div className="absolute top-1/2 left-0 transform -translate-y-1/2 z-30">
+          <button className="text-dark_brown px-2 hover:scale-110 transition" onClick={scrollPrev}>
+            <Image src={ArrowLeft} alt="Arrow Left" width={15} height={15} />
+          </button>
+        </div>
+
+        <div className="absolute top-1/2 right-0 transform -translate-y-1/2 z-30">
+          <button className="text-dark_brown px-2 hover:scale-110 transition" onClick={scrollNext}>
+            <Image src={ArrowRight} alt="Arrow Right" width={15} height={15} />
+          </button>
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default GradeSelector
+export default GradeSelector;
