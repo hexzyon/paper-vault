@@ -16,7 +16,7 @@ export default function Footer() {
     return (
         <footer className="bg-dark_grey_100 bg-opacity-20 text-center md:text-start dark:bg-black dark:bg-opacity-10 py-8 text-sm text-dark_brown dark:text-white font-anek">
             <div className="max-w-screen-2xl mx-auto px-4 grid grid-cols-1 md:grid-cols-5 gap-4">
-                <div className="ml-12">
+                <div className="md:ml-12">
                     <h4 className="font-medium text-dark-brown text-4xl md:text3xl xl:text-4xl">Paper Vault</h4>
                     <p className="text-sm xl:text-lg">Exam Success Begins with the Right Resources.</p>
                 </div>

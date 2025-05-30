@@ -73,15 +73,15 @@ export default function HeroSection() {
                 <Image
                     src={BookImage}
                     alt="Book Background"
-                    className="absolute top-7 sm:top-7 ml-44 sm:ml-64 transform -translate-x-1/2 z-0 w-[280px] sm:w-[360px] pointer-events-none"
+                    className="absolute top-7 sm:top-7 ml-48 sm:ml-64 transform -translate-x-1/2 z-0 w-[260px] sm:w-[360px] pointer-events-none"
                 />
 
-                <div className='absolute top-7 sm:top-6 flex sm:mt-1 mr-44 sm:mr-40'>
-                    <div className="text-8xl sm:text-9xl mr-12 sm:mr-2 ml-8 sm:ml-1 font-bold text-dark_brown dark:text-orange">P</div>
-                    <div className="text-8xl sm:text-9xl ml-10 sm:ml-32 font-bold text-dark_brown dark:text-orange">ST</div>
+                <div className='absolute top-7 sm:top-6 flex sm:mt-1 mr-36 sm:mr-40'>
+                    <div className="text-7xl sm:text-9xl mr-12 sm:mr-2 ml-8 sm:ml-1 font-bold text-dark_brown dark:text-orange">P</div>
+                    <div className="text-7xl sm:text-9xl ml-10 sm:ml-32 font-bold text-dark_brown dark:text-orange">ST</div>
                 </div>
                 <div className='absolute top-28 sm:top-32 flex text-end sm:ml-2'>
-                    <div className="text-8xl sm:text-9xl ml-56 sm:ml-72 font-bold text-dark_brown dark:text-orange">PERS</div>
+                    <div className="text-7xl sm:text-9xl ml-44 sm:ml-72 font-bold text-dark_brown dark:text-orange">PERS</div>
                 </div>
 
                 <div className='absolute row top-56 sm:top-64 sm:mt-3 text-center'>
@@ -97,7 +97,7 @@ export default function HeroSection() {
 
             <div className="relative flex font-anek mt-64 sm:mt-80 md:mt-4 lg:mt-4 xl:mt-20 font-normal text-lg flex-col items-center justify-center text-center">
 
-                <div className="absolute top-7 md:mt-64 lg:mt-72 xl:mt-96 w-full max-w-md z-10 xl:mr-16 2xl:mr-40">
+                <div className="absolute top-7 md:mt-64 lg:mt-72 xl:mt-96 w-full max-w-md z-10 xl:mr-16 2xl:mr-40 sm:mx-0 mx-10">
                     <div className="flex items-center justify-center bg-white dark:bg-dark_grey border dark:border-white rounded-full shadow px-4 py-2 xl:w-[500px] 2xl:w-[600px]">
                         <input
                             type="text"
