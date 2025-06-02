@@ -41,31 +41,31 @@ const GradeSelector = () => {
 
   return (
     <div className="font-anek">
-      <div className="flex items-center justify-center my-6">
+      <div className="flex items-center justify-center mt-6">
         <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4" />
         <h2 className="text-3xl text-dark_brown dark:text-white text-center 2xl:text-5xl">Select Grade</h2>
         <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4" />
       </div>
 
-      <div className="relative w-full">
-        <div className="overflow-hidden" ref={emblaRef}>
-          <div className="flex items-center h-36 sm:h-44 md:h-36 lg:h-48 xl:h-52 2xl:h-56">
+      <div className="relative w-auto mx-3 max-w-screen-2xl">
+        <div className="overflow-hidden mx-6" ref={emblaRef}>
+          <div className="flex items-center h-24 sm:h-44 md:h-36 lg:h-48 xl:h-52 2xl:h-60">
             {grades.map((grade, index) => {
               const total = grades.length;
               const center = selectedIndex;
               const rawDiff = Math.abs(index - center);
               const diff = Math.min(rawDiff, total - rawDiff);
 
-              const baseWidth = 'w-32 sm:w-40 md:w-32 lg:w-44 xl:w-56 2xl:w-64 w-28';
+              const baseWidth = 'w-24 sm:w-36 md:w-28 lg:w-36 xl:w-52 2xl:w-56';
 
               let sizeClass = '';
 
               if (diff === 0) {
-                sizeClass = `h-28 sm:h-36 md:h-28 lg:h-36 xl:h-44 2xl:h-48 scale-100 z-0 shadow-2xl ${baseWidth} text-5xl md:text-6xl xl:text-7xl 2xl:text-8xl`;
+                sizeClass = `h-20 sm:h-32 md:h-24 lg:h-28 xl:h-40 2xl:h-44 scale-100 z-0 shadow-[inset_0_-2px_4px_rgba(0,0,0,0.6)] shadow-light_pink dark:shadow-dark_grey_100 ${baseWidth} text-5xl md:text-6xl xl:text-7xl 2xl:text-8xl`;
               } else if (diff === 1) {
-                sizeClass = `h-20 sm:h-28 md:h-24 lg:h-28 xl:h-36 2xl:h-40 scale-100 z-0 shadow-xl ${baseWidth} text-3xl md:text-4xl xl:text-5xl 2xl:text-6xl`;
+                sizeClass = `h-12 sm:h-24 md:h-20 lg:h-20 xl:h-32 2xl:h-36 scale-100 z-0 shadow-[inset_0_-2px_4px_rgba(0,0,0,0.6)] shadow-light_pink dark:shadow-dark_grey_100 ${baseWidth} text-3xl md:text-4xl xl:text-5xl 2xl:text-6xl`;
               } else if (diff === 2) {
-                sizeClass = `h-20 sm:h-28 md:h-20 lg:h-24 xl:h-32 2xl:h-36 scale-100 z-0 shadow-lg ${baseWidth} text-2xl md:text-3xl xl:text-4xl 2xl:text-5xl`;
+                sizeClass = `h-10 sm:h-20 md:h-16 lg:h-16 xl:h-28 2xl:h-32 scale-100 z-0 shadow-[inset_0_-2px_4px_rgba(0,0,0,0.6)] shadow-light_pink dark:shadow-dark_grey_100 ${baseWidth} text-2xl md:text-3xl xl:text-4xl 2xl:text-5xl`;
               } else {
                 sizeClass = `h-16 scale-80 z-0 shadow ${baseWidth}`;
               }
@@ -86,7 +86,7 @@ const GradeSelector = () => {
                       bg-no-repeat bg-center bg-[length:60%_50%]
                       flex items-center justify-center
                       rounded-md text-dark_brown dark:text-white font-semibold
-                      transition-all duration-300 ease-in-out
+                      transition-all duration-300 ease-in-out border-t-2 border-light_pink dark:border-dark_grey_100
                       ${sizeClass}
                     `}
                   >

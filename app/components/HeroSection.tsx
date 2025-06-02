@@ -112,7 +112,7 @@ export default function HeroSection() {
                     </div>
 
                     {results.length > 0 && (
-                        <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-dark_grey text-black dark:text-white border dark:border-white rounded-md shadow max-h-60 overflow-y-auto z-50">
+                        <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-dark_grey text-black dark:text-white border dark:border-white rounded-md shadow max-h-60 overflow-y-auto z-50 xl:w-[500px] 2xl:w-[600px]">
 
                             {results.map((item, index) => (
                                 <div

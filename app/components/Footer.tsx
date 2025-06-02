@@ -1,14 +1,10 @@
 "use client"
 import Image from "next/image";
-import Facebook from '../../public/fb.png';
-import Whatsapp from '../../public/wtzp.png';
 import { useTheme } from "@/context/theme-context";
+import { EnvelopeIcon, PhoneIcon } from "@heroicons/react/16/solid";
 
 export default function Footer() {
     const { isDark, toggleTheme } = useTheme();
-
-    const Email = isDark ? '/mail.png' : '/mailL.png';
-    const Mobile = isDark ? '/mobile.png' : '/mobileL.png';
 
     const Facebook = isDark ? '/fb.png' : '/fbLight.png';
     const Whatsapp = isDark ? '/wtzp.png' : '/wtzpLight.png';
@@ -31,30 +27,20 @@ export default function Footer() {
                 </div>
                 <div>
                     <h4 className="font-medium text-dark-brown text-xl xl:text-2xl mb-2">Contact</h4>
-                    <div className="flex mb-1 justify-center md:justify-start">
-                        <Image
-                            src={Email}
-                            alt="Arrow"
-                            width={25}
-                            height={5}
-                        />
-                        <p className="ml-4 xl:text-lg"> papervault@gmail.com</p>
-
+                    <div className="flex mb-1 justify-center md:justify-start items-center">
+                        <EnvelopeIcon className="w-6 h-6 text-dark_brown dark:text-white" />
+                        <p className="ml-4 xl:text-lg">papervault@gmail.com</p>
                     </div>
-                    <div className="flex mb-1 justify-center md:justify-start">
-                        <Image
-                            src={Mobile}
-                            alt="Arrow"
-                            width={25}
-                            height={5}
-                        />
-                        <p className="ml-4 xl:text-lg"> +94 71 123 4567</p>
+
+                    <div className="flex mb-1 justify-center md:justify-start items-center">
+                        <PhoneIcon className="w-6 h-6 text-dark_brown dark:text-white" />
+                        <p className="ml-4 xl:text-lg">+94 71 123 4567</p>
                     </div>
 
                 </div>
                 <div className="text-center justify-center items-center">
                     <div className="flex justify-center">
-                    <Image
+                        <Image
                             src={Facebook}
                             alt="Arrow"
                             width={30}
