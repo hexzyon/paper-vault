@@ -8,8 +8,8 @@ export default function PopularExams() {
     ];
 
     return (
-        <section className="text-center py-8 font-anek text-base font-normal">
-            <div className="flex items-center justify-center my-6">
+        <section className="text-center py-8 font-anek text-base font-normal my-8">
+            <div className="flex items-center justify-center my-6 mb-12">
                 <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4"></div>
                 <h2 className="text-3xl text-dark_brown dark:text-white 2xl:text-5xl">Popular Exams</h2>
                 <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4"></div>

@@ -1,55 +1,62 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
-import useEmblaCarousel from 'embla-carousel-react';
-import Autoplay from 'embla-carousel-autoplay';
+import React, { useRef, useState } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Autoplay } from 'swiper/modules';
 import Image from 'next/image';
 import { useTheme } from '@/context/theme-context';
+import 'swiper/css';
+import 'swiper/css/navigation';
 
 const GradeSelector = () => {
   const { isDark } = useTheme();
   const ArrowLeft = isDark ? '/darkArrowL.png' : '/arrowL.png';
   const ArrowRight = isDark ? '/darkArrowR.png' : '/arrowR.png';
 
+  const prevRef = useRef(null);
+  const nextRef = useRef(null);
+
   const totalGrades = 13;
   const grades = Array.from({ length: totalGrades }, (_, i) => i + 1);
 
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    {
-      loop: true,
-      align: 'center',
-      slidesToScroll: 1,
-    },
-    [Autoplay({ delay: 3000, stopOnInteraction: false })]
-  );
-
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
-  const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
-
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setSelectedIndex(emblaApi.selectedScrollSnap());
-  }, [emblaApi]);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-    onSelect();
-    emblaApi.on('select', onSelect);
-  }, [emblaApi, onSelect]);
-
   return (
-    <div className="font-anek">
-      <div className="flex items-center justify-center mt-6">
+    <div className="font-anek mt-8">
+      <div className="flex items-center justify-center mt-6 mb-12">
         <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4" />
         <h2 className="text-3xl text-dark_brown dark:text-white text-center 2xl:text-5xl">Select Grade</h2>
         <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4" />
       </div>
 
-      <div className="relative w-auto mx-3 max-w-screen-2xl">
-        <div className="overflow-hidden mx-6" ref={emblaRef}>
-          <div className="flex items-center h-24 sm:h-44 md:h-36 lg:h-48 xl:h-52 2xl:h-60">
+      <div className="relative w-auto mx-5 max-w-screen-2xl h-24 sm:h-32 md:h-28 lg:h-28 xl:h-40 2xl:h-48">
+        <Swiper
+
+          loop={true}
+          centeredSlides={true}
+          slidesPerView={'auto'}
+          spaceBetween={5}
+          speed={700}
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+            waitForTransition: true,
+          }}
+          onSlideChange={(swiper) => setSelectedIndex(swiper.realIndex)}
+          className="overflow-hidden"
+          navigation={{
+            prevEl: prevRef.current,
+            nextEl: nextRef.current,
+          }}
+          onBeforeInit={(swiper) => {
+            if (typeof swiper.params.navigation !== 'boolean' && swiper.params.navigation) {
+              swiper.params.navigation.prevEl = prevRef.current;
+              swiper.params.navigation.nextEl = nextRef.current;
+            }
+          }}
+          modules={[Navigation, Autoplay]}
+        >
+          <div className="flex items-center">
             {grades.map((grade, index) => {
               const total = grades.length;
               const center = selectedIndex;
@@ -63,20 +70,21 @@ const GradeSelector = () => {
               if (diff === 0) {
                 sizeClass = `h-20 sm:h-32 md:h-24 lg:h-28 xl:h-40 2xl:h-44 scale-100 z-0 shadow-[inset_0_-2px_4px_rgba(0,0,0,0.6)] shadow-light_pink dark:shadow-dark_grey_100 ${baseWidth} text-5xl md:text-6xl xl:text-7xl 2xl:text-8xl`;
               } else if (diff === 1) {
-                sizeClass = `h-12 sm:h-24 md:h-20 lg:h-20 xl:h-32 2xl:h-36 scale-100 z-0 shadow-[inset_0_-2px_4px_rgba(0,0,0,0.6)] shadow-light_pink dark:shadow-dark_grey_100 ${baseWidth} text-3xl md:text-4xl xl:text-5xl 2xl:text-6xl`;
+                sizeClass = `h-12 sm:h-24 md:h-20 lg:h-20 xl:h-32 2xl:h-36 scale-100 my-4 z-0 shadow-[inset_0_-2px_4px_rgba(0,0,0,0.6)] shadow-light_pink dark:shadow-dark_grey_100 ${baseWidth} text-3xl md:text-4xl xl:text-5xl 2xl:text-6xl`;
               } else if (diff === 2) {
-                sizeClass = `h-10 sm:h-20 md:h-16 lg:h-16 xl:h-28 2xl:h-32 scale-100 z-0 shadow-[inset_0_-2px_4px_rgba(0,0,0,0.6)] shadow-light_pink dark:shadow-dark_grey_100 ${baseWidth} text-2xl md:text-3xl xl:text-4xl 2xl:text-5xl`;
+                sizeClass = `h-10 sm:h-20 md:h-16 lg:h-16 xl:h-28 2xl:h-32 scale-100 my-6 z-0 shadow-[inset_0_-2px_4px_rgba(0,0,0,0.6)] shadow-light_pink dark:shadow-dark_grey_100 ${baseWidth} text-2xl md:text-3xl xl:text-4xl 2xl:text-5xl`;
               } else {
-                sizeClass = `h-16 scale-80 z-0 shadow ${baseWidth}`;
+                sizeClass = `h-10 sm:h-20 md:h-16 lg:h-16 xl:h-28 2xl:h-32 scale-100 my-6 z-0 shadow-[inset_0_-2px_4px_rgba(0,0,0,0.6)] shadow-light_pink dark:shadow-dark_grey_100 ${baseWidth} text-2xl md:text-3xl xl:text-4xl 2xl:text-5xl`;
               }
 
               return (
-                <div
+                <SwiperSlide
                   key={grade}
                   className="
-                    flex-[0_0_33%] sm:flex-[0_0_33%] md:flex-[0_0_20%]
-                    px-2 flex items-center justify-center transition-transform duration-300 ease-in-out
+                    flex-[0_0_30%] sm:flex-[0_0_30%] md:flex-[0_0_19%]
+                    px-2 flex items-center justify-center transition-transform
                   "
+                  style={{ width: 'auto' }}
                 >
                   <div
                     className={`
@@ -86,27 +94,28 @@ const GradeSelector = () => {
                       bg-no-repeat bg-center bg-[length:60%_50%]
                       flex items-center justify-center
                       rounded-md text-dark_brown dark:text-white font-semibold
-                      transition-all duration-300 ease-in-out border-t-2 border-light_pink dark:border-dark_grey_100
+                      border-t-2 border-light_pink dark:border-dark_grey_100
                       ${sizeClass}
                     `}
+                    style={{ transform: 'translateX(12px)'}}
                   >
                     {grade}
                   </div>
-                </div>
+                </SwiperSlide>
               );
             })}
           </div>
-        </div>
+        </Swiper>
 
         <div className="absolute top-1/2 left-0 transform -translate-y-1/2 z-30">
-          <button className="text-dark_brown px-2 hover:scale-110 transition" onClick={scrollPrev}>
-            <Image src={ArrowLeft} alt="Arrow Left" width={15} height={15} />
+          <button ref={prevRef} className="text-dark_brown px-2 hover:scale-110 transition">
+            <Image src={ArrowLeft} alt="Arrow Left" width={20} height={20} />
           </button>
         </div>
 
-        <div className="absolute top-1/2 right-0 transform -translate-y-1/2 z-30">
-          <button className="text-dark_brown px-2 hover:scale-110 transition" onClick={scrollNext}>
-            <Image src={ArrowRight} alt="Arrow Right" width={15} height={15} />
+        <div ref={nextRef} className="absolute top-1/2 right-0 transform -translate-y-1/2 z-30">
+          <button className="text-dark_brown px-2 hover:scale-110 transition">
+            <Image src={ArrowRight} alt="Arrow Right" width={20} height={20} />
           </button>
         </div>
       </div>
