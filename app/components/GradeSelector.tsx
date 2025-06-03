@@ -29,7 +29,7 @@ const GradeSelector = () => {
         <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4" />
       </div>
 
-      <div className="relative w-auto px-10 mx-5 max-w-screen-2xl h-24 sm:h-32 md:h-28 lg:h-28 xl:h-40 2xl:h-48">
+      <div className="relative w-auto md:px-10 mx-5 max-w-screen-2xl h-24 sm:h-32 md:h-28 lg:h-28 xl:h-40 2xl:h-48">
         <Swiper
 
           loop={true}
@@ -63,7 +63,7 @@ const GradeSelector = () => {
               const rawDiff = Math.abs(index - center);
               const diff = Math.min(rawDiff, total - rawDiff);
 
-              const baseWidth = 'w-24 sm:w-36 md:w-28 lg:w-36 xl:w-52 2xl:w-56';
+              const baseWidth = 'w-20 xs:w-24 sm:w-36 md:w-28 lg:w-36 xl:w-52 2xl:w-56';
 
               let sizeClass = '';
 

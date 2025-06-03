@@ -33,7 +33,7 @@ export default function PopularExams() {
                             style={{ backgroundImage: `url(${exam.img})` }}
                         ></div>
 
-                        <div className="relative sm:ml-40 ml-36 md:ml-28 lg:ml-32 xl:ml-44 2xl:ml-48 flex flex-col items-center justify-center text-center h-full">
+                        <div className="relative sm:ml-40 ml-32 md:ml-28 lg:ml-32 xl:ml-44 2xl:ml-48 flex flex-col items-center justify-center text-center h-full">
                             <p className="text-4xl md:text-3xl lg:text-4xl xl:text-6xl 2xl:text-6xl font-medium text-dark_brown dark:text-white">{exam.title}</p>
                             <p className="text-4xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-4xl font-medium text-dark_brown dark:text-white">{exam.subtitle}</p>
                         </div>
