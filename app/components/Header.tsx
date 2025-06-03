@@ -84,14 +84,14 @@ export default function Header() {
                             <NavigationMenuList>
                                 <NavigationMenuItem>
                                     <NavigationMenuTrigger className="
-    z-50 text-[25px] 2xl:text-4xl 
-    text-dark_brown dark:!text-white 
-    bg-white dark:!bg-dark_grey 
-    hover:bg-dark_white dark:hover:!bg-dark_grey_300
-    data-[state=open]:bg-dark_white dark:data-[state=open]:!bg-dark_grey_300
-    data-[state=open]:text-dark_brown dark:data-[state=open]:!text-white
-    transition-colors
-  ">
+                                        z-50 text-[25px] 2xl:text-4xl 
+                                      text-dark_brown dark:!text-white 
+                                      bg-white dark:!bg-dark_grey 
+                                      hover:bg-dark_white dark:hover:!bg-dark_grey_300
+                                      data-[state=open]:bg-dark_white dark:data-[state=open]:!bg-dark_grey_300
+                                      data-[state=open]:text-dark_brown dark:data-[state=open]:!text-white
+                                        transition-colors
+                                        ">
                                         Exams
                                     </NavigationMenuTrigger>
                                     <NavigationMenuContent className="z-50 bg-white dark:bg-dark_grey text-dark_brown dark:text-white">

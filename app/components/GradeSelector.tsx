@@ -29,7 +29,7 @@ const GradeSelector = () => {
         <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4" />
       </div>
 
-      <div className="relative w-auto mx-5 max-w-screen-2xl h-24 sm:h-32 md:h-28 lg:h-28 xl:h-40 2xl:h-48">
+      <div className="relative w-auto px-10 mx-5 max-w-screen-2xl h-24 sm:h-32 md:h-28 lg:h-28 xl:h-40 2xl:h-48">
         <Swiper
 
           loop={true}
@@ -81,7 +81,7 @@ const GradeSelector = () => {
                 <SwiperSlide
                   key={grade}
                   className="
-                    flex-[0_0_30%] sm:flex-[0_0_30%] md:flex-[0_0_19%]
+                    flex-[0_0_30%] sm:flex-[0_0_30%] md:flex-[0_0_19%] 2xl:flex-[0_0_18%]
                     px-2 flex items-center justify-center transition-transform
                   "
                   style={{ width: 'auto' }}
@@ -97,7 +97,7 @@ const GradeSelector = () => {
                       border-t-2 border-light_pink dark:border-dark_grey_100
                       ${sizeClass}
                     `}
-                    style={{ transform: 'translateX(12px)'}}
+                    style={{ transform: 'translateX(8px)'}}
                   >
                     {grade}
                   </div>
