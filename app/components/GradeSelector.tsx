@@ -107,13 +107,13 @@ const GradeSelector = () => {
           </div>
         </Swiper>
 
-        <div className="absolute top-1/2 left-0 transform -translate-y-1/2 z-30">
+        <div className="absolute top-1/2 left-0 transform -translate-y-1/2 z-30 hidden md:flex">
           <button ref={prevRef} className="text-dark_brown px-2 hover:scale-110 transition">
             <Image src={ArrowLeft} alt="Arrow Left" width={20} height={20} />
           </button>
         </div>
 
-        <div ref={nextRef} className="absolute top-1/2 right-0 transform -translate-y-1/2 z-30">
+        <div ref={nextRef} className="absolute top-1/2 right-0 transform -translate-y-1/2 z-30 hidden md:flex">
           <button className="text-dark_brown px-2 hover:scale-110 transition">
             <Image src={ArrowRight} alt="Arrow Right" width={20} height={20} />
           </button>
