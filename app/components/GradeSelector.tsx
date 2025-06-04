@@ -1,111 +1,126 @@
-'use client'
-import Image from 'next/image'
-import { useState, useEffect } from 'react'
-import { useTheme } from '@/context/theme-context'
+'use client';
+
+import React, { useRef, useState } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Autoplay } from 'swiper/modules';
+import Image from 'next/image';
+import { useTheme } from '@/context/theme-context';
+import 'swiper/css';
+import 'swiper/css/navigation';
 
 const GradeSelector = () => {
-  const { isDark } = useTheme()
-  const ArrowLeft = isDark ? "/darkArrowL.png" : "/arrowL.png"
-  const ArrowRight = isDark ? "/darkArrowR.png" : "/arrowR.png"
+  const { isDark } = useTheme();
+  const ArrowLeft = isDark ? '/darkArrowL.png' : '/arrowL.png';
+  const ArrowRight = isDark ? '/darkArrowR.png' : '/arrowR.png';
 
-  const totalGrades = 13
-  const [centerIndex, setCenterIndex] = useState(12) // Starting from 13 (0-based index 12)
-  const [visibleCount, setVisibleCount] = useState(3) // Default to mobile
+  const prevRef = useRef(null);
+  const nextRef = useRef(null);
 
-  // Sizes adjust based on visible count
-  const sizes =
-    visibleCount === 5
-      ? ['w-24 h-12 text-3xl shadow-lg 2xl:h-28 2xl:w-44 2xl:text-4xl xl:h-24 xl:w-40 xl:text-4xl lg:w-36 lg:h-20 lg:text-3xl', 
-        'w-32 h-20 text-4xl shadow-xl 2xl:h-40 2xl:w-60 2xl:text-6xl xl:h-32 xl:w-52 xl:text-5xl lg:w-44 lg:h-28 lg:text-4xl', 
-        'w-44 h-28 text-5xl shadow-2xl 2xl:h-52 2xl:w-72 2xl:text-7xl xl:h-44 xl:w-64 xl:text-6xl lg:w-52 lg:h-36 lg:text-5xl', 
-        'w-32 h-20 text-4xl shadow-xl 2xl:h-40 2xl:w-60 2xl:text-6xl xl:h-32 xl:w-52 xl:text-5xl lg:w-44 lg:h-28 lg:text-4xl', 
-        'w-24 h-12 text-3xl shadow-lg 2xl:h-28 2xl:w-44 2xl:text-4xl xl:h-24 xl:w-40 xl:text-4xl lg:w-36 lg:h-20 lg:text-3xl']
-      : ['w-32 h-20 text-4xl shadow-lg', 
-        'w-44 h-28 text-5xl shadow-xl', 
-        'w-32 h-20 text-4xl shadow-lg']
+  const totalGrades = 13;
+  const grades = Array.from({ length: totalGrades }, (_, i) => i + 1);
 
-  const next = () => {
-    setCenterIndex((prev) => (prev + 1) % totalGrades)
-  }
-
-  const prev = () => {
-    setCenterIndex((prev) => (prev - 1 + totalGrades) % totalGrades)
-  }
-
-  const getVisibleGrades = () => {
-    const grades = []
-    const half = Math.floor(visibleCount / 2)
-    for (let offset = -half; offset <= half; offset++) {
-      const index = (centerIndex + offset + totalGrades) % totalGrades
-      grades.push(index + 1)
-    }
-    return grades
-  }
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setVisibleCount(5)
-      } else {
-        setVisibleCount(3)
-      }
-    }
-
-    handleResize()
-
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      next()
-    }, 2000)
-
-    return () => clearInterval(interval)
-  }, [])
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   return (
-    <div className="font-anek">
-      <div className="flex items-center justify-center my-6">
+    <div className="font-anek mt-8">
+      <div className="flex items-center justify-center mt-6 mb-12">
         <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4" />
         <h2 className="text-3xl text-dark_brown dark:text-white text-center 2xl:text-5xl">Select Grade</h2>
         <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4" />
       </div>
 
-      <div className="flex items-center justify-center gap-2 w-full">
-        {/* Left Arrow */}
-        <button onClick={prev} className="text-dark_brown text-xl px-6 hover:scale-110 transition">
-          <Image src={ArrowLeft} alt="Arrow Left" width={10} height={10} className="w-[10px] h-auto" />
-        </button>
+      <div className="relative w-auto md:px-10 mx-5 max-w-screen-2xl h-24 sm:h-32 md:h-28 lg:h-28 xl:h-40 2xl:h-48">
+        <Swiper
 
-        {/* Cards */}
-        <div className="flex gap-6 items-center justify-center overflow-hidden w-full transition-all duration-300 ease-in-out">
-          {getVisibleGrades().map((grade, i) => (
-            <div
-              key={i}
-              className={`
-               bg-white dark:bg-dark_grey_500
-                bg-[url('/gradeBack.png')] 
-                dark:bg-[url('/darkGradeBack.png')]
-                bg-no-repeat bg-center bg-[length:60%_50%]
-                flex items-center justify-center 
-                rounded-md shadow-lg text-dark_brown dark:text-white font-semibold 
-                ${sizes[i]} transition-all duration-300 ease-in-out
-              `}
-            >
-              {grade}
-            </div>
-          ))}
+          loop={true}
+          centeredSlides={true}
+          slidesPerView={'auto'}
+          spaceBetween={5}
+          speed={700}
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+            waitForTransition: true,
+          }}
+          onSlideChange={(swiper) => setSelectedIndex(swiper.realIndex)}
+          className="overflow-hidden"
+          navigation={{
+            prevEl: prevRef.current,
+            nextEl: nextRef.current,
+          }}
+          onBeforeInit={(swiper) => {
+            if (typeof swiper.params.navigation !== 'boolean' && swiper.params.navigation) {
+              swiper.params.navigation.prevEl = prevRef.current;
+              swiper.params.navigation.nextEl = nextRef.current;
+            }
+          }}
+          modules={[Navigation, Autoplay]}
+        >
+          <div className="flex items-center">
+            {grades.map((grade, index) => {
+              const total = grades.length;
+              const center = selectedIndex;
+              const rawDiff = Math.abs(index - center);
+              const diff = Math.min(rawDiff, total - rawDiff);
+
+              const baseWidth = 'w-20 xs:w-24 sm:w-36 md:w-28 lg:w-36 xl:w-52 2xl:w-56';
+
+              let sizeClass = '';
+
+              if (diff === 0) {
+                sizeClass = `h-20 sm:h-32 md:h-24 lg:h-28 xl:h-40 2xl:h-44 scale-100 z-0 shadow-[inset_0_-2px_4px_rgba(0,0,0,0.6)] shadow-light_pink dark:shadow-dark_grey_100 ${baseWidth} text-5xl md:text-6xl xl:text-7xl 2xl:text-8xl`;
+              } else if (diff === 1) {
+                sizeClass = `h-12 sm:h-24 md:h-20 lg:h-20 xl:h-32 2xl:h-36 scale-100 my-4 z-0 shadow-[inset_0_-2px_4px_rgba(0,0,0,0.6)] shadow-light_pink dark:shadow-dark_grey_100 ${baseWidth} text-3xl md:text-4xl xl:text-5xl 2xl:text-6xl`;
+              } else if (diff === 2) {
+                sizeClass = `h-10 sm:h-20 md:h-16 lg:h-16 xl:h-28 2xl:h-32 scale-100 my-6 z-0 shadow-[inset_0_-2px_4px_rgba(0,0,0,0.6)] shadow-light_pink dark:shadow-dark_grey_100 ${baseWidth} text-2xl md:text-3xl xl:text-4xl 2xl:text-5xl`;
+              } else {
+                sizeClass = `h-10 sm:h-20 md:h-16 lg:h-16 xl:h-28 2xl:h-32 scale-100 my-6 z-0 shadow-[inset_0_-2px_4px_rgba(0,0,0,0.6)] shadow-light_pink dark:shadow-dark_grey_100 ${baseWidth} text-2xl md:text-3xl xl:text-4xl 2xl:text-5xl`;
+              }
+
+              return (
+                <SwiperSlide
+                  key={grade}
+                  className="
+                    flex-[0_0_30%] sm:flex-[0_0_30%] md:flex-[0_0_19%] 2xl:flex-[0_0_18%]
+                    px-2 flex items-center justify-center transition-transform
+                  "
+                  style={{ width: 'auto' }}
+                >
+                  <div
+                    className={`
+                      bg-white dark:bg-dark_grey_500
+                      bg-[url('/gradeBack.png')]
+                      dark:bg-[url('/darkGradeBack.png')]
+                      bg-no-repeat bg-center bg-[length:60%_50%]
+                      flex items-center justify-center
+                      rounded-md text-dark_brown dark:text-white font-semibold
+                      border-t-2 border-light_pink dark:border-dark_grey_100
+                      ${sizeClass}
+                    `}
+                    style={{ transform: 'translateX(8px)'}}
+                  >
+                    {grade}
+                  </div>
+                </SwiperSlide>
+              );
+            })}
+          </div>
+        </Swiper>
+
+        <div className="absolute top-1/2 left-0 transform -translate-y-1/2 z-30 hidden md:flex">
+          <button ref={prevRef} className="text-dark_brown px-2 hover:scale-110 transition">
+            <Image src={ArrowLeft} alt="Arrow Left" width={20} height={20} />
+          </button>
         </div>
 
-        {/* Right Arrow */}
-        <button onClick={next} className="text-dark_brown text-xl px-6 hover:scale-110 transition">
-          <Image src={ArrowRight} alt="Arrow Right" width={10} height={10} className="w-[10px] h-auto" />
-        </button>
+        <div ref={nextRef} className="absolute top-1/2 right-0 transform -translate-y-1/2 z-30 hidden md:flex">
+          <button className="text-dark_brown px-2 hover:scale-110 transition">
+            <Image src={ArrowRight} alt="Arrow Right" width={20} height={20} />
+          </button>
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default GradeSelector
+export default GradeSelector;

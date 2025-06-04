@@ -6,15 +6,15 @@ const papers = [
 
 export default function RecentUpdates() {
   return (
-    <section className="py-8 font-anek items-center justify-center p-4">
-      <div className="flex items-center justify-center my-6">
+    <section className="font-anek items-center justify-center p-2 mt-4 mb-8">
+      <div className="flex items-center justify-center my-6 mb-12">
         <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4"></div>
-        <h2 className="text-3xl text-dark_brown dark:text-white text-center 2xl:text-5xl">Recently Updated</h2>
+        <h2 className="text-3xl text-dark_brown dark:text-white text-center 2xl:text-5xl">Recently Update</h2>
         <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4"></div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {papers.map((paper, idx) => (
-          <div key={idx} className="w-full p-4 border border-light-pink rounded-lg shadow bg-white dark:bg-dark_grey_500 dark:bg-opacity-30 text-dark_brown">
+          <div key={idx} className="w-full p-4 border border-light-pink rounded-lg shadow-[inset_0_-2px_4px_rgba(0,0,0,0.6)] shadow-light_pink dark:shadow-dark_grey_100 bg-white dark:bg-dark_grey_500 dark:bg-opacity-30 text-dark_brown">
             <p className="font-medium text-black dark:text-white text-2xl 2xl:text-3xl xl:text-2xl">{paper.title}</p>
             <p className="font-medium text-black dark:text-white text-md 2xl:text-xl xl:text-lg">{paper.medium}</p>
             <p className="font-medium text-md text-gray-600 dark:text-white 2xl:text-xl xl:text-lg">{paper.province}</p>

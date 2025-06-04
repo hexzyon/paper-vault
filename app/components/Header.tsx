@@ -80,13 +80,21 @@ export default function Header() {
                     <a href="#" className="text-2xl 2xl:text-4xl">Home</a>
                     <a href="#" className="text-2xl 2xl:text-4xl">Markings</a>
                     <div className="relative z-50">
-                        <NavigationMenu>
+                        <NavigationMenu className="z-50 bg-white dark:bg-dark_grey text-dark_brown dark:text-white">
                             <NavigationMenuList>
                                 <NavigationMenuItem>
-                                    <NavigationMenuTrigger className="text-[25px] 2xl:text-4xl text-dark_brown dark:text-white bg-white dark:bg-dark_grey">
+                                    <NavigationMenuTrigger className="
+                                        z-50 text-[25px] 2xl:text-4xl 
+                                      text-dark_brown dark:!text-white 
+                                      bg-white dark:!bg-dark_grey 
+                                      hover:bg-dark_white dark:hover:!bg-dark_grey_300
+                                      data-[state=open]:bg-dark_white dark:data-[state=open]:!bg-dark_grey_300
+                                      data-[state=open]:text-dark_brown dark:data-[state=open]:!text-white
+                                        transition-colors
+                                        ">
                                         Exams
                                     </NavigationMenuTrigger>
-                                    <NavigationMenuContent className="z-50">
+                                    <NavigationMenuContent className="z-50 bg-white dark:bg-dark_grey text-dark_brown dark:text-white">
                                         <ul className="grid w-[200px] gap-3 p-4">
                                             {components.map((component) => (
                                                 <ListItem
@@ -131,7 +139,7 @@ export default function Header() {
 
             {/* Mobile Dropdown Menu */}
             {menuOpen && (
-                <div className="md:hidden bg-white dark:bg-dark_grey text-black dark:text-white p-4 space-y-4 shadow-lg rounded-b-xl max-w-[1440px] mx-auto">
+                <div className="absolute z-50 w-11/12 md:hidden bg-white dark:bg-dark_grey text-black dark:text-white p-4 space-y-4 shadow-md shadow-light_pink dark:shadow-dark_grey_100 rounded-b-xl max-w-[1440px]">
                     <a href="#" className="block text-lg">Home</a>
                     <a href="#" className="block text-lg">Markings</a>
                     <div>

@@ -8,34 +8,34 @@ export default function PopularExams() {
     ];
 
     return (
-        <section className="text-center py-8 font-anek text-base font-normal">
-            <div className="flex items-center justify-center my-6">
+        <section className="text-center py-8 font-anek text-base font-normal my-8">
+            <div className="flex items-center justify-center my-6 mb-12">
                 <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4"></div>
                 <h2 className="text-3xl text-dark_brown dark:text-white 2xl:text-5xl">Popular Exams</h2>
                 <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4"></div>
             </div>
 
-            <div className="flex md:justify-center md:gap-4 overflow-x-auto md:overflow-visible snap-x snap-mandatory px-4 w-full">
+            <div className="flex flex-col md:flex-row items-center justify-center md:gap-4 md:overflow-visible px-4 w-full">
                 {exams.map((exam, index) => (
                     <div
                         key={index}
                         className="
-                relative flex-1 min-w-[200px] max-w-[400px] snap-center h-[150px] md:h-[150px] lg:h-[180px] 2xl:h-[250px] xl:h-[220px]
-                rounded-xl shadow-md overflow-hidden
-                hover:shadow-lg transition mx-2
+                relative flex-1 w-full md:max-w-[400px] h-[150px] md:h-[150px] lg:h-[180px] 2xl:h-[250px] xl:h-[220px]
+                rounded-xl shadow-lg border-light_pink border dark:border-dark_grey_100 shadow-light_pink dark:shadow-dark_grey_100 overflow-hidden my-2 md:my-0 py-16 md:py-0
+                hover:shadow-lg transition
                 bg-white dark:bg-dark_grey_500
             "
                     >
                         <div className="absolute inset-0 bg-white/70 dark:bg-dark_grey_500/70"></div>
 
                         <div
-                            className="absolute inset-0 bg-cover bg-center"
+                            className="absolute inset-0 bg-contain md:bg-cover bg-no-repeat bg-center "
                             style={{ backgroundImage: `url(${exam.img})` }}
                         ></div>
 
-                        <div className="relative z-10 sm:ml-20 xs:ml-20 md:ml-20 lg:ml-32 flex flex-col items-center justify-center text-center h-full">
-                            <p className="text-2xl 2xl:text-4xl font-medium text-dark_brown dark:text-white">{exam.title}</p>
-                            <p className="text-xl 2xl:text-4xl font-medium text-dark_brown dark:text-white">{exam.subtitle}</p>
+                        <div className="relative sm:ml-40 ml-32 md:ml-28 lg:ml-32 xl:ml-44 2xl:ml-48 flex flex-col items-center justify-center text-center h-full">
+                            <p className="text-4xl md:text-3xl lg:text-4xl xl:text-6xl 2xl:text-6xl font-medium text-dark_brown dark:text-white">{exam.title}</p>
+                            <p className="text-4xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-4xl font-medium text-dark_brown dark:text-white">{exam.subtitle}</p>
                         </div>
                     </div>
                 ))}
