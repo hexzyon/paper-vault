@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaBook, FaCalculator, FaFlask, FaGlobe, FaLanguage, FaPagelines } from 'react-icons/fa';
+import { FaBook, FaCalculator, FaCaretDown, FaFlask, FaGlobe, FaLanguage, FaPagelines } from 'react-icons/fa';
 
 const categories = ['Category 1', 'Category 2', 'Category 3', 'Languages'];
 
@@ -46,15 +46,16 @@ const SubjectCard = ({ title, status, icon }: SubjectCardProps) => {
   return (
     <motion.div
       layout
-      className="relative border font-anek border-red-100 rounded-xl p-4 flex flex-col text-left shadow-sm bg-white dark:bg-dark_grey min-h-[200px]"
+      className="border rounded-xl p-5 shadow-md shadow-light_pink dark:shadow-dark_grey_100 bg-white dark:bg-dark_grey_500 text-left relative"
     >
-      <div className="text-4xl text-red-400 mb-3">{icon}</div>
-              <span className={`absolute top-3 right-3 text-xs px-2 py-1 rounded ${statusBadge[status]}`}>
+      <div className="text-3xl md:text-4xl xl:text-6xl text-red-400 mb-3">{icon}</div>
+              <span className={`absolute top-3 right-3 text-xs xl:text-lg px-2 py-1 rounded ${statusBadge[status]}`}>
                 {status}
               </span>
-              <h3 className="text-lg font-semibold text-dark_brown dark:text-white">{title}</h3>
+              <h3 className="text-xl xl:text-3xl text-dark_brown dark:text-white">{title}</h3>
               <button
-                className="mt-4 w-full py-2 border rounded hover:bg-dark_brown hover:text-white transition-colors"
+                className="mt-2 w-full py-1 text-md xl:text-xl text-dark_brown dark:text-dark_grey_100 border border-dark_brown dark:border-dark_grey_100 
+                rounded-md hover:bg-dark_brown hover:dark:bg-white hover:text-white hover:dark:text-dark_brown transition-colors"
               >
                 View Papers
               </button>
@@ -70,8 +71,12 @@ export default function OptionalSubjects() {
   const visibleSubjects = subjects.slice(0, visibleCount);
 
   return (
-    <section className="px-4 py-8 max-w-6xl mx-auto text-center font-anek">
-      <h2 className="text-2xl text-dark_brown mb-6">Optional Subjects</h2>
+    <section className="px-4 md:px-0 pt-10 pb-10  max-w-screen-2xl mx-auto text-center font-anek">
+      <div className="flex items-center justify-center text-center my-2 mb-6 xl:mb-10">
+          <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4"></div>
+          <h2 className="text-3xl text-dark_brown dark:text-white xl:text-4xl 2xl:text-5xl">Optional Subjects</h2>
+          <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4"></div>
+        </div>
 
       <div className="flex flex-wrap justify-center gap-2 mb-6">
         {categories.map((cat) => (
@@ -81,8 +86,9 @@ export default function OptionalSubjects() {
               setActiveCategory(cat);
               setVisibleCount(4);
             }}
-            className={`px-4 py-1 rounded-full border ${
-              cat === activeCategory ? 'bg-black text-white' : 'bg-white text-black'
+            className={`px-4 py-1 rounded-full border shadow-sm shadow-light_pink dark:shadow-dark_grey_100 ${
+              cat === activeCategory ? 'bg-dark_brown text-white dark:bg-white dark:text-dark_brown' 
+              : 'bg-white text-dark_brown dark:bg-dark_grey_500 dark:text-white'
             }`}
           >
             {cat}
@@ -90,7 +96,7 @@ export default function OptionalSubjects() {
         ))}
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-screen-2xl mx-auto my-10 ">
         <AnimatePresence>
           {visibleSubjects.map((subject, index) => (
             <motion.div
@@ -110,9 +116,11 @@ export default function OptionalSubjects() {
         <div className="mt-6">
           <button
             onClick={() => setVisibleCount((prev) => prev + 4)}
-            className="px-6 py-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="px-6 py-2 border border-dark_brown shadow-sm bg-white dark:bg-dark_grey_500 shadow-light_pink dark:shadow-dark_grey_100 
+            rounded-xl text-dark_brown dark:text-white hover:bg-dark_brown hover:dark:bg-white 
+            hover:text-white hover:dark:text-dark_brown transition-colors"
           >
-            Show More ↓
+            <div className='flex'>Show More <FaCaretDown className='mt-1'/></div>
           </button>
         </div>
       )}
