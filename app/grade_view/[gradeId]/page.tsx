@@ -33,10 +33,6 @@ export default function GradeView({ params }: Props) {
 
         <GradeHeader gradeId={gradeId}/>
 
-        <MainSubjects/>
-        
-        <OptionalSubjects/>
-
 
         
       </div>

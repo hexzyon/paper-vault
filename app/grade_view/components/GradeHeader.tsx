@@ -1,6 +1,9 @@
 'use client'
 
 import { useState } from "react";
+import SearchItems from "./SearchItems";
+import MainSubjects from "./MainSubjects";
+import OptionalSubjects from "./OptionalSubjects";
 
 type GradeHeaderProps = {
   gradeId: string
@@ -25,6 +28,7 @@ export default function GradeHeader({ gradeId }: GradeHeaderProps) {
   const grade = gradeDetails[gradeId];
   const [query, setQuery] = useState<string>('')
   const [results, setResults] = useState<string[]>([])
+  const [isSearching, setIsSearching] = useState(false)
 
   const allData = [
     'Grade 5 Scholarship',
@@ -39,6 +43,7 @@ export default function GradeHeader({ gradeId }: GradeHeaderProps) {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setQuery(value)
+    setIsSearching(false)
 
     if (value.trim() === '') {
       setResults([])
@@ -46,19 +51,29 @@ export default function GradeHeader({ gradeId }: GradeHeaderProps) {
       const filtered = allData.filter(item =>
         item.toLowerCase().includes(value.toLowerCase())
       )
+      console.log(filtered)
       setResults(filtered)
     }
   }
 
+  const handleSearchClick = () => {
+  const filtered = allData.filter(item =>
+    item.toLowerCase().includes(query.toLowerCase())
+  );
+  setResults(filtered);
+  setIsSearching(true);
+};
+
   if (!grade) {
     return (
-      <section className="p-4 text-center text-red-600 text-xl">
+      <section className="p-4 text-center text-red-600 text-xlfont-anek items-center justify-center mt-4 mb-1">
         Invalid grade ID: {gradeId}
       </section>
     );
   }
 
   return (
+    <>
     <section className="font-anek items-center justify-center p-2 mt-4 mb-1">
       <div className="flex flex-col md:flex-row items-center justify-center md:justify-between my-6 mb-1">
         <h2 className="text-4xl text-dark_brown dark:text-white text-center xl:text-6xl 2xl:text-6xl">{grade.title}</h2>
@@ -81,7 +96,9 @@ export default function GradeHeader({ gradeId }: GradeHeaderProps) {
                 placeholder="Search"
                 className="flex-grow bg-transparent focus:outline-none text-gray-700 dark:text-dark_grey_100 2xl:text-3xl"
               />
-              <button className="bg-dark_brown dark:bg-orange text-white px-2 md:px-6 py-1 rounded-lg 2xl:text-3xl">
+              <button 
+              onClick={handleSearchClick}
+              className="bg-dark_brown dark:bg-orange text-white px-2 md:px-6 py-1 rounded-lg 2xl:text-3xl">
                 Search
               </button>
             </div>
@@ -96,6 +113,7 @@ export default function GradeHeader({ gradeId }: GradeHeaderProps) {
                     onClick={() => {
                       setQuery(item)
                       setResults([])
+                      setIsSearching(true)
                     }}
                   >
                     {item}
@@ -109,5 +127,15 @@ export default function GradeHeader({ gradeId }: GradeHeaderProps) {
       </div>
 
     </section>
+    {isSearching ? (
+      
+        <SearchItems results={results.length > 0 ? results : ['No matching items found.']} />
+      ) : (
+        <>
+          <MainSubjects />
+          <OptionalSubjects />
+        </>
+      )}
+    </>
   );
 }
