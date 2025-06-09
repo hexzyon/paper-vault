@@ -38,8 +38,8 @@ const subjectsData: Record<string, SubjectCardProps[]> = {
 };
 
 const statusBadge: Record<StatusType, string> = {
-  'Available': 'bg-red-100 text-red-600',
-  'Coming Soon': 'bg-gray-100 text-gray-600',
+  'Available': 'bg-light_pink text-black dark:bg-dark_grey dark:text-white',
+  'Coming Soon': 'bg-gray-200 text-black dark:bg-gray-500 dark:text-white',
 };
 
 const SubjectCard = ({ title, status, icon }: SubjectCardProps) => {
@@ -55,7 +55,7 @@ const SubjectCard = ({ title, status, icon }: SubjectCardProps) => {
               <h3 className="text-xl xl:text-3xl text-dark_brown dark:text-white">{title}</h3>
               <button
                 className="mt-2 w-full py-1 text-md xl:text-xl text-dark_brown dark:text-dark_grey_100 border border-dark_brown dark:border-dark_grey_100 
-                rounded-md hover:bg-dark_brown hover:dark:bg-white hover:text-white hover:dark:text-dark_brown transition-colors"
+                rounded-md hover:bg-dark_brown hover:dark:bg-black hover:text-white hover:dark:text-white transition-colors"
               >
                 View Papers
               </button>
@@ -87,7 +87,7 @@ export default function OptionalSubjects() {
               setVisibleCount(4);
             }}
             className={`px-4 py-1 rounded-full border shadow-sm shadow-light_pink dark:shadow-dark_grey_100 ${
-              cat === activeCategory ? 'bg-dark_brown text-white dark:bg-white dark:text-dark_brown' 
+              cat === activeCategory ? 'bg-dark_brown text-white dark:bg-black dark:text-white' 
               : 'bg-white text-dark_brown dark:bg-dark_grey_500 dark:text-white'
             }`}
           >
@@ -117,8 +117,8 @@ export default function OptionalSubjects() {
           <button
             onClick={() => setVisibleCount((prev) => prev + 4)}
             className="px-6 py-2 border border-dark_brown shadow-sm bg-white dark:bg-dark_grey_500 shadow-light_pink dark:shadow-dark_grey_100 
-            rounded-xl text-dark_brown dark:text-white hover:bg-dark_brown hover:dark:bg-white 
-            hover:text-white hover:dark:text-dark_brown transition-colors"
+            rounded-xl text-dark_brown dark:text-white hover:bg-dark_brown hover:dark:bg-black 
+            hover:text-white hover:dark:text-white transition-colors"
           >
             <div className='flex'>Show More <FaCaretDown className='mt-1'/></div>
           </button>
