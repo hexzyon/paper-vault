@@ -133,7 +133,7 @@ export default function GradeHeader({ gradeId }: GradeHeaderProps) {
       ) : (
         <>
           <MainSubjects />
-          <OptionalSubjects />
+          {gradeId !== "grade5" && <OptionalSubjects />}
         </>
       )}
     </>

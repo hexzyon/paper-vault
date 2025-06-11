@@ -59,7 +59,7 @@ export default function MainSubjects() {
               <h3 className="text-xl xl:text-3xl text-dark_brown dark:text-white">{subject.name}</h3>
               <button
                 className="mt-2 w-full py-1 text-md xl:text-xl text-dark_brown dark:text-dark_grey_100 border border-dark_brown dark:border-dark_grey_100 
-                rounded-md hover:bg-dark_brown hover:dark:bg-black hover:text-white hover:dark:text-white transition-colors"
+                rounded-md hover:bg-dark_brown hover:dark:bg-gray-700 hover:text-white hover:dark:text-white transition-colors"
               >
                 View Papers
               </button>
@@ -73,7 +73,7 @@ export default function MainSubjects() {
           <button
             onClick={handleShowMore}
             className="px-6 py-2 border border-dark_brown shadow-sm bg-white dark:bg-dark_grey_500 shadow-light_pink dark:shadow-dark_grey_100 
-            rounded-xl text-dark_brown dark:text-white hover:bg-dark_brown hover:dark:bg-black 
+            rounded-xl text-dark_brown dark:text-white hover:bg-dark_brown hover:dark:bg-gray-700 
             hover:text-white hover:dark:text-white transition-colors"
           >
             <div className='flex'>Show More <FaCaretDown className='mt-1'/></div>

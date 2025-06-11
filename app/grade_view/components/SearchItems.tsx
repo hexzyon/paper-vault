@@ -27,14 +27,14 @@ export default function SearchItems({ results }: SearchItemsProps) {
               transition={{ duration: 0.4 }}
               className="border rounded-xl p-5 shadow-md shadow-light_pink dark:shadow-dark_grey_100 bg-white dark:bg-dark_grey_500 text-left relative"
             >
-              <div className="text-3xl md:text-4xl xl:text-6xl text-red-400 mb-3"><FaBook/></div>
-              <span className={`absolute top-3 right-3 text-xs xl:text-lg px-2 py-1 rounded bg-red-100 text-red-600`}>
+              <div className="text-3xl md:text-4xl xl:text-6xl text-red-400 dark:text-white mb-3"><FaBook/></div>
+              <span className={`absolute top-3 right-3 text-xs xl:text-lg px-2 py-1 rounded bg-red-100 dark:bg-dark_grey text-red-600 dark:text-white`}>
                 Available
               </span>
               <h3 className="text-xl xl:text-3xl text-dark_brown dark:text-white">{item}</h3>
               <button
                 className="mt-2 w-full py-1 text-md xl:text-xl text-dark_brown dark:text-dark_grey_100 border border-dark_brown dark:border-dark_grey_100 
-                rounded-md hover:bg-dark_brown hover:dark:bg-white hover:text-white hover:dark:text-dark_brown transition-colors"
+                rounded-md hover:bg-dark_brown hover:dark:bg-gray-700 hover:text-white hover:dark:text-white transition-colors"
               >
                 View Papers
               </button>
