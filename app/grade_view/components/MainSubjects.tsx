@@ -74,7 +74,7 @@ export default function MainSubjects() {
             onClick={handleShowMore}
             className="px-6 py-2 border border-dark_brown shadow-sm bg-white dark:bg-dark_grey_500 shadow-light_pink dark:shadow-dark_grey_100 
             rounded-xl text-dark_brown dark:text-white hover:bg-dark_brown hover:dark:bg-gray-700 
-            hover:text-white hover:dark:text-white transition-colors"
+            hover:text-white hover:dark:text-white mb-8 transition-colors"
           >
             <div className='flex'>Show More <FaCaretDown className='mt-1'/></div>
             

@@ -71,7 +71,7 @@ export default function OptionalSubjects() {
   const visibleSubjects = subjects.slice(0, visibleCount);
 
   return (
-    <section className="px-4 md:px-0 pt-10 pb-10  max-w-screen-2xl mx-auto text-center font-anek">
+    <section className="px-4 md:px-0 pt-2 pb-10  max-w-screen-2xl mx-auto text-center font-anek">
       <div className="flex items-center justify-center text-center my-2 mb-6 xl:mb-10">
           <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4"></div>
           <h2 className="text-3xl text-dark_brown dark:text-white xl:text-4xl 2xl:text-5xl">Optional Subjects</h2>

@@ -13,6 +13,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/context/theme-context";
+import { Link } from "lucide-react";
 
 
 interface ListItemProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
@@ -68,16 +69,18 @@ export default function Header() {
         <>
             <header className="flex justify-between items-center p-4 shadow-2xl bg-white dark:bg-dark_grey text-black rounded-xl max-w-[1440px] mx-auto">
                 {/* Logo */}
+                <a href="/">
                 <Image
                     src={logoSrc}
                     alt="A descriptive alt text"
                     width={100}
                     height={100}
                 />
-
+                </a>
+                
                 {/* Desktop Nav */}
                 <nav className="hidden md:flex space-x-10 font-anek font-normal text-dark_brown dark:text-dark_white">
-                    <a href="#" className="text-2xl 2xl:text-4xl">Home</a>
+                    <a href="/" className="text-2xl 2xl:text-4xl">Home</a>
                     <a href="#" className="text-2xl 2xl:text-4xl">Markings</a>
                     <div className="relative z-50">
                         <NavigationMenu className="z-50 bg-white dark:bg-dark_grey text-dark_brown dark:text-white">
