@@ -132,7 +132,7 @@ export default function GradeHeader({ gradeId }: GradeHeaderProps) {
         <SearchItems results={results.length > 0 ? results : ['No matching items found.']} />
       ) : (
         <>
-          <MainSubjects />
+          <MainSubjects gradeId={gradeId}/>
           {gradeId !== "grade5" && <OptionalSubjects />}
         </>
       )}

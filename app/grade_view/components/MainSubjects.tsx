@@ -1,8 +1,12 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation' 
 import { motion, AnimatePresence } from 'framer-motion'
-import { FaBook, FaFlask, FaCalculator, FaGlobe, FaLanguage, FaPagelines, FaCaretDown } from 'react-icons/fa'
+import {
+  FaBook, FaFlask, FaCalculator, FaGlobe, FaLanguage,
+  FaPagelines, FaCaretDown
+} from 'react-icons/fa'
 
 type StatusType = 'Available' | 'Coming Soon'
 
@@ -18,7 +22,6 @@ const mainSubjects: {
   { id: 4, name: 'English', icon: <FaLanguage />, status: 'Available' },
   { id: 5, name: 'History', icon: <FaBook />, status: 'Available' },
   { id: 6, name: 'Geography', icon: <FaGlobe />, status: 'Coming Soon' },
-  
 ]
 
 const statusBadge: Record<StatusType, string> = {
@@ -26,20 +29,29 @@ const statusBadge: Record<StatusType, string> = {
   'Coming Soon': 'bg-gray-200 text-black dark:bg-gray-500 dark:text-white',
 }
 
-export default function MainSubjects() {
+type Props = {
+  gradeId: string
+}
+
+export default function MainSubjects({ gradeId }: Props) {
   const [visibleCount, setVisibleCount] = useState(4)
+  const router = useRouter() 
 
   const handleShowMore = () => {
     setVisibleCount(prev => prev + 4)
   }
 
+  const handleViewPapers = (subjectId: number) => {
+    router.push(`/subject_view/${subjectId}?gradeId=${gradeId}`)
+  }
+
   return (
     <section className="pt-10 pb-4 font-anek text-center">
       <div className="flex items-center justify-center text-center my-2 mb-6 xl:mb-10">
-          <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4"></div>
-          <h2 className="text-3xl xl:text-4xl text-dark_brown dark:text-white 2xl:text-5xl">Main Subjects</h2>
-          <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4"></div>
-        </div>
+        <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4"></div>
+        <h2 className="text-3xl xl:text-4xl text-dark_brown dark:text-white 2xl:text-5xl">Main Subjects</h2>
+        <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4"></div>
+      </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-screen-2xl mx-auto px-4 md:px-0">
         <AnimatePresence>
@@ -60,6 +72,7 @@ export default function MainSubjects() {
               <button
                 className="mt-2 w-full py-1 text-md xl:text-xl text-dark_brown dark:text-dark_grey_100 border border-dark_brown dark:border-dark_grey_100 
                 rounded-md hover:bg-dark_brown hover:dark:bg-gray-700 hover:text-white hover:dark:text-white transition-colors"
+                onClick={() => handleViewPapers(subject.id)} 
               >
                 View Papers
               </button>
@@ -76,8 +89,7 @@ export default function MainSubjects() {
             rounded-xl text-dark_brown dark:text-white hover:bg-dark_brown hover:dark:bg-gray-700 
             hover:text-white hover:dark:text-white mb-8 transition-colors"
           >
-            <div className='flex'>Show More <FaCaretDown className='mt-1'/></div>
-            
+            <div className='flex'>Show More <FaCaretDown className='mt-1' /></div>
           </button>
         </div>
       )}
