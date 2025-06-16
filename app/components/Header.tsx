@@ -112,7 +112,7 @@ export default function Header() {
                             </NavigationMenuList>
                         </NavigationMenu>
                     </div>
-                    <a href="#" className="text-2xl 2xl:text-4xl">About Us</a>
+                    <a href="/about_us" className="text-2xl 2xl:text-4xl">About Us</a>
                 </nav>
 
                 <div className="flex items-center gap-4">

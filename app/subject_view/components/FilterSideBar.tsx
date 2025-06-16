@@ -30,7 +30,7 @@ export default function FilterContent() {
     <div className="space-y-4 text-dark_brown dark:text-white">
       <h1 className="hidden md:flex text-dark_brown dark:text-white text-3xl mt-4 mx-1">Filter By</h1>
 
-      {/* Language Section (Expanded by default) */}
+      {/* Language Section */}
       <div className="border rounded-xl shadow-md shadow-light_pink dark:shadow-dark_grey_100 p-4 bg-white dark:bg-dark_grey_500 dark:border-gray-400">
         <div
           className="flex justify-between items-center cursor-pointer"

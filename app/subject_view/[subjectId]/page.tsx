@@ -61,7 +61,7 @@ export default function SubjectViewPage() {
               </div>
 
               {showFilters && (
-                <div className="w-full mt-2 bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
+                <div className="w-full mt-2 bg-gray-100 dark:bg-dark_grey rounded-lg p-4">
                   <FilterContent />
                 </div>
               )}
