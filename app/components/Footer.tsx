@@ -22,7 +22,7 @@ export default function Footer() {
                     <ul>
                         <li className="text-sm xl:text-lg"><a href="#">Marking</a></li>
                         <li className="text-sm xl:text-lg"><a href="#">Exams</a></li>
-                        <li className="text-sm xl:text-lg"><a href="#">About Us</a></li>
+                        <li className="text-sm xl:text-lg"><a href="/about_us">About Us</a></li>
                     </ul>
                 </div>
                 <div>
