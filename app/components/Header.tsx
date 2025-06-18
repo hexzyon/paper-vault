@@ -80,20 +80,21 @@ export default function Header() {
                 
                 {/* Desktop Nav */}
                 <nav className="hidden md:flex space-x-10 font-anek font-normal text-dark_brown dark:text-dark_white">
-                    <a href="/" className="text-2xl 2xl:text-4xl">Home</a>
-                    <a href="#" className="text-2xl 2xl:text-4xl">Markings</a>
+                    <a href="/" className="text-xl lg:text-2xl 2xl:text-4xl">Home</a>
+                    <a href="#" className="text-xl lg:text-2xl 2xl:text-4xl">Markings</a>
+                    <a href="#" className="text-xl lg:text-2xl 2xl:text-4xl">Books</a>
                     <div className="relative z-50">
                         <NavigationMenu className="z-50 bg-white dark:bg-dark_grey text-dark_brown dark:text-white">
                             <NavigationMenuList>
                                 <NavigationMenuItem>
                                     <NavigationMenuTrigger className="
-                                        z-50 text-[25px] 2xl:text-4xl 
+                                        z-50 text-xl lg:text-2xl 2xl:text-4xl 
                                       text-dark_brown dark:!text-white 
                                       bg-white dark:!bg-dark_grey 
                                       hover:bg-dark_white dark:hover:!bg-dark_grey_300
                                       data-[state=open]:bg-dark_white dark:data-[state=open]:!bg-dark_grey_300
                                       data-[state=open]:text-dark_brown dark:data-[state=open]:!text-white
-                                        transition-colors
+                                        transition-colors pb-4 lg:pb-3
                                         ">
                                         Exams
                                     </NavigationMenuTrigger>
@@ -112,7 +113,7 @@ export default function Header() {
                             </NavigationMenuList>
                         </NavigationMenu>
                     </div>
-                    <a href="/about_us" className="text-2xl 2xl:text-4xl">About Us</a>
+                    <a href="/about_us" className="text-xl lg:text-2xl 2xl:text-4xl">About Us</a>
                 </nav>
 
                 <div className="flex items-center gap-4">
@@ -145,6 +146,7 @@ export default function Header() {
                 <div className="absolute z-50 w-11/12 md:hidden bg-white dark:bg-dark_grey text-black dark:text-white p-4 space-y-4 shadow-md shadow-light_pink dark:shadow-dark_grey_100 rounded-b-xl max-w-[1440px]">
                     <a href="#" className="block text-lg">Home</a>
                     <a href="#" className="block text-lg">Markings</a>
+                    <a href="#" className="block text-lg">Books</a>
                     <div>
                         <div className="font-semibold mb-2">Exams</div>
                         <ul className="space-y-2">
