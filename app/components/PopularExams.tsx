@@ -24,7 +24,7 @@ export default function PopularExams() {
                         key={index}
                         className="
                 relative flex-1 w-full md:max-w-[400px] h-[150px] md:h-[150px] lg:h-[180px] 2xl:h-[250px] xl:h-[220px]
-                rounded-xl shadow-lg border-light_pink border dark:border-dark_grey_100 shadow-light_pink dark:shadow-dark_grey_100 overflow-hidden my-2 md:my-0 py-16 md:py-0
+                rounded-xl shadow-md dark:shadow-md border-light_pink border dark:border-dark_grey_100 shadow-light_pink dark:shadow-dark_grey_100 overflow-hidden my-2 md:my-0 py-16 md:py-0
                 hover:shadow-lg transition
                 bg-white dark:bg-dark_grey_500
             "
