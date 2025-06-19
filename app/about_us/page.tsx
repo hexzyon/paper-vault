@@ -26,7 +26,7 @@ export default function Page() {
                                 <CrosshairIcon className="text-xl sm:text-2xl md:text-3xl" />
                                 Our Mission
                             </h3>
-                            <p className="text-sm sm:text-sm md:text-base lg:text-xl leading-relaxed">
+                            <p className="text-sm sm:text-sm md:text-base lg:text-xl leading-relaxed mx-5">
                                 To empower students by providing a reliable and accessible platform for past papers,<br className="hidden sm:flex"/>
                                 helping them improve their knowledge and achieve academic success.
                             </p>
@@ -38,7 +38,7 @@ export default function Page() {
                                 <FaRegEye className="text-xl sm:text-2xl md:text-3xl" />
                                 Our Vision
                             </h3>
-                            <p className="text-sm sm:text-sm md:text-base lg:text-xl leading-relaxed">
+                            <p className="text-sm sm:text-sm md:text-base lg:text-xl leading-relaxed mx-5">
                                 To be the leading online resource for Sri Lankan students, ensuring every learner has <br className="hidden sm:flex"/>
                                 the tools they need to excel in their exams.
                             </p>
