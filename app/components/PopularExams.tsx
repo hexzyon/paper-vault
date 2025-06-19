@@ -1,10 +1,12 @@
 'use client'
 
+import Link from "next/link";
+
 export default function PopularExams() {
     const exams = [
-        { title: "Grade 5", subtitle: "Scholarship", img: "/popular_exams/exam1.png" },
-        { title: "G.C.E.", subtitle: "O/L", img: "/popular_exams/exam2.png" },
-        { title: "G.C.E.", subtitle: "A/L", img: "/popular_exams/exam3.png" }
+        { title: "Grade 5", subtitle: "Scholarship", img: "/popular_exams/exam1.png", id:"grade5" },
+        { title: "G.C.E.", subtitle: "O/L", img: "/popular_exams/exam2.png", id:"grade11" },
+        { title: "G.C.E.", subtitle: "A/L", img: "/popular_exams/exam3.png", id:"grade13" }
     ];
 
     return (
@@ -17,11 +19,12 @@ export default function PopularExams() {
 
             <div className="flex flex-col md:flex-row items-center justify-center md:gap-4 md:overflow-visible px-4 w-full">
                 {exams.map((exam, index) => (
-                    <div
+                    <Link
+                        href={`/grade_view/${exam.id}`}
                         key={index}
                         className="
                 relative flex-1 w-full md:max-w-[400px] h-[150px] md:h-[150px] lg:h-[180px] 2xl:h-[250px] xl:h-[220px]
-                rounded-xl shadow-lg border-light_pink border dark:border-dark_grey_100 shadow-light_pink dark:shadow-dark_grey_100 overflow-hidden my-2 md:my-0 py-16 md:py-0
+                rounded-xl shadow-md dark:shadow-md border-light_pink border dark:border-dark_grey_100 shadow-light_pink dark:shadow-dark_grey_100 overflow-hidden my-2 md:my-0 py-16 md:py-0
                 hover:shadow-lg transition
                 bg-white dark:bg-dark_grey_500
             "
@@ -37,7 +40,7 @@ export default function PopularExams() {
                             <p className="text-4xl md:text-3xl lg:text-4xl xl:text-6xl 2xl:text-6xl font-medium text-dark_brown dark:text-white">{exam.title}</p>
                             <p className="text-4xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-4xl font-medium text-dark_brown dark:text-white">{exam.subtitle}</p>
                         </div>
-                    </div>
+                    </Link>
                 ))}
             </div>
 

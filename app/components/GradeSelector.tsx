@@ -29,7 +29,7 @@ const GradeSelector = () => {
         <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4" />
       </div>
 
-      <div className="relative w-auto md:px-10 mx-5 max-w-screen-2xl h-24 sm:h-32 md:h-28 lg:h-28 xl:h-40 2xl:h-48">
+      <div className="relative w-auto md:px-10 md:mx-5 max-w-screen-2xl h-24 sm:h-32 md:h-28 lg:h-28 xl:h-40 2xl:h-48">
         <Swiper
 
           loop={true}

@@ -89,7 +89,7 @@ export default function HeroSection() {
                         Access Sri Lanka’s <span className="text-orange dark:text-white font-medium">Largest <br />Collection</span> of <span className="text-orange dark:text-white font-medium">Past Papers</span>
                     </p>
                 </div>
-                <div className="absolute top-72 mt-3 sm:top-80 sm:mt-8 sm:ml-0 md:ml-52 sm:text-2xl md:text-4xl text-dark_brown dark:text-orange flex gap-4 flex-wrap justify-center z-10">
+                <div className="absolute top-72 mt-3 sm:top-80 sm:mt-8 sm:ml-0 md:ml-52 text-2xl md:text-4xl text-dark_brown dark:text-orange flex gap-4 flex-wrap justify-center z-10">
                     <span><span className='sm:xl md:text-4xl mt-12 text-dark_brown dark:text-white'>100+</span> Subjects</span>
                     <span><span className='sm:xl md:text-4xl mt-6 sm:ml-2 md:ml-24 text-dark_brown dark:text-white'>1000+</span> Papers</span>
                 </div>
@@ -97,16 +97,16 @@ export default function HeroSection() {
 
             <div className="relative flex font-anek mt-64 sm:mt-80 md:mt-4 lg:mt-4 xl:mt-20 font-normal text-lg flex-col items-center justify-center text-center">
 
-                <div className="absolute top-7 md:mt-64 lg:mt-72 xl:mt-96 w-full max-w-md z-10 xl:mr-16 2xl:mr-40 sm:mx-0 mx-10">
-                    <div className="flex items-center justify-center bg-white dark:bg-dark_grey border dark:border-white rounded-full shadow px-4 py-2 xl:w-[500px] 2xl:w-[600px]">
+                <div className="absolute top-7 md:mt-64 lg:mt-72 xl:mt-96 w-full max-w-80 md:max-w-md z-10 xl:mr-16 2xl:mr-40 mx-0 md:mx-10">
+                    <div className="flex bg-white dark:bg-dark_grey border dark:border-white rounded-full shadow px-3 md:px-4 py-1 md:py-2 xl:w-[500px] 2xl:w-[600px]">
                         <input
                             type="text"
                             value={query}
                             onChange={handleInputChange}
                             placeholder="Search"
-                            className="flex-grow bg-transparent focus:outline-none text-gray-700 dark:text-dark_grey_100 2xl:text-3xl"
+                            className="flex-grow w-10/12 bg-transparent focus:outline-none text-gray-700 dark:text-dark_grey_100 2xl:text-3xl"
                         />
-                        <button className="bg-dark_brown dark:bg-orange text-white px-2 md:px-6 py-2 rounded-full 2xl:text-3xl">
+                        <button className="bg-dark_brown dark:bg-orange text-white px-3 md:px-6 py-1 md:py-2 rounded-full 2xl:text-3xl">
                             Search
                         </button>
                     </div>
