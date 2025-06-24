@@ -121,11 +121,11 @@ export default function Header() {
                         onClick={toggleTheme}
                         className="flex items-center overflow-hidden rounded-full shadow transition hover:opacity-90"
                     >
-                        <div className={`w-10 h-10 flex items-center justify-center ${isDark ? 'bg-orange' : 'bg-dark_brown'}`}>
+                        <div className={`w-7 h-7 md:w-10 md:h-10 flex items-center justify-center ${isDark ? 'bg-orange' : 'bg-dark_brown'}`}>
                             <img
                                 src={isDark ? '/moon.png' : '/sun.png'}
                                 alt="Theme Icon"
-                                className="w-5 h-5"
+                                className="w-4 h-4 md:w-5 md:h-5"
                             />
                         </div>
                     </button>

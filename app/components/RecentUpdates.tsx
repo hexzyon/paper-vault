@@ -6,8 +6,8 @@ const papers = [
 
 export default function RecentUpdates() {
   return (
-    <section className="font-anek items-center justify-center p-2 mt-4 mb-8">
-      <div className="flex items-center justify-center my-6 mb-12">
+    <section className="font-anek items-center justify-center p-2 mt-1 md:mt-4 mb-8">
+      <div className="flex items-center justify-center my-6 mb-6 md:mb-12">
         <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4"></div>
         <h2 className="text-3xl text-dark_brown dark:text-white text-center 2xl:text-5xl">Recently Update</h2>
         <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4"></div>

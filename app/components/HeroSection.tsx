@@ -98,15 +98,15 @@ export default function HeroSection() {
             <div className="relative flex font-anek mt-64 sm:mt-80 md:mt-4 lg:mt-4 xl:mt-20 font-normal text-lg flex-col items-center justify-center text-center">
 
                 <div className="absolute top-7 md:mt-64 lg:mt-72 xl:mt-96 w-full max-w-80 md:max-w-md z-10 xl:mr-16 2xl:mr-40 mx-0 md:mx-10">
-                    <div className="flex bg-white dark:bg-dark_grey border dark:border-white rounded-full shadow px-3 md:px-4 py-1 md:py-2 xl:w-[500px] 2xl:w-[600px]">
+                    <div className="flex bg-white dark:bg-dark_grey border dark:border-white rounded-full shadow px-1 md:px-4 py-1 md:py-2 xl:w-[500px] 2xl:w-[600px]">
                         <input
                             type="text"
                             value={query}
                             onChange={handleInputChange}
                             placeholder="Search"
-                            className="flex-grow w-10/12 bg-transparent focus:outline-none text-gray-700 dark:text-dark_grey_100 2xl:text-3xl"
+                            className="flex-grow w-10/12 pl-3 md:pl-0 bg-transparent focus:outline-none text-gray-700 dark:text-dark_grey_100 2xl:text-3xl"
                         />
-                        <button className="bg-dark_brown dark:bg-orange text-white px-3 md:px-6 py-1 md:py-2 rounded-full 2xl:text-3xl">
+                        <button className="bg-dark_brown dark:bg-orange text-white px-4 md:px-6 py-1 md:py-2 rounded-full 2xl:text-3xl">
                             Search
                         </button>
                     </div>

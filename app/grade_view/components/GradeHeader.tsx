@@ -82,7 +82,7 @@ export default function GradeHeader({ gradeId }: GradeHeaderProps) {
         <div className="relative flex font-anek mt-5 md:mt-0 font-normal text-lg flex-col items-center justify-center text-center">
 
           <div className="w-full z-10">
-            <div className="flex items-center justify-center bg-white dark:bg-dark_grey border dark:border-white rounded-lg border-dark_brown shadow-md px-1 py-1 xl:w-[500px] 2xl:w-[600px]">
+            <div className="flex items-center justify-center bg-white dark:bg-dark_grey border dark:border-white rounded-xl border-dark_brown shadow-md px-1 py-1 xl:w-[500px] 2xl:w-[600px]">
               
               <div className="inset-y-0 start-0 flex items-center ps-1 pointer-events-none mr-2">
                 <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
