@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import Header from '@/app/components/Header'
 import Footer from '@/app/components/Footer'
 import FilterContent from '@/app/subject_view/components/FilterSideBar'
-import PaperCard from '@/app/subject_view/components/PageCard'
+import PaperCard from '@/app/subject_view/components/PaperCard'
 import { dummyPapers } from '@/app/subject_view/data'
 import { Filter } from 'lucide-react'
 
@@ -20,6 +20,8 @@ export default function SubjectViewPage() {
   const filteredPapers = dummyPapers.filter(
     (paper) => paper.subjectId === subjectId && paper.gradeId === gradeId
   )
+
+  const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
 
   return (
     <main className="bg-white dark:bg-dark_grey min-h-screen text-black">
@@ -60,21 +62,45 @@ export default function SubjectViewPage() {
                 </div>
               </div>
 
-              {showFilters && (
-                <div className="w-full mt-2 bg-gray-100 dark:bg-dark_grey rounded-lg p-4">
+              {/* Mobile Slide-in Filter Sidebar */}
+              <div
+                className={`
+    fixed top-0 right-0 h-full w-4/5 max-w-sm z-40 bg-white dark:bg-dark_grey text-dark_brown dark:text-white
+    transform transition-transform duration-300 ease-in-out
+    ${showFilters ? 'translate-x-0' : 'translate-x-full'}
+    overflow-y-auto shadow-xl rounded-l-xl
+  `}
+              >
+                {/* Header with Close Button */}
+                <div className="flex justify-between items-center px-4 py-3 border-b border-gray-300 dark:border-gray-700">
+                  <h2 className="text-xl font-semibold">Filter</h2>
+                  <button onClick={() => setShowFilters(false)}>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Filter Content */}
+                <div className="p-4">
                   <FilterContent />
                 </div>
-              )}
+              </div>
+
             </div>
 
             <div className="mt-4">
-              {filteredPapers.length === 0 ? (
-                <p className="text-dark_brown dark:text-white">No papers found.</p>
-              ) : (
-                filteredPapers.map((paper) => (
-                  <PaperCard key={paper.id} {...paper} />
-                ))
-              )}
+              {filteredPapers.map((paper) => (
+  <PaperCard
+    key={paper.id}
+    {...paper}
+    isExpanded={expandedCardId === String(paper.id)}
+    onToggle={() =>
+      setExpandedCardId(expandedCardId === String(paper.id) ? null : String(paper.id))
+
+    }
+  />
+))}
             </div>
           </main>
         </div>
