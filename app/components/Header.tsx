@@ -62,6 +62,7 @@ const components = [
 export default function Header() {
     const { isDark, toggleTheme } = useTheme();
     const [menuOpen, setMenuOpen] = useState(false);
+    const [showExamsDropdown, setShowExamsDropdown] = useState(false);
 
     const logoSrc = isDark ? '/Logo_dark.png' : '/Logo.png';
 
@@ -70,14 +71,14 @@ export default function Header() {
             <header className="flex justify-between items-center p-4 shadow-2xl bg-white dark:bg-dark_grey text-black rounded-xl max-w-[1440px] mx-auto">
                 {/* Logo */}
                 <a href="/">
-                <Image
-                    src={logoSrc}
-                    alt="A descriptive alt text"
-                    width={100}
-                    height={100}
-                />
+                    <Image
+                        src={logoSrc}
+                        alt="A descriptive alt text"
+                        width={100}
+                        height={100}
+                    />
                 </a>
-                
+
                 {/* Desktop Nav */}
                 <nav className="hidden md:flex space-x-10 font-anek font-normal text-dark_brown dark:text-dark_white">
                     <a href="/" className="text-xl lg:text-2xl 2xl:text-4xl">Home</a>
@@ -141,27 +142,68 @@ export default function Header() {
                 </div>
             </header>
 
-            {/* Mobile Dropdown Menu */}
-            {menuOpen && (
-                <div className="absolute z-50 w-11/12 md:hidden bg-white dark:bg-dark_grey text-black dark:text-white p-4 space-y-4 shadow-md shadow-light_pink dark:shadow-dark_grey_100 rounded-b-xl max-w-[1440px]">
-                    <a href="#" className="block text-lg">Home</a>
-                    <a href="#" className="block text-lg">Markings</a>
-                    <a href="#" className="block text-lg">Books</a>
-                    <div>
-                        <div className="font-semibold mb-2">Exams</div>
-                        <ul className="space-y-2">
-                            {components.map((component) => (
-                                <li key={component.title}>
-                                    <a href={component.href} className="block text-sm">
-                                        {component.title}
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                    <a href="#" className="block text-lg">About Us</a>
+            {/* Mobile Fullscreen Dropdown Menu */}
+            <div
+                className={`
+                    fixed inset-0 z-50 bg-dark_white dark:bg-dark_grey text-dark_brown dark:text-white
+                    p-6 overflow-y-auto max-h-screen
+                    transform transition-transform duration-300 ease-in-out
+                    ${menuOpen ? 'translate-x-0' : 'translate-x-full'}
+                 `}
+            >
+                {/* Close button */}
+                <div className="flex justify-end mb-6">
+                    <button onClick={() => setMenuOpen(false)}>
+                        <svg className="w-8 h-8 text-dark_brown dark:text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
                 </div>
-            )}
+
+                {/* Navigation Items */}
+                <nav className="space-y-6 text-lg font-medium">
+                    <a href="/" className="block">Home</a>
+                    <a href="#" className="block">Markings</a>
+                    <a href="#" className="block">Books</a>
+
+                    {/* Exams Dropdown */}
+                    <div>
+                        <button
+                            className="flex items-center justify-between w-full"
+                            onClick={() => setShowExamsDropdown(!showExamsDropdown)}
+                        >
+                            <span>Exams</span>
+                            <svg
+                                className={`w-5 h-5 transform transition-transform ${showExamsDropdown ? 'rotate-180' : ''}`}
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                viewBox="0 0 24 24"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+
+                        {showExamsDropdown && (
+                            <ul className="pl-4 mt-3 space-y-2 text-sm text-dark_brown dark:text-white">
+                                {components.map((component) => (
+                                    <li key={component.title}>
+                                        <a href={component.href} className="block">
+                                            {component.title}
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+
+                    <a href="/about_us" className="block">About Us</a>
+                </nav>
+            </div>
+
+
+
+
         </>
     );
 }
