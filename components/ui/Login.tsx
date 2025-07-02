@@ -30,35 +30,22 @@ const Login = () => {
     }
 
     return (
-        <div className="flex items-center justify-center w-full">
-            <div className={`mx-auto w-full max-w-lg bg-gray-200/50 rounded-xl p-10`}>
-                <div className="mb-2 flex justify-center">
-                    <span className="inline-block w-full max-w-[60px]">
-                        <img src="/favicon.ico" alt="Logo" />
-                    </span>
-                </div>
-                <h2 className="text-center text-2xl font-bold leading-tight text-black">
-                    Sign in to your account
+        <div className="flex items-center justify-center w-full my-10 font-anek">
+            <div className={`mx-auto w-full max-w-lg bg-gray-200/50 dark:bg-dark_grey_500 rounded-xl p-10`}>
+                
+                <h2 className="text-center text-2xl md:text-3xl font-bold leading-tight text-dark_brown dark:text-white">
+                    Sign in to Paper Vault
                 </h2>
-                <p className="mt-2 text-center text-base text-gray-600">
-                    Don&apos;t have any account?&nbsp;
-                    <Link
-                        href="/signup"
-                        className="font-medium text-primary transition-all duration-200 hover:underline"
-                    >
-                        Sign Up
-                    </Link>
-                </p>
-                {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
+                {error && <p className="text-red-600 dark:text-red-300 mt-8 text-center">{error}</p>}
                 <form onSubmit={login} className="mt-8">
                     <div className="space-y-5">
                         <div>
-                            <label htmlFor="email" className="text-base font-medium text-gray-900">
+                            <label htmlFor="email" className="text-base font-medium text-dark_brown dark:text-white">
                                 Email address
                             </label>
                             <div className="mt-2">
                                 <input
-                                    className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
+                                    className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 text-dark_brown dark:text-white focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                                     type="email"
                                     value={formData.email}
                                     onChange={(e) =>
@@ -72,13 +59,13 @@ const Login = () => {
                         </div>
                         <div>
                             <div className="flex items-center justify-between">
-                                <label htmlFor="password" className="text-base font-medium text-gray-900">
+                                <label htmlFor="password" className="text-base font-medium text-dark_brown dark:text-white">
                                     Password
                                 </label>
                             </div>
                             <div className="mt-2">
                                 <input
-                                    className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
+                                    className="flex h-10 w-full rounded-md border border-gray-300 text-dark_brown dark:text-white bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                                     type="password"
                                     placeholder="Password"
                                     value={formData.password}
@@ -96,7 +83,7 @@ const Login = () => {
                         <div>
                             <button
                                 type="submit"
-                                className="inline-flex w-full items-center justify-center rounded-md bg-primary px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-primary/80"
+                                className="inline-flex w-full items-center justify-center rounded-md px-3.5 py-2.5 font-semibold text-xl leading-7 text-white dark:text-dark_grey hover:bg-red-950 dark:hover:bg-gray-400 bg-dark_brown dark:bg-dark_grey_100"
                             >
                                 Sign in
                             </button>
