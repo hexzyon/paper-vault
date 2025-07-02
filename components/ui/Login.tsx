@@ -1,11 +1,14 @@
 "use client"
 import appwriteService from "@/appwrite/config";
+import { useTheme } from "@/context/theme-context";
 import useAuth from "@/context/useAuth";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
 
 const Login = () => {
+    const { isDark, toggleTheme } = useTheme();
     const router = useRouter();
     const { setAuthStatus } = useAuth();
     const [formData, setFormData] = useState({
@@ -21,7 +24,7 @@ const Login = () => {
             if (session) {
                 setAuthStatus(true)
                 router.push("/account")
-            }else{
+            } else {
                 setError("Invalid Username or Password");
             }
         } catch (error: any) {
@@ -29,10 +32,22 @@ const Login = () => {
         }
     }
 
+    const logoSrc = isDark ? '/Logo_dark.png' : '/Logo.png';
+
     return (
         <div className="flex items-center justify-center w-full my-10 font-anek">
             <div className={`mx-auto w-full max-w-lg bg-gray-200/50 dark:bg-dark_grey_500 rounded-xl p-10`}>
-                
+
+                <div className="w-full flex justify-center items-center">
+                    <Image
+                        src={logoSrc}
+                        alt="A descriptive alt text"
+                        width={100}
+                        height={100}
+                        className="mb-6"
+                    />
+                </div>
+
                 <h2 className="text-center text-2xl md:text-3xl font-bold leading-tight text-dark_brown dark:text-white">
                     Sign in to Paper Vault
                 </h2>
