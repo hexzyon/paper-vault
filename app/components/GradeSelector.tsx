@@ -22,14 +22,14 @@ const GradeSelector = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   return (
-    <div className="font-anek mt-8">
-      <div className="flex items-center justify-center mt-6 mb-12">
+    <div className="font-anek mt-4 md:mt-8">
+      <div className="flex items-center justify-center md:mt-6 mb-6 md:mb-12">
         <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4" />
         <h2 className="text-3xl text-dark_brown dark:text-white text-center 2xl:text-5xl">Select Grade</h2>
         <div className="w-1/12 border-t-2 border-dark_brown dark:border-white mx-4" />
       </div>
 
-      <div className="relative w-auto md:px-10 mx-5 max-w-screen-2xl h-24 sm:h-32 md:h-28 lg:h-28 xl:h-40 2xl:h-48">
+      <div className="relative w-auto md:px-10 md:mx-5 max-w-screen-2xl h-24 sm:h-32 md:h-28 lg:h-28 xl:h-40 2xl:h-48">
         <Swiper
 
           loop={true}
