@@ -16,8 +16,9 @@ const data = [
 
 export default function UserActivityChart() {
   return (
-    <div className="bg-white p-4 rounded-xl shadow-sm border flex-1">
-      <h2 className="font-semibold text-gray-700 mb-1">User Activity</h2>
+    <div className="bg-white dark:bg-dark_grey_500 p-4 rounded-xl 
+    shadow-sm shadow-light_pink dark:shadow-dark_grey_100 border border-light_pink dark:border-dark_grey_500 flex-1">
+      <h2 className="text-2xl 2xl:text-4xl text-gray-800 dark:text-white mb-1">User Activity</h2>
       <p className="text-sm text-gray-500 mb-2">All user downloads over the last 30 days.</p>
       <div className="flex items-center gap-2 mb-3">
         <span className="text-2xl font-bold text-gray-700">78</span>
