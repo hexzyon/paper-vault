@@ -2,6 +2,7 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useTheme } from "@/context/theme-context";
+import { CircleUserRound } from "lucide-react";
 
 export default function UserHeader() {
     const { isDark, toggleTheme } = useTheme();
@@ -26,7 +27,7 @@ export default function UserHeader() {
                 {/* Desktop Nav */}
                 <nav className="hidden md:flex space-x-8 font-anek font-normal text-dark_brown dark:text-dark_white">
                     <a href="/user/account" className="text-xl lg:text-2xl 2xl:text-4xl">Dashboard</a>
-                    <a href="#" className="text-xl lg:text-2xl 2xl:text-4xl">Papers</a>
+                    <a href="/user/past_papers" className="text-xl lg:text-2xl 2xl:text-4xl">Papers</a>
                     <a href="#" className="text-xl lg:text-2xl 2xl:text-4xl">Subjects</a>
                     <a href="#" className="text-xl lg:text-2xl 2xl:text-4xl">Grades</a>
                     <a href="#" className="text-xl lg:text-2xl 2xl:text-4xl">Books</a>
@@ -59,13 +60,7 @@ export default function UserHeader() {
                         className="flex"
                         onClick={() => setMenuOpen(!menuOpen)}
                     >
-                        <Image
-                        src="/profileImg.png"
-                        alt="A descriptive alt text"
-                        className="w-9 h-9"
-                        width={100}
-                        height={100}
-                    />
+                        <CircleUserRound className="w-9 h-9 text-dark_brown dark:text-white"/>
                     </button>
 
                     <button
