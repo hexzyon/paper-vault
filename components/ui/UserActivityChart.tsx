@@ -18,8 +18,16 @@ const data = [
 export default function UserActivityChart() {
   const { isDark, toggleTheme } = useTheme();
 
-  const strockColor = isDark ? '#ADB5BD' : '#FBC6C1';
+  const strockColor = isDark ? '#ebeced' : '#ff4736';
   const fillColor = isDark ? '#ADB5BD' : '#FBC6C1';
+
+  const axisColor = isDark ? "#ced4da" : "#9ca3af"; // Axis line & ticks
+  const tickTextColor = isDark ? "#dee2e6" : "#374151"; // Tick text color
+
+  const tooltipBgColor = isDark ? "#343a40" : "#f9fafb"; // Tooltip background
+  const tooltipBorderColor = isDark ? "#495057" : "#d1d5db"; // Tooltip border
+  const tooltipTextColor = isDark ? "#f8f9fa" : "#111827"; // Tooltip text
+  const tooltipLabelColor = isDark ? "#adb5bd" : "#6b7280"; // Tooltip label
 
   return (
     <div className="bg-white dark:bg-dark_grey_500 p-4 rounded-xl 
@@ -33,11 +41,31 @@ export default function UserActivityChart() {
       <div className="h-40">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data}>
-            <XAxis dataKey="day" />
-            <Tooltip />
-            <Area type="monotone" dataKey="downloads" stroke={strockColor} fill={fillColor} />
+            <XAxis
+              dataKey="day"
+              stroke={axisColor}
+              tick={{ fill: tickTextColor, fontSize: 12 }}
+              axisLine={{ stroke: axisColor }}
+              tickLine={{ stroke: axisColor }}
+            />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: tooltipBgColor,
+                borderColor: tooltipBorderColor,
+                borderRadius: 8,
+              }}
+              itemStyle={{ color: tooltipTextColor }}
+              labelStyle={{ color: tooltipLabelColor }}
+            />
+            <Area
+              type="monotone"
+              dataKey="downloads"
+              stroke={strockColor}
+              fill={fillColor}
+            />
           </AreaChart>
         </ResponsiveContainer>
+
       </div>
     </div>
   );
