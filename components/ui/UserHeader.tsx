@@ -28,7 +28,7 @@ export default function UserHeader() {
                 <nav className="hidden md:flex space-x-8 font-anek font-normal text-dark_brown dark:text-dark_white">
                     <a href="/user/account" className="text-xl lg:text-2xl 2xl:text-4xl">Dashboard</a>
                     <a href="/user/past_papers" className="text-xl lg:text-2xl 2xl:text-4xl">Papers</a>
-                    <a href="#" className="text-xl lg:text-2xl 2xl:text-4xl">Subjects</a>
+                    <a href="/user/subject_management" className="text-xl lg:text-2xl 2xl:text-4xl">Subjects</a>
                     <a href="#" className="text-xl lg:text-2xl 2xl:text-4xl">Grades</a>
                     <a href="#" className="text-xl lg:text-2xl 2xl:text-4xl">Books</a>
                     
