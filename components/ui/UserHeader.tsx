@@ -29,8 +29,8 @@ export default function UserHeader() {
                     <a href="/user/account" className="text-xl lg:text-2xl 2xl:text-4xl">Dashboard</a>
                     <a href="/user/past_papers" className="text-xl lg:text-2xl 2xl:text-4xl">Papers</a>
                     <a href="/user/subject_management" className="text-xl lg:text-2xl 2xl:text-4xl">Subjects</a>
-                    <a href="#" className="text-xl lg:text-2xl 2xl:text-4xl">Grades</a>
-                    <a href="#" className="text-xl lg:text-2xl 2xl:text-4xl">Books</a>
+                    <a href="/user/grade_management" className="text-xl lg:text-2xl 2xl:text-4xl">Grades</a>
+                    <a href="/user/books_management" className="text-xl lg:text-2xl 2xl:text-4xl">Books</a>
                     
                 </nav>
 
