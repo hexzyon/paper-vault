@@ -75,15 +75,16 @@ export default function PaperTable() {
   const totalPages = Math.max(1, Math.ceil(filteredData.length / itemsPerPage));
 
   return (
-    <div className="bg-white dark:bg-dark_grey_500 p-4 rounded-xl shadow border">
-      <div className="flex gap-2 mb-4">
+    <div className="bg-white dark:bg-dark_grey_500 p-4 rounded-xl 
+    shadow-sm shadow-light_pink dark:shadow-dark_grey_100 border border-light_pink dark:border-dark_grey_100">
+      <div className="flex flex-col md:flex-row gap-2 mb-4">
         <input
           value={searchTerm}
           onChange={(e) => {
             setSearchTerm(e.target.value);
             setCurrentPage(1);
           }}
-          className="flex-1 border rounded-md px-3 py-2 bg-white text-dark_brown dark:text-dark_grey text-lg"
+          className="border border-gray-500 md:flex-1 rounded-md px-3 py-2 bg-white text-dark_brown dark:text-dark_grey text-lg w-full md:w-auto"
           placeholder="Search here..."
         />
         <select
@@ -92,7 +93,7 @@ export default function PaperTable() {
             setSelectedSubject(e.target.value);
             setCurrentPage(1);
           }}
-          className="border rounded-md px-2 py-2 text-base"
+          className="border rounded-md px-2 py-2 text-base w-full md:w-auto"
         >
           <option value="">All Subjects</option>
           <option value="Maths">Maths</option>
@@ -105,7 +106,7 @@ export default function PaperTable() {
             setSelectedGrade(e.target.value);
             setCurrentPage(1);
           }}
-          className="border rounded-md px-2 py-2 text-base"
+          className="border rounded-md px-2 py-2 text-base w-full md:w-auto"
         >
           <option value="">All Grades</option>
           <option value="Grade 5 Scholarship">Grade 5 Scholarship</option>
@@ -118,7 +119,7 @@ export default function PaperTable() {
             setSelectedStatus(e.target.value);
             setCurrentPage(1);
           }}
-          className="border rounded-md px-2 py-2 text-base"
+          className="border rounded-md px-2 py-2 text-base w-full md:w-auto"
         >
           <option value="">Status</option>
           <option value="Published">Published</option>
@@ -126,42 +127,43 @@ export default function PaperTable() {
         </select>
       </div>
 
+
       <div className="overflow-x-auto">
-        <table className="w-full table-auto border-separate border-spacing-y-3 text-left text-gray-700 dark:text-gray-300">
-          <thead className="my-5">
-            <tr className="bg-gray-200 dark:bg-gray-700 text-lg">
+        <table className="w-full table-auto border-separate border-spacing-y-3 text-left text-gray-700 dark:text-gray-300
+        shadow-sm shadow-light_pink dark:shadow-dark_grey_100 border border-light_pink dark:border-dark_grey_100 p-2 rounded-lg">
+          <thead>
+            <tr className="bg-gray-200 dark:bg-gray-700 text-md lg:text-lg">
               <th>Title</th>
               <th>Subject</th>
               <th>Grade/Level</th>
-              <th>Language</th>
-              <th>Type</th>
-              <th>Type 2</th>
-              <th>Year</th>
-              <th>Term</th>
-              <th>Date</th>
+              <th className="hidden lg:table-cell">Language</th>
+              <th className="hidden lg:table-cell">Type</th>
+              <th className="hidden lg:table-cell">Type 2</th>
+              <th className="hidden lg:table-cell">Year</th>
+              <th className="hidden lg:table-cell">Term</th>
+              <th className="hidden lg:table-cell">Date</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {currentItems.map((item, i) => (
-              <tr key={i} className="border-b">
+              <tr key={i} className="border-b text-xs sm:text-sm">
                 <td>{item.title}</td>
                 <td>{item.subject}</td>
                 <td>{item.grade}</td>
-                <td>{item.language}</td>
-                <td>{item.type}</td>
-                <td>{item.type2}</td>
-                <td>{item.year}</td>
-                <td>{item.term}</td>
-                <td>{item.date}</td>
+                <td className="hidden lg:table-cell">{item.language}</td>
+                <td className="hidden lg:table-cell">{item.type}</td>
+                <td className="hidden lg:table-cell">{item.type2}</td>
+                <td className="hidden lg:table-cell">{item.year}</td>
+                <td className="hidden lg:table-cell">{item.term}</td>
+                <td className="hidden lg:table-cell">{item.date}</td>
                 <td>
                   <span
-                    className={`${
-                      item.status === "Published"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-yellow-100 text-yellow-800"
-                    } px-2 py-1 rounded text-xs`}
+                    className={`${item.status === "Published"
+                      ? "bg-green-100 text-green-800"
+                      : "bg-yellow-100 text-yellow-800"
+                      } px-2 py-0 rounded text-xs`}
                   >
                     {item.status}
                   </span>
@@ -173,6 +175,7 @@ export default function PaperTable() {
               </tr>
             ))}
           </tbody>
+
         </table>
       </div>
 

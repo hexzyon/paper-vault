@@ -13,7 +13,7 @@ export default function Filters({
         value={searchTerm}
         onChange={(e) => onSearch(e.target.value)}
         placeholder="Search here..."
-        className="col-span-12 md:col-span-2 border border-dark_brown dark:border-dark_grey_100 rounded-md px-3 py-1 text-lg"
+        className="col-span-12 md:col-span-3 border border-gray-500 dark:border-dark_grey_100 rounded-md px-3 py-1 text-lg"
       />
       <select
         value={subjectFilter}

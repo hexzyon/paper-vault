@@ -95,10 +95,10 @@ export default function UserHeader() {
                 {/* Navigation Items */}
                 <nav className="space-y-6 text-lg font-medium">
                     <a href="/user/account" className="block">Dashboard</a>
-                    <a href="#" className="block">Papers</a>
-                    <a href="#" className="block">Subjects</a>
-                    <a href="#" className="block">Grades</a>
-                    <a href="#" className="block">Books</a>
+                    <a href="/user/past_papers" className="block">Papers</a>
+                    <a href="/user/subject_management" className="block">Subjects</a>
+                    <a href="/user/grade_management" className="block">Grades</a>
+                    <a href="/user/books_management" className="block">Books</a>
 
                 </nav>
             </div>

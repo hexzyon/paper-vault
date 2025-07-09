@@ -40,34 +40,35 @@ export default function GradeManagementPage() {
 
   return (
     <main className="bg-white dark:bg-dark_grey min-h-screen text-black font-anek overflow-hidden">
-              <div className="px-4 sm:px-6 lg:px-12 pt-4 max-w-[1440px] w-full mx-auto mb-6">
-                <UserHeader />
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 mt-6">
-        <h1 className="text-2xl lg:text-3xl 2xl:text-4xl text-dark_brown dark:text-white">
-          Grade & Levels Management
-        </h1>
-        <button
-          onClick={() => setShowModal(true)}
-          className="inline-flex items-center bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-md text-base"
-        >
-          <Plus className="mr-2" /> Add New Grade
-        </button>
+      <div className="px-4 sm:px-6 lg:px-12 pt-4 max-w-[1440px] w-full mx-auto mb-6">
+        <UserHeader />
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 mt-6">
+          <h1 className="text-2xl lg:text-3xl 2xl:text-4xl text-center md:text-start text-dark_brown dark:text-white">
+            Grade & Levels Management
+          </h1>
+          <button
+            onClick={() => setShowModal(true)}
+            className="inline-flex items-center justify-center w-fit bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-md text-base mx-auto md:mx-0"
+          >
+            <Plus className="mr-2" /> Add New Grade
+          </button>
+        </div>
+
+
+        {/* Grade Groups */}
+        {gradesData.map((group) => (
+          <GradeGroup
+            key={group.category}
+            title={group.category}
+            description={group.description}
+            grades={group.grades}
+          />
+        ))}
+
+        {/* Modal */}
+        {showModal && <AddGradeModal onClose={() => setShowModal(false)} />}
       </div>
-
-      {/* Grade Groups */}
-      {gradesData.map((group) => (
-        <GradeGroup
-          key={group.category}
-          title={group.category}
-          description={group.description}
-          grades={group.grades}
-        />
-      ))}
-
-      {/* Modal */}
-      {showModal && <AddGradeModal onClose={() => setShowModal(false)} />}
-    </div>
     </main>
   );
 }

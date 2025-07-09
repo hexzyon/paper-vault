@@ -41,12 +41,12 @@ export default function SubjectManagementPage() {
             <UserHeader />
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 mt-7">
-        <h1 className="text-2xl lg:text-3xl 2xl:text-4xl text-dark_brown dark:text-white">
+        <h1 className="text-2xl lg:text-3xl 2xl:text-4xl text-center md:text-start text-dark_brown dark:text-white">
           Subjects Management
         </h1>
         <button
           onClick={() => setShowModal(true)}
-          className="inline-flex items-center bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-md text-base"
+          className="inline-flex items-center justify-center w-fit bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-md text-base mx-auto md:mx-0"
         >
           <Plus className="mr-2" /> Add New Subject
         </button>
