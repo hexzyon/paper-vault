@@ -1,5 +1,5 @@
 import conf from "@/conf/config";
-import { Client, Account, ID } from "appwrite";
+import { Client, Account, Databases, ID } from "appwrite";
 
 type LoginUserAccount = {
   email: string;
@@ -8,12 +8,13 @@ type LoginUserAccount = {
 
 const appwriteClient = new Client();
 
+const databases = new Databases(appwriteClient);
+
 appwriteClient.setEndpoint(conf.appwriteUrl).setProject(conf.appwriteProjectId);
 
 export const account = new Account(appwriteClient);
 
 export class AppwriteService {
-  
   async login({ email, password }: LoginUserAccount) {
     try {
       return await account.createEmailPasswordSession(email, password);
@@ -74,6 +75,81 @@ export class AppwriteService {
     } catch (error: any) {
       throw error;
     }
+  }
+
+  //database
+  async createPaper(data: any) {
+    try {
+      return await databases.createDocument(
+        conf.appwriteDatabaseId,
+        conf.appwritePapersCollectionId,
+        ID.unique(),
+        data
+      );
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  async getPapers() {
+    try {
+      return await databases.listDocuments(
+        conf.appwriteDatabaseId,
+        conf.appwritePapersCollectionId
+      );
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  async getSubjectGrade(subjectsHasGrades: string) {
+    try {
+      const subjectGrade = await databases.getDocument(
+        conf.appwriteDatabaseId,
+        conf.appwriteSubjectGradeCollectionId,
+        subjectsHasGrades
+      );
+
+      const subject = await databases.getDocument(
+        conf.appwriteDatabaseId,
+        conf.appwriteSubjectsCollectionId,
+        subjectGrade.subjects
+      );
+
+      const grade = await databases.getDocument(
+        conf.appwriteDatabaseId,
+        conf.appwriteGradesCollectionId,
+        subjectGrade.grades
+      );
+
+      return {
+        subject: subject.subject_name,
+        grade: grade.grade_name,
+      };
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  async getSubjects() {
+    return databases.listDocuments(
+      conf.appwriteDatabaseId,
+      conf.appwriteSubjectsCollectionId
+    );
+  }
+
+  async getGrades() {
+    return databases.listDocuments(
+      conf.appwriteDatabaseId,
+      conf.appwriteGradesCollectionId
+    );
+  }
+
+  async getSubjectGradePairs() {
+    return databases.listDocuments(
+      conf.appwriteDatabaseId,
+      conf.appwriteSubjectGradeCollectionId
+    );
   }
 }
 

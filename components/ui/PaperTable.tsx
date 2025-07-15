@@ -1,50 +1,7 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Pencil, Trash2 } from "lucide-react";
-
-const paperData = [
-  {
-    title: "Mathematics Grade 5 Paper",
-    subject: "Maths",
-    grade: "Grade 5 Scholarship",
-    language: "English",
-    type: "Divisional",
-    type2: "Kalutara",
-    year: "2025",
-    term: "First",
-    date: "12.15.2025",
-    status: "Published",
-  },
-  {
-    title: "Physics Term Paper",
-    subject: "Physics",
-    grade: "Grade 12",
-    language: "English",
-    type: "National",
-    type2: "Gampaha",
-    year: "2025",
-    term: "Second",
-    date: "12.16.2025",
-    status: "Draft",
-  },
-  {
-    title: "Biology Revision Paper",
-    subject: "Biology",
-    grade: "Grade 11",
-    language: "English",
-    type: "Zonal",
-    type2: "Kandy",
-    year: "2024",
-    term: "Third",
-    date: "11.10.2024",
-    status: "Published",
-  },
-  // Add more records for demo
-];
-
-while (paperData.length < 12) {
-  paperData.push({ ...paperData[paperData.length % 3] });
-}
+import appwriteService from "@/appwrite/config";
 
 export default function PaperTable() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -55,11 +12,55 @@ export default function PaperTable() {
   const [selectedGrade, setSelectedGrade] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
 
+  const [papers, setPapers] = useState<any[]>([]);
+
+  ///////////////////////////
+  useEffect(() => {
+    const fetchPapers = async () => {
+      try {
+        const response = await appwriteService.getPapers();
+
+        const enhancedPapers = await Promise.all(
+          response.documents.map(async (paper: any) => {
+            try {
+              console.log(paper);
+              const { subject, grade } = await appwriteService.getSubjectGrade(paper.subjectsHasGrades);
+
+              return {
+                ...paper,
+                subject,
+                grade,
+                status: paper.status === true ? "Published" : "Draft", 
+              };
+            } catch (err) {
+              console.error("Failed to fetch subject/grade:", err);
+              return {
+                ...paper,
+                subject: "N/A",
+                grade: "N/A",
+                status: paper.status === true ? "Published" : "Draft",
+              };
+            }
+          })
+        );
+
+
+        setPapers(enhancedPapers);
+      } catch (error) {
+        console.error("Failed to load papers:", error);
+      }
+    };
+
+    fetchPapers();
+  }, []);
+  /////////////////////////
+
   const filteredData = useMemo(() => {
-    return paperData.filter((item) => {
+    return papers.filter((item) => {
       const matchesSearch =
         item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.subject.toLowerCase().includes(searchTerm.toLowerCase());
+
       const matchesSubject =
         !selectedSubject || item.subject === selectedSubject;
       const matchesGrade = !selectedGrade || item.grade === selectedGrade;
@@ -67,7 +68,8 @@ export default function PaperTable() {
 
       return matchesSearch && matchesSubject && matchesGrade && matchesStatus;
     });
-  }, [searchTerm, selectedSubject, selectedGrade, selectedStatus]);
+  }, [papers, searchTerm, selectedSubject, selectedGrade, selectedStatus]);
+
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
