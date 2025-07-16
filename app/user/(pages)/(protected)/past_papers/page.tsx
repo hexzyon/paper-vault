@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PaperTable from "@/components/ui/PaperTable";
 import AddNewPaperModal from "@/components/ui/AddNewPaperModal";
 import { PlusCircle } from "lucide-react";

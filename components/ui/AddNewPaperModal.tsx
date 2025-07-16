@@ -1,6 +1,85 @@
 import { X, Save, CheckCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import appwriteService from "@/appwrite/config";
 
 export default function AddNewPaperModal({ onClose }: { onClose: () => void }) {
+  const [title, setTitle] = useState("");
+  const [url, setUrl] = useState("");
+  const [subjectId, setSubjectId] = useState("");
+  const [gradeId, setGradeId] = useState("");
+  const [language, setLanguage] = useState("");
+  const [year, setYear] = useState("");
+  const [type, setType] = useState("");
+  const [type2, setType2] = useState("");
+  const [term, setTerm] = useState("");
+
+  const [subjects, setSubjects] = useState<any[]>([]);
+  const [grades, setGrades] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const subjectsRes = await appwriteService.getSubjects();
+        const gradesRes = await appwriteService.getGrades();
+
+        setSubjects(subjectsRes.documents);
+        setGrades(gradesRes.documents);
+      } catch (err) {
+        console.error("Failed to load dropdown data", err);
+      }
+    };
+
+    loadData();
+  }, []);
+
+
+  const handleSave = async (isPublish: boolean) => {
+    if (!title || !url || !subjectId || !gradeId || !language || !year || !term) {
+      alert("Please fill all required fields.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const subjectGradePairs = await appwriteService.getSubjectGradePairs();
+      console.log(subjectGradePairs);
+      const existingPair = subjectGradePairs.documents.find(
+        (pair: any) =>
+          pair.subjects.$id === subjectId && pair.grades.$id === gradeId
+      );
+
+      if (!existingPair) {
+        alert("Selected subject-grade pair does not exist.");
+        setLoading(false);
+        return;
+      }
+
+      const paperData = {
+        title,
+        paper_url: url,
+        subjectsHasGrades: existingPair.$id,
+        language,
+        year: parseInt(year),
+        type,
+        type2,
+        term,
+        status: isPublish, // true for publish, false for draft
+        date: new Date().toISOString(), // Optional: use a date picker
+      };
+
+      await appwriteService.createPaper(paperData);
+      alert(isPublish ? "Paper Published" : "Saved as Draft");
+      onClose(); // close modal
+    } catch (error) {
+      console.error("Error creating paper:", error);
+      alert("Failed to create paper.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-white dark:bg-dark_grey_500 p-6 rounded-xl shadow-lg w-full max-w-2xl relative max-h-[90vh] overflow-y-auto">
@@ -22,6 +101,8 @@ export default function AddNewPaperModal({ onClose }: { onClose: () => void }) {
             <input
               className="border rounded-md px-3 py-2 w-full"
               placeholder="Enter Paper Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
             />
           </div>
 
@@ -32,6 +113,8 @@ export default function AddNewPaperModal({ onClose }: { onClose: () => void }) {
             <input
               className="border rounded-md px-3 py-2 w-full"
               placeholder="https://example.com"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
             />
           </div>
 
@@ -39,8 +122,12 @@ export default function AddNewPaperModal({ onClose }: { onClose: () => void }) {
             <label className="block text-sm md:text-lg mb-1 text-gray-700 dark:text-gray-300">
               Grade/Level
             </label>
-            <select className="border rounded-md px-3 py-2 w-full">
+            <select className="border rounded-md px-3 py-2 w-full" value={gradeId}
+              onChange={(e) => setGradeId(e.target.value)}>
               <option>Select grade/level</option>
+              {grades.map((g) => (
+                <option key={g.$id} value={g.$id}>{g.grade_name}</option>
+              ))}
             </select>
           </div>
 
@@ -48,8 +135,12 @@ export default function AddNewPaperModal({ onClose }: { onClose: () => void }) {
             <label className="block text-sm md:text-lg mb-1 text-gray-700 dark:text-gray-300">
               Subject
             </label>
-            <select className="border rounded-md px-3 py-2 w-full">
+            <select className="border rounded-md px-3 py-2 w-full" value={subjectId}
+              onChange={(e) => setSubjectId(e.target.value)}>
               <option>Select Subject</option>
+              {subjects.map((s) => (
+                <option key={s.$id} value={s.$id}>{s.subject_name}</option>
+              ))}
             </select>
           </div>
 
@@ -57,8 +148,12 @@ export default function AddNewPaperModal({ onClose }: { onClose: () => void }) {
             <label className="block text-sm md:text-lg mb-1 text-gray-700 dark:text-gray-300">
               Language
             </label>
-            <select className="border rounded-md px-3 py-2 w-full">
-              <option>Select language</option>
+            <select className="border rounded-md px-3 py-2 w-full" value={language}
+              onChange={(e) => setLanguage(e.target.value)}>
+              <option value={""}>Select language</option>
+              <option value={"Sinhala"}>Sinhala</option>
+              <option value={"English"}>English</option>
+              <option value={"Tamil"}>Tamil</option>
             </select>
           </div>
 
@@ -66,18 +161,28 @@ export default function AddNewPaperModal({ onClose }: { onClose: () => void }) {
             <label className="block text-sm md:text-lg mb-1 text-gray-700 dark:text-gray-300">
               Year
             </label>
-            <select className="border rounded-md px-3 py-2 w-full">
-              <option>Select Year</option>
-            </select>
+            <input
+              type="number"
+              className="border rounded-md px-3 py-2 w-full"
+              placeholder="Enter Year (1980-2100)"
+              value={year}
+              onChange={(e) => setYear(e.target.value)}
+              min="1980"
+              max="2100"
+            />
           </div>
 
           <div>
             <label className="block text-sm md:text-lg mb-1 text-gray-700 dark:text-gray-300">
               Type
             </label>
-            <select className="border rounded-md px-3 py-2 w-full">
-              <option>Select Type</option>
-            </select>
+            <input
+              type="text"
+              className="border rounded-md px-3 py-2 w-full"
+              placeholder="Enter Type"
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+            />
           </div>
 
           <div>
@@ -85,8 +190,11 @@ export default function AddNewPaperModal({ onClose }: { onClose: () => void }) {
               Type 2
             </label>
             <input
+              type="text"
               className="border rounded-md px-3 py-2 w-full"
               placeholder="Enter Type"
+              value={type2}
+              onChange={(e) => setType2(e.target.value)}
             />
           </div>
 
@@ -94,8 +202,12 @@ export default function AddNewPaperModal({ onClose }: { onClose: () => void }) {
             <label className="block text-sm md:text-lg mb-1 text-gray-700 dark:text-gray-300">
               Term
             </label>
-            <select className="border rounded-md px-3 py-2 w-full">
+            <select className="border rounded-md px-3 py-2 w-full" value={term}
+              onChange={(e) => setTerm(e.target.value)}>
               <option>Select Term</option>
+              <option>First</option>
+              <option>Second</option>
+              <option>Third</option>
             </select>
           </div>
         </form>
@@ -107,10 +219,19 @@ export default function AddNewPaperModal({ onClose }: { onClose: () => void }) {
           >
             <X className="w-5 h-5" /> Cancel
           </button>
-          <button className="flex items-center gap-1 bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600">
+          <button
+            className="flex items-center gap-1 bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600"
+            onClick={() => handleSave(false)}
+            disabled={loading}
+          >
             <Save className="w-5 h-5" /> Save as Draft
           </button>
-          <button className="flex items-center gap-1 bg-rose-500 text-white px-4 py-2 rounded-md hover:bg-rose-600">
+
+          <button
+            className="flex items-center gap-1 bg-rose-500 text-white px-4 py-2 rounded-md hover:bg-rose-600"
+            onClick={() => handleSave(true)}
+            disabled={loading}
+          >
             <CheckCircle className="w-5 h-5" /> Publish
           </button>
         </div>
