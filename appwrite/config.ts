@@ -1,5 +1,5 @@
 import conf from "@/conf/config";
-import { Client, Account, Databases, ID } from "appwrite";
+import { Client, Account, Databases, ID, Query } from "appwrite";
 
 type LoginUserAccount = {
   email: string;
@@ -91,16 +91,20 @@ export class AppwriteService {
     }
   }
 
-  async getPapers() {
+async getPapers() {
     try {
       return await databases.listDocuments(
         conf.appwriteDatabaseId,
-        conf.appwritePapersCollectionId
+        conf.appwritePapersCollectionId,
+        [
+        Query.isNotNull('subjectsHasGrades') // Only get papers with valid relations
+      ]
       );
     } catch (error: any) {
       throw error;
     }
   }
+
 
   async getSubjectGrade(subjectsHasGrades: string) {
     try {

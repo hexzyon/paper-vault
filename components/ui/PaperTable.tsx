@@ -13,39 +13,32 @@ export default function PaperTable() {
   const [selectedStatus, setSelectedStatus] = useState("");
 
   const [papers, setPapers] = useState<any[]>([]);
+  const [subjects, setSubjects] = useState<any[]>([]);
+  const [grades, setGrades] = useState<any[]>([]);
 
-  ///////////////////////////
+  // ✅ Fetch papers with relations included (subject + grade)
   useEffect(() => {
     const fetchPapers = async () => {
       try {
         const response = await appwriteService.getPapers();
 
-        const enhancedPapers = await Promise.all(
-          response.documents.map(async (paper: any) => {
-            try {
-              console.log(paper);
-              const { subject, grade } = await appwriteService.getSubjectGrade(paper.subjectsHasGrades);
-
-              return {
-                ...paper,
-                subject,
-                grade,
-                status: paper.status === true ? "Published" : "Draft", 
-              };
-            } catch (err) {
-              console.error("Failed to fetch subject/grade:", err);
-              return {
-                ...paper,
-                subject: "N/A",
-                grade: "N/A",
-                status: paper.status === true ? "Published" : "Draft",
-              };
-            }
-          })
-        );
-
+        const enhancedPapers = response.documents.map((paper: any) => ({
+          ...paper,
+          subject: paper.subjectsHasGrades?.subjects?.subject_name ?? "N/A",
+          grade: paper.subjectsHasGrades?.grades?.grade_name ?? "N/A",
+          status: paper.status === true ? "Published" : "Draft"
+        }));
 
         setPapers(enhancedPapers);
+
+        // Get subjects
+        const subjectsResponse = await appwriteService.getSubjects();
+        setSubjects(subjectsResponse.documents);
+
+        // Get grades
+        const gradesResponse = await appwriteService.getGrades();
+        setGrades(gradesResponse.documents);
+
       } catch (error) {
         console.error("Failed to load papers:", error);
       }
@@ -53,7 +46,6 @@ export default function PaperTable() {
 
     fetchPapers();
   }, []);
-  /////////////////////////
 
   const filteredData = useMemo(() => {
     return papers.filter((item) => {
@@ -61,8 +53,7 @@ export default function PaperTable() {
         item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.subject.toLowerCase().includes(searchTerm.toLowerCase());
 
-      const matchesSubject =
-        !selectedSubject || item.subject === selectedSubject;
+      const matchesSubject = !selectedSubject || item.subject === selectedSubject;
       const matchesGrade = !selectedGrade || item.grade === selectedGrade;
       const matchesStatus = !selectedStatus || item.status === selectedStatus;
 
@@ -70,15 +61,13 @@ export default function PaperTable() {
     });
   }, [papers, searchTerm, selectedSubject, selectedGrade, selectedStatus]);
 
-
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.max(1, Math.ceil(filteredData.length / itemsPerPage));
 
   return (
-    <div className="bg-white dark:bg-dark_grey_500 p-4 rounded-xl 
-    shadow-sm shadow-light_pink dark:shadow-dark_grey_100 border border-light_pink dark:border-dark_grey_100">
+    <div className="bg-white dark:bg-dark_grey_500 p-4 rounded-xl shadow-sm shadow-light_pink dark:shadow-dark_grey_100 border border-light_pink dark:border-dark_grey_100">
       <div className="flex flex-col md:flex-row gap-2 mb-4">
         <input
           value={searchTerm}
@@ -98,9 +87,11 @@ export default function PaperTable() {
           className="border rounded-md px-2 py-2 text-base w-full md:w-auto"
         >
           <option value="">All Subjects</option>
-          <option value="Maths">Maths</option>
-          <option value="Physics">Physics</option>
-          <option value="Biology">Biology</option>
+          {subjects.map((subj) => (
+            <option key={subj.$id} value={subj.subject_name}>
+              {subj.subject_name}
+            </option>
+          ))}
         </select>
         <select
           value={selectedGrade}
@@ -111,9 +102,11 @@ export default function PaperTable() {
           className="border rounded-md px-2 py-2 text-base w-full md:w-auto"
         >
           <option value="">All Grades</option>
-          <option value="Grade 5 Scholarship">Grade 5 Scholarship</option>
-          <option value="Grade 11">Grade 11</option>
-          <option value="Grade 12">Grade 12</option>
+          {grades.map((grd) => (
+            <option key={grd.$id} value={grd.grade_name}>
+              {grd.grade_name}
+            </option>
+          ))}
         </select>
         <select
           value={selectedStatus}
@@ -129,10 +122,8 @@ export default function PaperTable() {
         </select>
       </div>
 
-
       <div className="overflow-x-auto">
-        <table className="w-full table-auto border-separate border-spacing-y-3 text-left text-gray-700 dark:text-gray-300
-        shadow-sm shadow-light_pink dark:shadow-dark_grey_100 border border-light_pink dark:border-dark_grey_100 p-2 rounded-lg">
+        <table className="w-full table-auto border-separate border-spacing-y-3 text-left text-gray-700 dark:text-gray-300 shadow-sm shadow-light_pink dark:shadow-dark_grey_100 border border-light_pink dark:border-dark_grey_100 p-2 rounded-lg">
           <thead>
             <tr className="bg-gray-200 dark:bg-gray-700 text-md lg:text-lg">
               <th>Title</th>
@@ -177,13 +168,11 @@ export default function PaperTable() {
               </tr>
             ))}
           </tbody>
-
         </table>
       </div>
 
       <div className="mt-2 text-sm text-gray-500 dark:text-gray-200">
-        Showing {indexOfFirstItem + 1} to{" "}
-        {Math.min(indexOfLastItem, filteredData.length)} of {filteredData.length} results
+        Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, filteredData.length)} of {filteredData.length} results
       </div>
 
       <div className="flex justify-end mt-2 gap-2">
