@@ -1,5 +1,5 @@
 import conf from "@/conf/config";
-import { Client, Account, Databases, ID, Query } from "appwrite";
+import { Client, Account, Databases, ID, Query, Storage } from "appwrite";
 
 type LoginUserAccount = {
   email: string;
@@ -8,7 +8,9 @@ type LoginUserAccount = {
 
 const appwriteClient = new Client();
 
-const databases = new Databases(appwriteClient);
+export const databases = new Databases(appwriteClient);
+export const storage = new Storage(appwriteClient);
+export { ID };
 
 appwriteClient.setEndpoint(conf.appwriteUrl).setProject(conf.appwriteProjectId);
 

@@ -150,7 +150,9 @@ export default function PaperTable() {
                 <td className="hidden lg:table-cell">{item.type2}</td>
                 <td className="hidden lg:table-cell">{item.year}</td>
                 <td className="hidden lg:table-cell">{item.term}</td>
-                <td className="hidden lg:table-cell">{item.date}</td>
+                <td className="hidden lg:table-cell">
+                  {new Date(item.date).toISOString().split("T")[0]}
+                </td>
                 <td>
                   <span
                     className={`${item.status === "Published"

@@ -6,6 +6,7 @@ const conf = {
   appwriteSubjectsCollectionId: "subjects",
   appwriteGradesCollectionId: "grades",
   appwriteSubjectGradeCollectionId: "subjects_has_grades",
+  appwriteStorageId: "paper_vault_img"
 };
 
 export default conf;

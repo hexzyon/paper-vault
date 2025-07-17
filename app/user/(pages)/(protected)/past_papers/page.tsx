@@ -22,7 +22,7 @@ export default function PastPapersPage() {
             className="inline-flex items-center justify-center w-fit bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-md text-base mx-auto md:mx-0"
             onClick={() => setIsModalOpen(true)}
           >
-            <PlusCircle className="w-5 h-5" />
+            <PlusCircle className="w-5 h-5 mr-2" />
             Add New Paper
           </button>
         </div>
