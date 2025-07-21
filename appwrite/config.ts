@@ -93,20 +93,19 @@ export class AppwriteService {
     }
   }
 
-async getPapers() {
+  async getPapers() {
     try {
       return await databases.listDocuments(
         conf.appwriteDatabaseId,
         conf.appwritePapersCollectionId,
         [
-        Query.isNotNull('subjectsHasGrades') // Only get papers with valid relations
-      ]
+          Query.isNotNull("subjectsHasGrades"), // Only get papers with valid relations
+        ]
       );
     } catch (error: any) {
       throw error;
     }
   }
-
 
   async getSubjectGrade(subjectsHasGrades: string) {
     try {
@@ -155,6 +154,14 @@ async getPapers() {
     return databases.listDocuments(
       conf.appwriteDatabaseId,
       conf.appwriteSubjectGradeCollectionId
+    );
+  }
+
+  async getPapersBySubjectGrade(subjectGradeId: string) {
+    return databases.listDocuments(
+      conf.appwriteDatabaseId,
+      conf.appwritePapersCollectionId,
+      [Query.equal("subjectsHasGrades", subjectGradeId)]
     );
   }
 }

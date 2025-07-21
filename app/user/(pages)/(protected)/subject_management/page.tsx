@@ -1,39 +1,65 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SubjectGrid from "@/components/ui/subjectManagement/SubjectGrid";
 import Filters from "@/components/ui/subjectManagement/Filters";
 import AddSubjectModal from "@/components/ui/subjectManagement/AddSubjectModal";
 import { Plus } from "lucide-react";
 import UserHeader from "@/components/ui/UserHeader";
+import appwriteService from "@/appwrite/config";
 
-// Dummy Data
-const subjectsData = [
-  { id: 1, name: "Mathematics", grades: "Grade 6", papers: 120, status: "Active" },
-  { id: 2, name: "Science", grades: "Grade 7", papers: 150, status: "Active" },
-  { id: 3, name: "History", grades: "Grade 8", papers: 98, status: "Active" },
-  { id: 4, name: "Mathematics", grades: "Grade 9", papers: 245, status: "Active" },
-  { id: 5, name: "Science", grades: "Grade 10", papers: 200, status: "Active" },
-  { id: 6, name: "History", grades: "Grade 11", papers: 180, status: "Active" },
-  { id: 7, name: "Mathematics", grades: "Grade 12", papers: 300, status: "Active" },
-  { id: 8, name: "Science", grades: "Grade 13", papers: 240, status: "Active" },
-];
+type SubjectEntry = {
+  id: string;
+  name: string;
+  gradeName: string;
+  papersCount: number;
+  status: string;
+  icon_url?: string;
+};
 
 export default function SubjectManagementPage() {
+  const [subjects, setSubjects] = useState<SubjectEntry[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [subjectFilter, setSubjectFilter] = useState("");
+  const [subjFilter, setSubjFilter] = useState("");
   const [gradeFilter, setGradeFilter] = useState("");
   const [showModal, setShowModal] = useState(false);
 
-  const filteredSubjects = useMemo(() => {
-    return subjectsData.filter((item) => {
-      const matchesSearch = item.name
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase());
-      const matchesSubject = !subjectFilter || item.name === subjectFilter;
-      const matchesGrade = !gradeFilter || item.grades === gradeFilter;
-      return matchesSearch && matchesSubject && matchesGrade;
+  useEffect(() => {
+    const load = async () => {
+      const subjRes:any = await appwriteService.getSubjects();
+      const sgPairs = await appwriteService.getSubjectGradePairs();
+
+      const entries: SubjectEntry[] = await Promise.all(
+        sgPairs.documents.map(async (sg: any) => {
+          const s = subjRes.documents.find((a: any) => a.$id === sg.subjects.$id);
+          const gradeName = sg.grades; // assuming this is a shorthand ID, you might fetch grade doc
+          const countRes = await appwriteService.getPapersBySubjectGrade(sg.$id);
+          
+          return {
+            id: sg.$id,
+            name: s.subject_name,
+            gradeName: gradeName.grade_name, 
+            papersCount: countRes.total,
+            status: "Active",
+            icon_url:s.icon_url,
+          };
+        })
+      );
+
+      setSubjects(entries);
+    };
+
+    load();
+  }, []);
+
+  const filtered = useMemo(() => {
+    return subjects.filter((item) => {
+      return (
+        item.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (!subjFilter || item.name === subjFilter) &&
+        (!gradeFilter || item.gradeName === gradeFilter)
+      );
     });
-  }, [searchTerm, subjectFilter, gradeFilter]);
+  }, [subjects, searchTerm, subjFilter, gradeFilter]);
 
   return (
     <main className="bg-white dark:bg-dark_grey min-h-screen text-black font-anek overflow-hidden">
@@ -56,16 +82,16 @@ export default function SubjectManagementPage() {
       <Filters
         searchTerm={searchTerm}
         onSearch={setSearchTerm}
-        subjectFilter={subjectFilter}
-        onSubjectFilter={setSubjectFilter}
+        subjectFilter={subjFilter}
+        onSubjectFilter={setSubjFilter}
         gradeFilter={gradeFilter}
         onGradeFilter={setGradeFilter}
+        subjects={Array.from(new Set(subjects.map((s) => s.name)))}
+        grades={Array.from(new Set(subjects.map((s) => s.gradeName)))}
       />
 
-      {/* Subject Cards */}
-      <SubjectGrid subjects={filteredSubjects} />
+      <SubjectGrid subjects={filtered} />
 
-      {/* Modal */}
       {showModal && <AddSubjectModal onClose={() => setShowModal(false)} />}
     </div>
     </main>
