@@ -4,10 +4,10 @@ export default function BookRow({ book }: { book: any }) {
   return (
     <tr className="border-b text-sm md:text-md text-gray-700 dark:text-gray-200">
       <td>{book.title}</td>
-      <td>{book.subject}</td>
-      <td>{book.grade}</td>
+      <td>{book.subjectsHasGrades.subjects.subject_name}</td>
+      <td>{book.subjectsHasGrades.grades.grade_name}</td>
       <td className="hidden md:table-cell">{book.language}</td>
-      <td className="hidden md:table-cell">{book.date}</td>
+      <td className="hidden md:table-cell">{new Date(book.$createdAt).toISOString().split("T")[0]}</td>
       <td>
         <span className={`text-xs px-2 py-0 rounded ${
           book.status === "Published"

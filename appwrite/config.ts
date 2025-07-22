@@ -164,6 +164,47 @@ export class AppwriteService {
       [Query.equal("subjectsHasGrades", subjectGradeId)]
     );
   }
+
+  async uploadFile(file: File): Promise<string> {
+    try {
+      const uploadedFile = await storage.createFile(
+        conf.appwriteStorageId,
+        ID.unique(),
+        file
+      );
+
+      // Return URL to view the file
+      return storage.getFileView(conf.appwriteStorageId, uploadedFile.$id);
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  async createBook(data: any) {
+    try {
+      return await databases.createDocument(
+        conf.appwriteDatabaseId,
+        conf.appwriteBooksCollectionId,
+        ID.unique(),
+        data
+      );
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  async getBooks() {
+    try {
+      return await databases.listDocuments(
+        conf.appwriteDatabaseId,
+        conf.appwriteBooksCollectionId,
+        []
+      );
+    } catch (error) {
+      console.error("Error fetching books:", error);
+      throw error;
+    }
+  }
 }
 
 const appwriteService = new AppwriteService();

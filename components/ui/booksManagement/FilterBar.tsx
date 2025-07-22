@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import appwriteService from "@/appwrite/config"; // Adjust import based on your project structure
 
 export default function FilterBar({ onFilter }: { onFilter: (filters: any) => void }) {
   const [filters, setFilters] = useState({
@@ -8,6 +9,26 @@ export default function FilterBar({ onFilter }: { onFilter: (filters: any) => vo
     grade: "",
     status: "",
   });
+
+  const [subjects, setSubjects] = useState<string[]>([]);
+  const [grades, setGrades] = useState<string[]>([]);
+  const [statusList, setStatusList] = useState<string[]>(["Published", "Draft"]); // You can fetch from DB if needed
+
+  useEffect(() => {
+    const fetchFilters = async () => {
+      try {
+        const subjectsRes = await appwriteService.getSubjects();
+        const gradesRes = await appwriteService.getGrades();
+
+        setSubjects(subjectsRes.documents.map((doc: any) => doc.subject_name));
+        setGrades(gradesRes.documents.map((doc: any) => doc.grade_name));
+      } catch (error) {
+        console.error("Error loading filter data:", error);
+      }
+    };
+
+    fetchFilters();
+  }, []);
 
   const handleFilterChange = (field: string, value: string) => {
     const updatedFilters = { ...filters, [field]: value };
@@ -24,36 +45,39 @@ export default function FilterBar({ onFilter }: { onFilter: (filters: any) => vo
         onChange={(e) => handleFilterChange("search", e.target.value)}
         className="border border-gray-500 md:flex-1 px-3 py-2 rounded-md text-base w-full"
       />
+
       <select
         value={filters.subject}
         onChange={(e) => handleFilterChange("subject", e.target.value)}
         className="border px-2 py-2 rounded-md text-base w-full md:w-48"
       >
         <option value="">All Subjects</option>
-        <option value="Physics">Physics</option>
-        <option value="Maths">Maths</option>
-        <option value="Chemistry">Chemistry</option>
+        {subjects.map((subject, index) => (
+          <option key={index} value={subject}>{subject}</option>
+        ))}
       </select>
+
       <select
         value={filters.grade}
         onChange={(e) => handleFilterChange("grade", e.target.value)}
         className="border px-2 py-2 rounded-md text-base w-full md:w-48"
       >
         <option value="">All Grades</option>
-        {[...Array(13)].map((_, i) => (
-          <option key={i} value={`Grade ${i + 1}`}>{`Grade ${i + 1}`}</option>
+        {grades.map((grade, index) => (
+          <option key={index} value={grade}>{grade}</option>
         ))}
       </select>
+
       <select
         value={filters.status}
         onChange={(e) => handleFilterChange("status", e.target.value)}
         className="border px-2 py-2 rounded-md text-base w-full md:w-48"
       >
         <option value="">Status</option>
-        <option value="Published">Published</option>
-        <option value="Draft">Draft</option>
+        {statusList.map((status, index) => (
+          <option key={index} value={status}>{status}</option>
+        ))}
       </select>
     </div>
-
   );
 }
