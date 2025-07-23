@@ -107,6 +107,20 @@ export class AppwriteService {
     }
   }
 
+  async getAllPapersOrder() {
+  try {
+    const response = await databases.listDocuments(conf.appwriteDatabaseId,
+        conf.appwritePapersCollectionId, [
+      Query.orderDesc("$createdAt"),
+      Query.limit(100),
+    ]);
+    return response.documents;
+  } catch (error) {
+    console.error("Error loading all papers:", error);
+    return [];
+  }
+}
+
   async getSubjectGrade(subjectsHasGrades: string) {
     try {
       const subjectGrade = await databases.getDocument(
