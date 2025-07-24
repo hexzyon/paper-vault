@@ -108,18 +108,18 @@ export class AppwriteService {
   }
 
   async getAllPapersOrder() {
-  try {
-    const response = await databases.listDocuments(conf.appwriteDatabaseId,
-        conf.appwritePapersCollectionId, [
-      Query.orderDesc("$createdAt"),
-      Query.limit(100),
-    ]);
-    return response.documents;
-  } catch (error) {
-    console.error("Error loading all papers:", error);
-    return [];
+    try {
+      const response = await databases.listDocuments(
+        conf.appwriteDatabaseId,
+        conf.appwritePapersCollectionId,
+        [Query.orderDesc("$createdAt"), Query.limit(100)]
+      );
+      return response.documents;
+    } catch (error) {
+      console.error("Error loading all papers:", error);
+      return [];
+    }
   }
-}
 
   async getSubjectGrade(subjectsHasGrades: string) {
     try {
@@ -217,6 +217,70 @@ export class AppwriteService {
     } catch (error) {
       console.error("Error fetching books:", error);
       throw error;
+    }
+  }
+
+  async getTotalDownloads() {
+    try {
+      const response = await databases.listDocuments(
+        conf.appwriteDatabaseId,
+        conf.appwriteDownloadsCollectionId,
+        []
+      );
+
+      const total = response.documents.reduce((sum, doc) => {
+        return sum + (doc.download_count ?? 0);
+      }, 0);
+
+      return total;
+    } catch (error) {
+      console.error("Error fetching downloads:", error);
+      throw error;
+    }
+  }
+
+  async getDownloadsLast30Days() {
+    try {
+      const today = new Date();
+      const past30 = new Date();
+      past30.setDate(today.getDate() - 30);
+
+      const isoDate = past30.toISOString();
+
+      return await databases.listDocuments(
+        conf.appwriteDatabaseId,
+        conf.appwriteDownloadsCollectionId,
+        [Query.greaterThanEqual("date", isoDate), Query.limit(1000)]
+      );
+    } catch (error) {
+      console.error("Error fetching downloads:", error);
+      throw error;
+    }
+  }
+
+  async fetchDownloadsLast60Days() {
+    try {
+      const today = new Date();
+      const sixtyDaysAgo = new Date();
+      sixtyDaysAgo.setDate(today.getDate() - 59); 
+
+      const startISO = sixtyDaysAgo.toISOString();
+      const endISO = today.toISOString();
+
+      const res = await databases.listDocuments(
+        conf.appwriteDatabaseId,
+        conf.appwriteDownloadsCollectionId,
+        [
+          Query.greaterThanEqual("date", startISO),
+          Query.lessThanEqual("date", endISO),
+          Query.limit(1000),
+        ]
+      );
+
+      return res.documents;
+    } catch (error) {
+      console.error("Error fetching downloads:", error);
+      return [];
     }
   }
 }

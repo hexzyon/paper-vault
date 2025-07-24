@@ -26,7 +26,7 @@ const AccountPage = () => {
                 setTotalPapers(papers.length);
 
                 // Calculate total downloads
-                const total = papers.reduce((sum, paper) => sum + (paper.downloads ?? 0), 0);
+                const total = await appwriteService.getTotalDownloads();
                 setTotalDownloads(total);
 
                 // Get subjects from separate table

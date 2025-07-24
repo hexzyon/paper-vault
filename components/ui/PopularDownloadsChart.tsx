@@ -41,55 +41,46 @@ export default function PopularDownloadsChart() {
   const barFillColor = isDark ? "#ADB5BD" : "#fb7185";
 
   useEffect(() => {
-    const fetchDownloadStats = async () => {
-      const res = await appwriteService.getPapers();
+  const fetchDownloadStats = async () => {
+    try {
+      const res = await appwriteService.getDownloadsLast30Days();
 
-      const papers: Paper[] = res.documents.map((doc: any) => {
-        const shgRaw = doc.subjectsHasGrades;
-
-        const subjectsHasGrades = Array.isArray(shgRaw)
-          ? shgRaw.map((shg: any) => ({
-            subjects: {
-              subject_name: shg?.subjects?.subject_name ?? "Unknown",
-            },
-          }))
-          : shgRaw
-            ? [
-              {
-                subjects: {
-                  subject_name: shgRaw?.subjects?.subject_name ?? "Unknown",
-                },
-              },
-            ]
-            : [];
-
-        return {
-          download_count: doc.downloads ?? 0,
-          subjectsHasGrades,
+      interface DownloadEntry {
+        download_count: number;
+        subjects: {
+          subject_name: string;
         };
-      });
+      }
 
-
+      const downloads: DownloadEntry[] = res.documents.map((doc: any) => ({
+        download_count: doc.download_count ?? 0,
+        subjects: {
+          subject_name: doc.subjects?.subject_name ?? "Unknown",
+        },
+      }));
 
       const subjectMap: Record<string, number> = {};
 
-      papers.forEach(paper => {
-        paper.subjectsHasGrades.forEach(shg => {
-          const subjectName = shg.subjects.subject_name;
-          subjectMap[subjectName] = (subjectMap[subjectName] || 0) + paper.download_count;
-        });
+      downloads.forEach((entry) => {
+        const subjectName = entry.subjects.subject_name;
+        subjectMap[subjectName] =
+          (subjectMap[subjectName] || 0) + entry.download_count;
       });
 
-      const sorted = Object.entries(subjectMap)
+      const sorted: ChartData[] = Object.entries(subjectMap)
         .map(([subject, downloads]) => ({ subject, downloads }))
         .sort((a, b) => b.downloads - a.downloads)
         .slice(0, 5);
 
       setChartData(sorted);
-    };
+    } catch (err) {
+      console.error("Failed to load downloads chart", err);
+    }
+  };
 
-    fetchDownloadStats();
-  }, []);
+  fetchDownloadStats();
+}, []);
+
 
   return (
     <div className="bg-white dark:bg-dark_grey_500 p-4 rounded-xl 
