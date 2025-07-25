@@ -262,7 +262,7 @@ export class AppwriteService {
     try {
       const today = new Date();
       const sixtyDaysAgo = new Date();
-      sixtyDaysAgo.setDate(today.getDate() - 59); 
+      sixtyDaysAgo.setDate(today.getDate() - 59);
 
       const startISO = sixtyDaysAgo.toISOString();
       const endISO = today.toISOString();
@@ -282,6 +282,56 @@ export class AppwriteService {
       console.error("Error fetching downloads:", error);
       return [];
     }
+  }
+
+  async updatePaper(id: string, paperData: any) {
+    return await databases.updateDocument(
+      conf.appwriteDatabaseId,
+      conf.appwritePapersCollectionId,
+      id,
+      paperData
+    );
+  }
+
+  async deletePaper(id: string) {
+    return await databases.deleteDocument(
+      conf.appwriteDatabaseId,
+      conf.appwritePapersCollectionId,
+      id
+    );
+  }
+
+  async getPaperById(id: string) {
+    return await databases.getDocument(
+      conf.appwriteDatabaseId,
+      conf.appwritePapersCollectionId,
+      id
+    );
+  }
+
+  async getBookById(bookId: string) {
+    return await databases.getDocument(
+      conf.appwriteDatabaseId,
+      conf.appwriteBooksCollectionId,
+      bookId
+    );
+  }
+
+  async updateBook(bookId: string, data: any) {
+    return await databases.updateDocument(
+      conf.appwriteDatabaseId,
+      conf.appwriteBooksCollectionId,
+      bookId,
+      data
+    );
+  }
+
+  async deleteBook(bookId: string) {
+    return await databases.deleteDocument(
+      conf.appwriteDatabaseId,
+      conf.appwriteBooksCollectionId,
+      bookId
+    );
   }
 }
 

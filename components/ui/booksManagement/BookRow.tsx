@@ -1,6 +1,14 @@
 import { Pencil, Trash2 } from "lucide-react";
 
-export default function BookRow({ book }: { book: any }) {
+export default function BookRow({
+  book,
+  onEdit,
+  onDelete,
+}: {
+  book: any;
+  onEdit: (book: any) => void;
+  onDelete: (id: string) => void;
+}) {
   return (
     <tr className="border-b text-sm md:text-md text-gray-700 dark:text-gray-200">
       <td>{book.title}</td>
@@ -18,8 +26,14 @@ export default function BookRow({ book }: { book: any }) {
         </span>
       </td>
       <td className="flex gap-1">
-        <Pencil className="w-4 h-4 text-blue-600 cursor-pointer" />
-        <Trash2 className="w-4 h-4 text-red-600 cursor-pointer" />
+        <Pencil
+          className="w-4 h-4 text-blue-600 cursor-pointer"
+          onClick={() => onEdit(book)}
+        />
+        <Trash2
+          className="w-4 h-4 text-red-600 cursor-pointer"
+          onClick={() => onDelete(book.$id)}
+        />
       </td>
     </tr>
   );

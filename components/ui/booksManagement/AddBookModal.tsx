@@ -4,7 +4,13 @@ import { useEffect, useState } from "react";
 import { X, Save, CheckCircle } from "lucide-react";
 import appwriteService from "@/appwrite/config";
 
-export default function AddBookModal({ onClose }: { onClose: () => void }) {
+export default function AddBookModal({
+  onClose,
+  existingBook,
+}: {
+  onClose: () => void;
+  existingBook?: any;
+}) {
   const [title, setTitle] = useState("");
   const [gradeId, setGradeId] = useState("");
   const [subjectId, setSubjectId] = useState("");
@@ -13,6 +19,16 @@ export default function AddBookModal({ onClose }: { onClose: () => void }) {
   const [subjects, setSubjects] = useState<any[]>([]);
   const [subjectGradePairs, setSubjectGradePairs] = useState<any[]>([]);
 
+  useEffect(() => {
+    if (existingBook) {
+      setTitle(existingBook.title);
+      setLanguage(existingBook.language);
+      setGradeId(existingBook.subjectsHasGrades?.grades?.$id);
+      setSubjectId(existingBook.subjectsHasGrades?.subjects?.$id);
+    }
+  }, [existingBook]);
+
+
   // Load grades, subjects, and subject-grade pairs
   useEffect(() => {
     const fetchData = async () => {
@@ -20,7 +36,7 @@ export default function AddBookModal({ onClose }: { onClose: () => void }) {
         const [gradesRes, subjectsRes, shgRes] = await Promise.all([
           appwriteService.getGrades(),
           appwriteService.getSubjects(),
-          appwriteService.getSubjectGradePairs(), 
+          appwriteService.getSubjectGradePairs(),
         ]);
 
         setGrades(gradesRes.documents);
@@ -59,8 +75,13 @@ export default function AddBookModal({ onClose }: { onClose: () => void }) {
     };
 
     try {
-      await appwriteService.createBook(data);
-      alert("Book saved successfully!");
+      if (existingBook) {
+        await appwriteService.updateBook(existingBook.$id, data);
+        alert("Book updated successfully!");
+      } else {
+        await appwriteService.createBook(data);
+        alert("Book saved successfully!");
+      }
       onClose();
     } catch (error) {
       console.error("Error saving book:", error);
@@ -78,7 +99,7 @@ export default function AddBookModal({ onClose }: { onClose: () => void }) {
           <X className="w-6 h-6" />
         </button>
         <h2 className="text-2xl mb-4 text-gray-800 dark:text-white font-semibold">
-          Add New Book
+          {existingBook ? "Edit Book" : "Add New Book"}
         </h2>
 
         <form className="grid grid-cols-1 md:grid-cols-2 gap-4">

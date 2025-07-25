@@ -3,6 +3,7 @@ import { Check, Upload, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { databases, storage, ID } from "@/appwrite/config"; // adjust your path
 import conf from "@/conf/config";
+import { Query } from "appwrite";
 
 const DATABASE_ID = conf.appwriteDatabaseId;
 const SUBJECTS_COLLECTION_ID = conf.appwriteSubjectsCollectionId;
@@ -46,14 +47,27 @@ export default function AddSubjectModal({ onClose }: { onClose: () => void }) {
       const iconUrl = storage.getFileView(BUCKET_ID, fileUpload.$id);
 
       // Step 2: Add to subjects
-      const subject = await databases.createDocument(DATABASE_ID, SUBJECTS_COLLECTION_ID, ID.unique(), {
-        subject_name: subjectName,
-        icon_url: iconUrl,
-      });
+      const existingSubjects = await databases.listDocuments(DATABASE_ID, SUBJECTS_COLLECTION_ID, [
+        Query.equal("subject_name", subjectName)
+      ]);
+
+      let subjectId = "";
+
+      if (existingSubjects.total > 0) {
+        // Subject exists
+        subjectId = existingSubjects.documents[0].$id;
+      } else {
+        // Subject does not exist - create new
+        const subject = await databases.createDocument(DATABASE_ID, SUBJECTS_COLLECTION_ID, ID.unique(), {
+          subject_name: subjectName,
+          icon_url: iconUrl,
+        });
+        subjectId = subject.$id;
+      }
 
       // Step 3: Add to subjects_has_grades
       await databases.createDocument(DATABASE_ID, SUBJECTS_GRADES_COLLECTION_ID, ID.unique(), {
-        subjects: subject.$id,
+        subjects: subjectId,
         grades: gradeId,
       });
 

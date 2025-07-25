@@ -2,7 +2,13 @@ import { X, Save, CheckCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import appwriteService from "@/appwrite/config";
 
-export default function AddNewPaperModal({ onClose }: { onClose: () => void }) {
+export default function AddNewPaperModal({
+  onClose,
+  existingPaper,
+}: {
+  onClose: () => void;
+  existingPaper?: any;
+}) {
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
   const [subjectId, setSubjectId] = useState("");
@@ -16,6 +22,20 @@ export default function AddNewPaperModal({ onClose }: { onClose: () => void }) {
   const [subjects, setSubjects] = useState<any[]>([]);
   const [grades, setGrades] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (existingPaper) {
+      setTitle(existingPaper.title);
+      setUrl(existingPaper.paper_url);
+      setLanguage(existingPaper.language);
+      setYear(existingPaper.year);
+      setType(existingPaper.type);
+      setType2(existingPaper.type2);
+      setTerm(existingPaper.term);
+      setSubjectId(existingPaper.subjectsHasGrades?.subjects?.$id);
+      setGradeId(existingPaper.subjectsHasGrades?.grades?.$id);
+    }
+  }, [existingPaper]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -44,7 +64,7 @@ export default function AddNewPaperModal({ onClose }: { onClose: () => void }) {
 
     try {
       const subjectGradePairs = await appwriteService.getSubjectGradePairs();
-      console.log(subjectGradePairs);
+
       const existingPair = subjectGradePairs.documents.find(
         (pair: any) =>
           pair.subjects.$id === subjectId && pair.grades.$id === gradeId
@@ -66,12 +86,18 @@ export default function AddNewPaperModal({ onClose }: { onClose: () => void }) {
         type2,
         term,
         status: isPublish, // true for publish, false for draft
-        date: new Date().toISOString(), // Optional: use a date picker
+        date: new Date().toISOString(), 
       };
 
-      await appwriteService.createPaper(paperData);
-      alert(isPublish ? "Paper Published" : "Saved as Draft");
-      onClose(); // close modal
+      if (existingPaper) {
+        await appwriteService.updatePaper(existingPaper.$id, paperData);
+        alert(isPublish ? "Paper Updated & Published" : "Updated as Draft");
+      } else {
+        await appwriteService.createPaper(paperData);
+        alert(isPublish ? "Paper Published" : "Saved as Draft");
+      }
+
+      onClose(); 
     } catch (error) {
       console.error("Error creating paper:", error);
       alert("Failed to create paper.");
@@ -90,8 +116,9 @@ export default function AddNewPaperModal({ onClose }: { onClose: () => void }) {
           <X className="w-6 h-6" />
         </button>
         <h2 className="text-2xl mb-6 text-gray-800 dark:text-white font-semibold">
-          Add New Paper
+          {existingPaper ? "Edit Paper" : "Add New Paper"}
         </h2>
+
 
         <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>

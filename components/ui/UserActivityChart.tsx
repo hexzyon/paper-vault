@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import appwriteService from "@/appwrite/config";
 
 type ChartData = {
-  day: number; // day of the month
+  day: number; 
   downloads: number;
 };
 

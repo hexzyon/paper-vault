@@ -7,7 +7,7 @@ import appwriteService from "@/appwrite/config";
 interface UploadItem {
   title: string;
   uploader: string;
-  uploadedAt: string; 
+  uploadedAt: string;
 }
 
 export default function RecentUploads() {
@@ -20,7 +20,7 @@ export default function RecentUploads() {
         const userName = currentUser?.name || "Unknown";
 
         // Fetch all papers
-        const papers = await appwriteService.getAllPapersOrder(); 
+        const papers = await appwriteService.getAllPapersOrder();
 
         // Sort papers by uploadedAt descending and take top 4
         const recentPapers = papers
@@ -63,7 +63,10 @@ export default function RecentUploads() {
           </li>
         ))}
       </ul>
-      <button className="text-rose-500 dark:text-gray-200 text-2xl 2xl:text-3xl mt-3 text-center w-full">View All Uploads</button>
+      <button onClick={() => {
+        window.location.href = "/user/past_papers";
+      }}
+        className="text-rose-500 dark:text-gray-200 text-2xl 2xl:text-3xl mt-3 text-center w-full">View All Uploads</button>
     </div>
   );
 }

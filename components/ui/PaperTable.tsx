@@ -2,6 +2,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import appwriteService from "@/appwrite/config";
+import AddNewPaperModal from "./AddNewPaperModal";
 
 export default function PaperTable() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -15,8 +16,9 @@ export default function PaperTable() {
   const [papers, setPapers] = useState<any[]>([]);
   const [subjects, setSubjects] = useState<any[]>([]);
   const [grades, setGrades] = useState<any[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editPaper, setEditPaper] = useState<any | null>(null);
 
-  // ✅ Fetch papers with relations included (subject + grade)
   useEffect(() => {
     const fetchPapers = async () => {
       try {
@@ -164,8 +166,38 @@ export default function PaperTable() {
                   </span>
                 </td>
                 <td className="flex gap-2">
-                  <Pencil className="w-4 h-4 cursor-pointer text-blue-500" />
-                  <Trash2 className="w-4 h-4 cursor-pointer text-red-500" />
+                  <Pencil
+                    onClick={() => {
+                      setEditPaper(item);
+                      setIsModalOpen(true);
+                    }}
+                    className="w-4 h-4 cursor-pointer text-blue-500"
+                  />
+                  <Trash2
+                    onClick={async () => {
+                      if (confirm("Are you sure you want to delete this paper?")) {
+                        try {
+                          await appwriteService.deletePaper(item.$id);
+                          alert("Paper deleted");
+                          setPapers((prev) => prev.filter((p) => p.$id !== item.$id));
+                        } catch (err) {
+                          console.error(err);
+                          alert("Delete failed");
+                        }
+                      }
+                    }}
+                    className="w-4 h-4 cursor-pointer text-red-500"
+                  />
+
+                  {isModalOpen && (
+                    <AddNewPaperModal
+                      onClose={() => {
+                        setEditPaper(null);
+                        setIsModalOpen(false);
+                      }}
+                      existingPaper={editPaper}
+                    />
+                    )}
                 </td>
               </tr>
             ))}

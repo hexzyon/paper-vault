@@ -15,6 +15,27 @@ export default function BooksPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
 
+  const [editBook, setEditBook] = useState<any | null>(null); // NEW
+
+  const handleEdit = (book: any) => {
+    setEditBook(book);
+    setModal(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this book?")) return;
+
+    try {
+      await appwriteService.deleteBook(id);
+      const updatedBooks = books.filter((b) => b.$id !== id);
+      setBooks(updatedBooks);
+      setFiltered(updatedBooks);
+    } catch (error) {
+      console.error("Failed to delete book:", error);
+    }
+  };
+
+
   useEffect(() => {
     const fetchBooks = async () => {
       try {
@@ -23,11 +44,11 @@ export default function BooksPage() {
         const books = await Promise.all(
           res.documents.map(async (book: any) => {
             const shgId = book.subjectsHasGrades.$id;
-            // const { subject, grade } = await appwriteService.getSubjectGrade(shgId);
+
             return {
               ...book,
-              subject:book.subjectsHasGrades.subjects.subject_name,
-              grade:book.subjectsHasGrades.grades.grade_name,
+              subject: book.subjectsHasGrades.subjects.subject_name,
+              grade: book.subjectsHasGrades.grades.grade_name,
               date: new Date(book.$createdAt).toISOString().split("T")[0], // format date
               status: book.status ? "Published" : "Draft",
             };
@@ -41,7 +62,7 @@ export default function BooksPage() {
     };
 
     fetchBooks();
-  }, [modal]); 
+  }, [modal]);
 
   const handleFilter = (filters: any) => {
     let results = books;
@@ -91,7 +112,11 @@ export default function BooksPage() {
 
         <div className="bg-white dark:bg-dark_grey_500 p-4 rounded-lg border border-light_pink dark:border-dark_grey_100 shadow-sm shadow-light_pink dark:shadow-dark_grey_100">
           <FilterBar onFilter={handleFilter} />
-          <BookTable books={paginatedBooks} />
+          <BookTable
+            books={paginatedBooks}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
           <Pagination
             currentPage={currentPage}
             totalPages={Math.ceil(filtered.length / pageSize)}
@@ -102,7 +127,16 @@ export default function BooksPage() {
           />
         </div>
 
-        {modal && <AddBookModal onClose={() => setModal(false)} />}
+        {modal && (
+  <AddBookModal
+    onClose={() => {
+      setModal(false);
+      setEditBook(null); 
+    }}
+    existingBook={editBook} 
+  />
+)}
+
       </div>
     </main>
   );

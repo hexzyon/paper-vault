@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import appwriteService from "@/appwrite/config"; // Adjust import based on your project structure
+import appwriteService from "@/appwrite/config";
 
 export default function FilterBar({ onFilter }: { onFilter: (filters: any) => void }) {
   const [filters, setFilters] = useState({
@@ -12,7 +12,7 @@ export default function FilterBar({ onFilter }: { onFilter: (filters: any) => vo
 
   const [subjects, setSubjects] = useState<string[]>([]);
   const [grades, setGrades] = useState<string[]>([]);
-  const [statusList, setStatusList] = useState<string[]>(["Published", "Draft"]); // You can fetch from DB if needed
+  const [statusList, setStatusList] = useState<string[]>(["Published", "Draft"]);
 
   useEffect(() => {
     const fetchFilters = async () => {
