@@ -1,5 +1,5 @@
 import conf from "@/conf/config";
-import { Client, Account, ID } from "appwrite";
+import { Client, Account, Databases, ID, Query, Storage } from "appwrite";
 
 type LoginUserAccount = {
   email: string;
@@ -8,12 +8,15 @@ type LoginUserAccount = {
 
 const appwriteClient = new Client();
 
+export const databases = new Databases(appwriteClient);
+export const storage = new Storage(appwriteClient);
+export { ID };
+
 appwriteClient.setEndpoint(conf.appwriteUrl).setProject(conf.appwriteProjectId);
 
 export const account = new Account(appwriteClient);
 
 export class AppwriteService {
-  
   async login({ email, password }: LoginUserAccount) {
     try {
       return await account.createEmailPasswordSession(email, password);
@@ -74,6 +77,261 @@ export class AppwriteService {
     } catch (error: any) {
       throw error;
     }
+  }
+
+  //database
+  async createPaper(data: any) {
+    try {
+      return await databases.createDocument(
+        conf.appwriteDatabaseId,
+        conf.appwritePapersCollectionId,
+        ID.unique(),
+        data
+      );
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  async getPapers() {
+    try {
+      return await databases.listDocuments(
+        conf.appwriteDatabaseId,
+        conf.appwritePapersCollectionId,
+        [
+          Query.isNotNull("subjectsHasGrades"), // Only get papers with valid relations
+        ]
+      );
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  async getAllPapersOrder() {
+    try {
+      const response = await databases.listDocuments(
+        conf.appwriteDatabaseId,
+        conf.appwritePapersCollectionId,
+        [Query.orderDesc("$createdAt"), Query.limit(100)]
+      );
+      return response.documents;
+    } catch (error) {
+      console.error("Error loading all papers:", error);
+      return [];
+    }
+  }
+
+  async getSubjectGrade(subjectsHasGrades: string) {
+    try {
+      const subjectGrade = await databases.getDocument(
+        conf.appwriteDatabaseId,
+        conf.appwriteSubjectGradeCollectionId,
+        subjectsHasGrades
+      );
+
+      const subject = await databases.getDocument(
+        conf.appwriteDatabaseId,
+        conf.appwriteSubjectsCollectionId,
+        subjectGrade.subjects
+      );
+
+      const grade = await databases.getDocument(
+        conf.appwriteDatabaseId,
+        conf.appwriteGradesCollectionId,
+        subjectGrade.grades
+      );
+
+      return {
+        subject: subject.subject_name,
+        grade: grade.grade_name,
+      };
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  async getSubjects() {
+    return databases.listDocuments(
+      conf.appwriteDatabaseId,
+      conf.appwriteSubjectsCollectionId
+    );
+  }
+
+  async getGrades() {
+    return databases.listDocuments(
+      conf.appwriteDatabaseId,
+      conf.appwriteGradesCollectionId
+    );
+  }
+
+  async getSubjectGradePairs() {
+    return databases.listDocuments(
+      conf.appwriteDatabaseId,
+      conf.appwriteSubjectGradeCollectionId
+    );
+  }
+
+  async getPapersBySubjectGrade(subjectGradeId: string) {
+    return databases.listDocuments(
+      conf.appwriteDatabaseId,
+      conf.appwritePapersCollectionId,
+      [Query.equal("subjectsHasGrades", subjectGradeId)]
+    );
+  }
+
+  async uploadFile(file: File): Promise<string> {
+    try {
+      const uploadedFile = await storage.createFile(
+        conf.appwriteStorageId,
+        ID.unique(),
+        file
+      );
+
+      // Return URL to view the file
+      return storage.getFileView(conf.appwriteStorageId, uploadedFile.$id);
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  async createBook(data: any) {
+    try {
+      return await databases.createDocument(
+        conf.appwriteDatabaseId,
+        conf.appwriteBooksCollectionId,
+        ID.unique(),
+        data
+      );
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
+  async getBooks() {
+    try {
+      return await databases.listDocuments(
+        conf.appwriteDatabaseId,
+        conf.appwriteBooksCollectionId,
+        []
+      );
+    } catch (error) {
+      console.error("Error fetching books:", error);
+      throw error;
+    }
+  }
+
+  async getTotalDownloads() {
+    try {
+      const response = await databases.listDocuments(
+        conf.appwriteDatabaseId,
+        conf.appwriteDownloadsCollectionId,
+        []
+      );
+
+      const total = response.documents.reduce((sum, doc) => {
+        return sum + (doc.download_count ?? 0);
+      }, 0);
+
+      return total;
+    } catch (error) {
+      console.error("Error fetching downloads:", error);
+      throw error;
+    }
+  }
+
+  async getDownloadsLast30Days() {
+    try {
+      const today = new Date();
+      const past30 = new Date();
+      past30.setDate(today.getDate() - 30);
+
+      const isoDate = past30.toISOString();
+
+      return await databases.listDocuments(
+        conf.appwriteDatabaseId,
+        conf.appwriteDownloadsCollectionId,
+        [Query.greaterThanEqual("date", isoDate), Query.limit(1000)]
+      );
+    } catch (error) {
+      console.error("Error fetching downloads:", error);
+      throw error;
+    }
+  }
+
+  async fetchDownloadsLast60Days() {
+    try {
+      const today = new Date();
+      const sixtyDaysAgo = new Date();
+      sixtyDaysAgo.setDate(today.getDate() - 59);
+
+      const startISO = sixtyDaysAgo.toISOString();
+      const endISO = today.toISOString();
+
+      const res = await databases.listDocuments(
+        conf.appwriteDatabaseId,
+        conf.appwriteDownloadsCollectionId,
+        [
+          Query.greaterThanEqual("date", startISO),
+          Query.lessThanEqual("date", endISO),
+          Query.limit(1000),
+        ]
+      );
+
+      return res.documents;
+    } catch (error) {
+      console.error("Error fetching downloads:", error);
+      return [];
+    }
+  }
+
+  async updatePaper(id: string, paperData: any) {
+    return await databases.updateDocument(
+      conf.appwriteDatabaseId,
+      conf.appwritePapersCollectionId,
+      id,
+      paperData
+    );
+  }
+
+  async deletePaper(id: string) {
+    return await databases.deleteDocument(
+      conf.appwriteDatabaseId,
+      conf.appwritePapersCollectionId,
+      id
+    );
+  }
+
+  async getPaperById(id: string) {
+    return await databases.getDocument(
+      conf.appwriteDatabaseId,
+      conf.appwritePapersCollectionId,
+      id
+    );
+  }
+
+  async getBookById(bookId: string) {
+    return await databases.getDocument(
+      conf.appwriteDatabaseId,
+      conf.appwriteBooksCollectionId,
+      bookId
+    );
+  }
+
+  async updateBook(bookId: string, data: any) {
+    return await databases.updateDocument(
+      conf.appwriteDatabaseId,
+      conf.appwriteBooksCollectionId,
+      bookId,
+      data
+    );
+  }
+
+  async deleteBook(bookId: string) {
+    return await databases.deleteDocument(
+      conf.appwriteDatabaseId,
+      conf.appwriteBooksCollectionId,
+      bookId
+    );
   }
 }
 

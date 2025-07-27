@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PaperTable from "@/components/ui/PaperTable";
 import AddNewPaperModal from "@/components/ui/AddNewPaperModal";
 import { PlusCircle } from "lucide-react";
@@ -22,7 +22,7 @@ export default function PastPapersPage() {
             className="inline-flex items-center justify-center w-fit bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-md text-base mx-auto md:mx-0"
             onClick={() => setIsModalOpen(true)}
           >
-            <PlusCircle className="w-5 h-5" />
+            <PlusCircle className="w-5 h-5 mr-2" />
             Add New Paper
           </button>
         </div>

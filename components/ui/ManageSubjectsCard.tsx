@@ -14,9 +14,9 @@ export default function ManageSubjectsCard() {
       <p className="text-lg 2xl:text-2xl text-gray-500 dark:text-gray-300 mb-4 my-4">
         View, edit, or add new subjects to the system.
       </p>
-      <button className="inline-flex w-auto items-center mb-2 gap-1 text-xl 2xl:text-2xl bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-200 transition">
+      <a href="/user/subject_management" className="inline-flex w-auto items-center mb-2 gap-1 text-xl 2xl:text-2xl bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-200 transition">
         <ArrowRightIcon/> Go to Subjects Management
-      </button>
+      </a>
     </div>
   );
 }
