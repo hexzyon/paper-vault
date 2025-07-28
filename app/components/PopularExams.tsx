@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function PopularExams() {
     const exams = [
-        { title: "Grade 5", subtitle: "Scholarship", img: "/popular_exams/exam1.png", id: "grade5" },
+        { title: "Grade 5", subtitle: "Scholarship", img: "/popular_exams/exam1.png", id: "6874b3fd002287a1f192" },
         { title: "G.C.E.", subtitle: "O/L", img: "/popular_exams/exam2.png", id: "grade11" },
         { title: "G.C.E.", subtitle: "A/L", img: "/popular_exams/exam3.png", id: "grade13" }
     ];

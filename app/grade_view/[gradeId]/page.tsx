@@ -11,7 +11,7 @@ type Props = {
   }
 }
 
-const validGrades = ['grade5', 'grade11', 'grade13'];
+const validGrades = ['6874b3fd002287a1f192', 'grade11', 'grade13'];
 
 export default function GradeView({ params }: Props) {
   const { gradeId } = params;
@@ -21,7 +21,7 @@ export default function GradeView({ params }: Props) {
   if (!isValid) {
     return (
       <main className="min-h-screen flex items-center justify-center text-red-500 text-xl">
-        Invalid grade
+        Invalid grade {gradeId}
       </main>
     );
   }

@@ -2,7 +2,7 @@
 
 import { Check, Upload, X } from "lucide-react";
 import { useState } from "react";
-import { databases, storage, ID } from "@/appwrite/config"; // adjust path as needed
+import { databases, storage, ID } from "@/appwrite/config"; 
 import conf from "@/conf/config";
 
 const DB_ID = conf.appwriteDatabaseId;
@@ -22,15 +22,27 @@ export default function AddGradeModal({ onClose }: { onClose: () => void }) {
     try {
       let imageUrl = "";
 
-      // Upload file if selected
       if (file) {
-        const fileUpload = await storage.createFile(BUCKET_ID, ID.unique(), file);
+        // Validate file type
+        if (!file.type.startsWith("image/")) {
+          alert("Only image files are allowed.");
+          setLoading(false);
+          return;
+        }
 
-        // Generate URL for the uploaded file
+        // Validate file size < 500KB
+        if (file.size > 500 * 1024) {
+          alert("Image must be smaller than 500KB.");
+          setLoading(false);
+          return;
+        }
+
+        // Convert to WEBP
+        const webpFile = await convertToWebp(file);
+        const fileUpload = await storage.createFile(BUCKET_ID, ID.unique(), webpFile);
         imageUrl = storage.getFileView(BUCKET_ID, fileUpload.$id);
       }
 
-      // Save grade to database
       await databases.createDocument(DB_ID, COLLECTION_ID, ID.unique(), {
         grade_name: gradeName,
         education_level: educationLevel,
@@ -45,6 +57,42 @@ export default function AddGradeModal({ onClose }: { onClose: () => void }) {
     } finally {
       setLoading(false);
     }
+  };
+
+  const convertToWebp = (file: File): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        if (!reader.result) return reject("Failed to read file.");
+        img.src = reader.result as string;
+      };
+
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return reject("Canvas not supported.");
+        ctx.drawImage(img, 0, 0);
+
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) return reject("Failed to convert to WEBP.");
+            const webpFile = new File([blob], file.name.replace(/\.\w+$/, ".webp"), {
+              type: "image/webp",
+            });
+            resolve(webpFile);
+          },
+          "image/webp",
+          0.8
+        );
+      };
+
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
   };
 
   return (

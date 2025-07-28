@@ -31,7 +31,7 @@ export default function SubjectManagementPage() {
       const entries: SubjectEntry[] = await Promise.all(
         sgPairs.documents.map(async (sg: any) => {
           const s = subjRes.documents.find((a: any) => a.$id === sg.subjects.$id);
-          const gradeName = sg.grades; // assuming this is a shorthand ID, you might fetch grade doc
+          const gradeName = sg.grades; 
           const countRes = await appwriteService.getPapersBySubjectGrade(sg.$id);
           
           return {
@@ -40,7 +40,7 @@ export default function SubjectManagementPage() {
             gradeName: gradeName.grade_name, 
             papersCount: countRes.total,
             status: "Active",
-            icon_url:s.icon_url,
+            icon_url:sg.icon_url,
           };
         })
       );

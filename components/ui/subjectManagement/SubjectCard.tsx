@@ -28,13 +28,13 @@ export default function SubjectCard({ subject }: { subject: any }) {
         <span className="text-lg justify-self-start flex-1 text-dark_grey_500 dark:text-dark_grey_100">Total Papers</span>
         <span className="text-lg text-dark_brown dark:text-white"> {subject.papersCount}</span>
       </p>
-      <p className="text-sm mb-1 flex justify-end">
+      <div className="text-sm mb-1 flex justify-end">
         <span className="text-lg justify-self-start flex-1 text-dark_grey_500 dark:text-dark_grey_100">Status</span>
         <div className="bg-green-200 rounded-lg px-2">
             <span className="text-lg text-green-700"> {subject.status}</span>
         </div>
         
-      </p>
+      </div>
       <hr className="solid my-4 border-light_pink dark:border-dark_grey_100 border"/>
       <div className="justify-center flex">
   <a href="/user/past_papers" className="flex w-full items-center justify-center gap-2 text-rose-500 dark:text-white font-medium text-lg">

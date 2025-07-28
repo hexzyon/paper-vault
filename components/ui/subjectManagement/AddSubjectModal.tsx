@@ -41,34 +41,49 @@ export default function AddSubjectModal({ onClose }: { onClose: () => void }) {
       return;
     }
 
+    // Check file type
+    if (!file.type.startsWith("image/")) {
+      alert("Uploaded file is not an image.");
+      setLoading(false);
+      return;
+    }
+
+    // Check file size (< 500KB)
+    if (file.size > 500 * 1024) {
+      alert("Image size must be less than 500KB.");
+      setLoading(false);
+      return;
+    }
+
     try {
+      const convertedFile = await convertImageToWebP(file);
+
       // Step 1: Upload file
-      const fileUpload = await storage.createFile(BUCKET_ID, ID.unique(), file);
+      const fileUpload = await storage.createFile(BUCKET_ID, ID.unique(), convertedFile);
       const iconUrl = storage.getFileView(BUCKET_ID, fileUpload.$id);
 
-      // Step 2: Add to subjects
+      // Step 2: Check or create subject
       const existingSubjects = await databases.listDocuments(DATABASE_ID, SUBJECTS_COLLECTION_ID, [
-        Query.equal("subject_name", subjectName)
+        Query.equal("subject_name", subjectName),
       ]);
 
       let subjectId = "";
 
       if (existingSubjects.total > 0) {
-        // Subject exists
         subjectId = existingSubjects.documents[0].$id;
       } else {
-        // Subject does not exist - create new
         const subject = await databases.createDocument(DATABASE_ID, SUBJECTS_COLLECTION_ID, ID.unique(), {
           subject_name: subjectName,
-          icon_url: iconUrl,
+          
         });
         subjectId = subject.$id;
       }
 
-      // Step 3: Add to subjects_has_grades
+      // Step 3: Create relation
       await databases.createDocument(DATABASE_ID, SUBJECTS_GRADES_COLLECTION_ID, ID.unique(), {
         subjects: subjectId,
         grades: gradeId,
+        icon_url: iconUrl,
       });
 
       alert("Subject added successfully!");
@@ -79,6 +94,44 @@ export default function AddSubjectModal({ onClose }: { onClose: () => void }) {
     } finally {
       setLoading(false);
     }
+  };
+
+  const convertImageToWebP = (file: File): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        img.src = reader.result as string;
+      };
+
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return reject("Canvas context error");
+        ctx.drawImage(img, 0, 0);
+
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              const webpFile = new File([blob], file.name.replace(/\.\w+$/, ".webp"), { type: "image/webp" });
+              resolve(webpFile);
+            } else {
+              reject("Failed to convert image to WebP");
+            }
+          },
+          "image/webp",
+          0.8 
+        );
+      };
+
+      img.onerror = () => reject("Failed to load image");
+      reader.onerror = () => reject("Failed to read image file");
+
+      reader.readAsDataURL(file);
+    });
   };
 
   return (
