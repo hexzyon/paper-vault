@@ -1,12 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation' 
+import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   FaBook, FaFlask, FaCalculator, FaGlobe, FaLanguage,
   FaPagelines, FaCaretDown
 } from 'react-icons/fa'
+import { Upload } from 'lucide-react'
 
 type StatusType = 'Available' | 'Coming Soon'
 
@@ -16,13 +17,13 @@ const mainSubjects: {
   icon: JSX.Element
   status: StatusType
 }[] = [
-  { id: 1, name: 'Mathematics', icon: <FaCalculator />, status: 'Available' },
-  { id: 2, name: 'Science', icon: <FaFlask />, status: 'Coming Soon' },
-  { id: 3, name: 'Buddhism', icon: <FaPagelines />, status: 'Coming Soon' },
-  { id: 4, name: 'English', icon: <FaLanguage />, status: 'Available' },
-  { id: 5, name: 'History', icon: <FaBook />, status: 'Available' },
-  { id: 6, name: 'Geography', icon: <FaGlobe />, status: 'Coming Soon' },
-]
+    { id: 1, name: 'Mathematics', icon: <FaCalculator />, status: 'Available' },
+    { id: 2, name: 'Science', icon: <FaFlask />, status: 'Coming Soon' },
+    { id: 3, name: 'Buddhism', icon: <FaPagelines />, status: 'Coming Soon' },
+    { id: 4, name: 'English', icon: <FaLanguage />, status: 'Available' },
+    { id: 5, name: 'History', icon: <FaBook />, status: 'Available' },
+    { id: 6, name: 'Geography', icon: <FaGlobe />, status: 'Coming Soon' },
+  ]
 
 const statusBadge: Record<StatusType, string> = {
   'Available': 'bg-light_pink text-black dark:bg-dark_grey dark:text-white',
@@ -30,18 +31,25 @@ const statusBadge: Record<StatusType, string> = {
 }
 
 type Props = {
-  gradeId: string
-}
+  gradeId: string;
+  subjects: {
+    $id: string;
+    subject_name: string;
+    icon_url: string;
+  }[];
+};
 
-export default function MainSubjects({ gradeId }: Props) {
+export default function MainSubjects({ gradeId, subjects }: Props) {
   const [visibleCount, setVisibleCount] = useState(4)
-  const router = useRouter() 
+  const router = useRouter()
+
+  if (!subjects.length) return null;
 
   const handleShowMore = () => {
     setVisibleCount(prev => prev + 4)
   }
 
-  const handleViewPapers = (subjectId: number) => {
+  const handleViewPapers = (subjectId: string) => {
     router.push(`/subject_view/${subjectId}?gradeId=${gradeId}`)
   }
 
@@ -55,24 +63,28 @@ export default function MainSubjects({ gradeId }: Props) {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-screen-2xl mx-auto px-0 md:px-0">
         <AnimatePresence>
-          {mainSubjects.slice(0, visibleCount).map((subject) => (
+          {subjects.slice(0, visibleCount).map((subject) => (
             <motion.div
-              key={subject.id}
+              key={subject.$id}
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.4 }}
               className="border rounded-xl px-2 md:px-3 py-5 shadow-md shadow-light_pink dark:shadow-dark_grey_100 bg-white dark:bg-dark_grey_500 text-left relative"
             >
-              <div className="text-3xl md:text-4xl xl:text-6xl text-red-400 mb-3">{subject.icon}</div>
-              <span className={`absolute top-3 right-3 text-[10px] xl:text-lg px-2 py-1 rounded ${statusBadge[subject.status]}`}>
-                {subject.status}
+              <div className="text-3xl md:text-4xl xl:text-6xl text-red-400 mb-3">{subject.icon_url ? (
+                <img src={subject.icon_url} alt="Grade Icon" className="w-8 h-8 object-contain" />
+              ) : (
+                <Upload className="w-6 h-6 text-rose-500 dark:text-white" />
+              )}</div>
+              <span className={`absolute top-3 right-3 text-[10px] xl:text-lg px-2 py-1 rounded ${statusBadge['Available']}`}>
+                Available
               </span>
-              <h3 className="text-lg md:text-xl xl:text-3xl text-dark_brown dark:text-white">{subject.name}</h3>
+              <h3 className="text-lg md:text-xl xl:text-3xl text-dark_brown dark:text-white">{subject.subject_name}</h3>
               <button
                 className="mt-2 w-full py-1 text-md xl:text-xl text-dark_brown dark:text-white border border-dark_brown dark:border-white 
                 rounded-md hover:bg-dark_brown hover:dark:bg-gray-700 hover:text-white hover:dark:text-white transition-colors"
-                onClick={() => handleViewPapers(subject.id)} 
+                onClick={() => handleViewPapers(subject.$id)}
               >
                 View Papers
               </button>

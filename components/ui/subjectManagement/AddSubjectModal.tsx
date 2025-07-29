@@ -17,6 +17,8 @@ export default function AddSubjectModal({ onClose }: { onClose: () => void }) {
   const [gradeId, setGradeId] = useState("");
   const [grades, setGrades] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isMainSubject, setIsMainSubject] = useState(false);
+
 
   // Fetch grades from DB
   useEffect(() => {
@@ -74,7 +76,7 @@ export default function AddSubjectModal({ onClose }: { onClose: () => void }) {
       } else {
         const subject = await databases.createDocument(DATABASE_ID, SUBJECTS_COLLECTION_ID, ID.unique(), {
           subject_name: subjectName,
-          
+
         });
         subjectId = subject.$id;
       }
@@ -84,6 +86,7 @@ export default function AddSubjectModal({ onClose }: { onClose: () => void }) {
         subjects: subjectId,
         grades: gradeId,
         icon_url: iconUrl,
+        main_subject: isMainSubject, 
       });
 
       alert("Subject added successfully!");
@@ -123,7 +126,7 @@ export default function AddSubjectModal({ onClose }: { onClose: () => void }) {
             }
           },
           "image/webp",
-          0.8 
+          0.8
         );
       };
 
@@ -172,6 +175,22 @@ export default function AddSubjectModal({ onClose }: { onClose: () => void }) {
               </option>
             ))}
           </select>
+
+          <label className="block text-sm md:text-lg text-gray-700 dark:text-gray-300 mt-2">
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                id="mainSubject"
+                checked={isMainSubject}
+                onChange={(e) => setIsMainSubject(e.target.checked)}
+                className="h-4 w-4 accent-rose-500"
+              />
+              <label htmlFor="mainSubject" className="text-sm md:text-base text-gray-800 dark:text-gray-200">
+                Mark as Main Subject
+              </label>
+            </div>
+          </label>
+
 
           <label className="block text-sm md:text-lg text-gray-700 dark:text-gray-300">
             Subject Icon
