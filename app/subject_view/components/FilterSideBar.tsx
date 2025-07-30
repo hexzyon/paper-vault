@@ -1,30 +1,33 @@
-"use client"
+"use client";
+import { ChevronDown, ChevronRight } from "lucide-react";
+import { useState } from "react";
 
-import { useState } from "react"
-import { ChevronDown, ChevronRight } from "lucide-react"
+type Filters = {
+  language: string;
+  type: string;
+  examType: string;
+  yearRange: [number, number];
+};
 
-export default function FilterContent() {
-  const minYear = 2000
-  const maxYear = 2025
+type Props = {
+  filters: Filters;
+  setFilters: (f: Filters) => void;
+};
 
-  const [startYear, setStartYear] = useState(2005)
-  const [endYear, setEndYear] = useState(2025)
+export default function FilterContent({ filters, setFilters }: Props) {
+  const minYear = 2000;
+  const maxYear = new Date().getFullYear();
+  const years = Array.from({ length: maxYear - minYear + 1 }, (_, i) => maxYear - i);
 
-  const [expandedSection, setExpandedSection] = useState<string | null>("language")
-  const [yearExpanded, setYearExpanded] = useState(false)
+  const [expLang, toggleLang] = useState(false);
+  const [expExam, toggleExam] = useState(false);
+  const [rangeExpanded, setRangeExpanded] = useState(false);
 
-  const [selectedLanguage, setSelectedLanguage] = useState("")
-  const [selectedExam, setSelectedExam] = useState("")
-
-  const years = Array.from({ length: maxYear - minYear + 1 }, (_, i) => maxYear - i)
-
-  const toggleSection = (section: string) => {
-    setExpandedSection(prev => (prev === section ? null : section))
-  }
-
-  const toggleYearMode = () => {
-    setYearExpanded(prev => !prev)
-  }
+  const applyLanguage = (lang: string) =>
+    setFilters({ ...filters, language: filters.language === lang ? "" : lang });
+  const applyExam = (type: string) =>
+    setFilters({ ...filters, examType: filters.examType === type ? "" : type });
+  const applyYear = (yr: number) => setFilters({ ...filters, yearRange: [yr, yr] });
 
   return (
     <div className="space-y-4 text-dark_brown dark:text-white">
@@ -34,134 +37,124 @@ export default function FilterContent() {
       <div className="border rounded-xl shadow-md shadow-light_pink dark:shadow-dark_grey_100 p-4 bg-white dark:bg-dark_grey_500 dark:border-gray-400">
         <div
           className="flex justify-between items-center cursor-pointer"
-          onClick={() => toggleSection("language")}
+          onClick={() => toggleLang(!expLang)}
         >
           <h3 className="text-lg font-semibold">Language</h3>
-          {expandedSection === "language" ? <ChevronDown /> : <ChevronRight />}
+          {expLang ? <ChevronDown /> : <ChevronRight />}
         </div>
-        {expandedSection === "language" && (
+        {expLang && (
           <div className="mt-3 space-y-2 max-h-32 overflow-y-auto pr-2">
             {["Sinhala", "English", "Tamil"].map((lang) => (
-              <div key={lang} className="flex items-center">
+              <label key={lang} className="flex items-center space-x-2">
                 <input
                   type="radio"
                   name="language"
-                  id={lang}
-                  value={lang}
-                  checked={selectedLanguage === lang}
-                  onChange={() => setSelectedLanguage(lang)}
-                  className="mr-2"
+                  checked={filters.language === lang}
+                  onChange={() => applyLanguage(lang)}
                 />
-                <label htmlFor={lang}>{lang}</label>
-              </div>
+                <span>{lang}</span>
+              </label>
             ))}
           </div>
         )}
       </div>
 
-      {/* Exam Type Section */}
+      {/* Exam Type Filter */}
       <div className="border rounded-xl shadow-md shadow-light_pink dark:shadow-dark_grey_100 p-4 bg-white dark:bg-dark_grey_500 dark:border-gray-400">
         <div
           className="flex justify-between items-center cursor-pointer"
-          onClick={() => toggleSection("exam")}
+          onClick={() => toggleExam(!expExam)}
         >
           <h3 className="text-lg font-semibold">Exam Type</h3>
-          {expandedSection === "exam" ? <ChevronDown /> : <ChevronRight />}
+          {expExam ? <ChevronDown /> : <ChevronRight />}
         </div>
-        {expandedSection === "exam" && (
+        {expExam && (
           <div className="mt-3 space-y-2">
-            {["Provincial Exams", "Divisional Exams", "School Based Exams"].map((type) => (
-              <div key={type} className="flex items-center">
+            {["Provincial", "Divisional", "School"].map((type) => (
+              <label key={type} className="flex items-center space-x-2">
                 <input
                   type="radio"
                   name="examType"
-                  id={type}
-                  value={type}
-                  checked={selectedExam === type}
-                  onChange={() => setSelectedExam(type)}
-                  className="mr-2"
+                  checked={filters.examType === type}
+                  onChange={() => applyExam(type)}
                 />
-                <label htmlFor={type}>{type}</label>
-              </div>
+                <span>{type}</span>
+              </label>
             ))}
           </div>
         )}
       </div>
 
-      {/* Year Section */}
+      {/* Year Range Filter */}
       <div className="border rounded-xl shadow-md shadow-light_pink dark:shadow-dark_grey_100 p-4 bg-white dark:bg-dark_grey_500 dark:border-gray-400">
         <div
           className="flex justify-between items-center cursor-pointer"
-          onClick={toggleYearMode}
+          onClick={() => setRangeExpanded(!rangeExpanded)}
         >
           <h3 className="text-lg font-semibold">Select Year</h3>
-          {yearExpanded ? <ChevronDown /> : <ChevronRight />}
+          {rangeExpanded ? <ChevronDown /> : <ChevronRight />}
         </div>
 
-        {/* Slider mode */}
-        {!yearExpanded && (
+        {rangeExpanded ? (
+          <div className="grid grid-cols-5 md:grid-cols-3 lg:grid-cols-5 gap-2 max-h-40 overflow-y-auto mt-4">
+            {years.map((yr) => (
+              <button
+                key={yr}
+                onClick={() => applyYear(yr)}
+                className={`px-2 py-1 rounded text-xs ${filters.yearRange[0] === yr
+                    ? "bg-dark_brown text-white dark:bg-gray-800"
+                    : "bg-gray-200 dark:bg-gray-500 text-dark_brown dark:text-white"
+                  }`}
+              >
+                {yr}
+              </button>
+            ))}
+          </div>
+        ) : (
           <>
             <div className="relative h-10 flex items-center mt-4">
               <div className="absolute w-full h-2 bg-gray-200 rounded-md dark:bg-gray-500" />
               <div
                 className="absolute h-2 bg-dark_brown rounded-md dark:bg-dark_white"
                 style={{
-                  left: `${((startYear - minYear) / (maxYear - minYear)) * 100}%`,
-                  right: `${100 - ((endYear - minYear) / (maxYear - minYear)) * 100}%`,
+                  left: `${((filters.yearRange[0] - minYear) / (maxYear - minYear)) * 100}%`,
+                  right: `${100 - ((filters.yearRange[1] - minYear) / (maxYear - minYear)) * 100}%`,
                 }}
               />
               <input
                 type="range"
                 min={minYear}
                 max={maxYear}
-                value={startYear}
-                onChange={(e) => {
-                  const val = Number(e.target.value)
-                  if (val <= endYear) setStartYear(val)
-                }}
+                value={filters.yearRange[0]}
+                onChange={(e) =>
+                  setFilters({
+                    ...filters,
+                    yearRange: [Number(e.target.value), filters.yearRange[1]],
+                  })
+                }
                 className="absolute w-full bg-transparent appearance-none pointer-events-auto"
               />
               <input
                 type="range"
                 min={minYear}
                 max={maxYear}
-                value={endYear}
-                onChange={(e) => {
-                  const val = Number(e.target.value)
-                  if (val >= startYear) setEndYear(val)
-                }}
+                value={filters.yearRange[1]}
+                onChange={(e) =>
+                  setFilters({
+                    ...filters,
+                    yearRange: [filters.yearRange[0], Number(e.target.value)],
+                  })
+                }
                 className="absolute w-full bg-transparent appearance-none pointer-events-auto"
               />
             </div>
             <div className="flex justify-between mt-4 text-sm">
-              <span>{startYear}</span>
-              <span>{endYear}</span>
+              <span>{filters.yearRange[0]}</span>
+              <span>{filters.yearRange[1]}</span>
             </div>
           </>
         )}
-
-        {/* Year list grid (shown when expanded) */}
-        {yearExpanded && (
-          <div className="grid grid-cols-5 md:grid-cols-3 lg:grid-cols-5 gap-2 max-h-40 overflow-y-auto mt-4">
-            {years.map((year) => (
-              <button
-                key={year}
-                onClick={() => {
-                  setStartYear(year)
-                  setEndYear(year)
-                }}
-                className={`text-xs px-2 py-1 rounded ${
-                  year >= startYear && year <= endYear
-                    ? "bg-dark_brown text-white dark:bg-gray-800"
-                    : "bg-gray-200 dark:bg-gray-500 text-dark_brown dark:text-white"
-                }`}
-              >
-                {year}
-              </button>
-            ))}
-          </div>
-        )}
       </div>
     </div>
-  )
+  );
 }

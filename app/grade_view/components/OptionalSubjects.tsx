@@ -16,29 +16,6 @@ type SubjectCardProps = {
   icon: JSX.Element;
 };
 
-const subjectsData: Record<string, SubjectCardProps[]> = {
-  'Category 1': [
-    { title: 'Mathematics', status: 'Available', icon: <FaCalculator /> },
-    { title: 'Science', status: 'Coming Soon', icon: <FaFlask /> },
-    { title: 'Buddhism', status: 'Coming Soon', icon: <FaPagelines /> },
-    { title: 'Mathematics', status: 'Available', icon: <FaLanguage /> },
-    { title: 'History', status: 'Available', icon: <FaBook /> },
-    { title: 'ICT', status: 'Coming Soon', icon: <FaGlobe /> },
-  ],
-  'Category 2': [
-    { title: 'Economics', status: 'Available', icon: <FaCalculator /> },
-    { title: 'Commerce', status: 'Coming Soon', icon: <FaBook /> },
-  ],
-  'Category 3': [
-    { title: 'Music', status: 'Coming Soon', icon: <FaCalculator /> },
-    { title: 'Dance', status: 'Available', icon: <FaPagelines /> },
-  ],
-  Languages: [
-    { title: 'Sinhala', status: 'Available', icon: <FaCalculator /> },
-    { title: 'English', status: 'Coming Soon', icon: <FaLanguage /> },
-  ],
-};
-
 const statusBadge: Record<StatusType, string> = {
   'Available': 'bg-light_pink text-black dark:bg-dark_grey dark:text-white',
   'Coming Soon': 'bg-gray-200 text-black dark:bg-gray-500 dark:text-white',

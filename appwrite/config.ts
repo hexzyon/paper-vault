@@ -333,6 +333,36 @@ export class AppwriteService {
       bookId
     );
   }
+
+  async findSubjectGradeRelation(gradeId: string, subjectId: string) {
+    const res = await databases.listDocuments(
+      conf.appwriteDatabaseId,
+      conf.appwriteSubjectGradeCollectionId,
+      [
+        Query.equal("grades", gradeId),
+        Query.equal("subjects", subjectId),
+        Query.limit(1),
+      ]
+    );
+    return res.documents[0] || null;
+  }
+
+  async getGradesById(gradeId: string) {
+    return databases.listDocuments(
+      conf.appwriteDatabaseId,
+      conf.appwriteGradesCollectionId,
+      [Query.equal("$id", gradeId)]
+    );
+  }
+
+  async getSubjectsById(subjectId: string) {
+    return databases.listDocuments(
+      conf.appwriteDatabaseId,
+      conf.appwriteSubjectsCollectionId,
+      [Query.equal("$id", subjectId)]
+    );
+  }
+
 }
 
 const appwriteService = new AppwriteService();

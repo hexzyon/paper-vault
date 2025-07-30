@@ -61,6 +61,7 @@ export default function GradeHeader({ gradeId }: GradeHeaderProps) {
 
           const entry = {
             ...relation,
+            $id:relation.subjects.$id,
             subject_name: subjectName,
             icon_url: icon,
           };
