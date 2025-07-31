@@ -2,6 +2,7 @@
 import { ChevronDown, ChevronRight, Eye, Download } from "lucide-react";
 
 export default function PaperCard({
+  
   title,
   region,
   term,

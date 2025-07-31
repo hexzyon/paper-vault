@@ -363,6 +363,18 @@ export class AppwriteService {
     );
   }
 
+  async getRecentPapers(limit = 3) {
+  return await databases.listDocuments(
+    conf.appwriteDatabaseId,
+    conf.appwritePapersCollectionId,
+    [
+      Query.orderDesc("date"), 
+      Query.limit(limit),
+      Query.equal("status", true),
+    ]
+  );
+}
+
 }
 
 const appwriteService = new AppwriteService();
