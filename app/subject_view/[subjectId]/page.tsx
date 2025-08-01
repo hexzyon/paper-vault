@@ -153,7 +153,7 @@ export default function SubjectViewPage() {
                   }
                   paperUrl={paper.paper_url}
                   subjectId={paper.subjectsHasGrades.subjects.$id}
-                  marking_sceme={paper.marking_sceme}
+                  marking_scheme={paper.marking_scheme}
                 />
               ))}
               {visiblePapers.length === 0 && (
