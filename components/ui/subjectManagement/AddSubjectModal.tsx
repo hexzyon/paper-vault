@@ -1,7 +1,7 @@
 "use client";
 import { Check, Upload, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { databases, storage, ID } from "@/appwrite/config"; // adjust your path
+import { databases, storage, ID } from "@/appwrite/config";
 import conf from "@/conf/config";
 import { Query } from "appwrite";
 

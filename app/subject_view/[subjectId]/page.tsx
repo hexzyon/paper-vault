@@ -152,6 +152,8 @@ export default function SubjectViewPage() {
                     setExpandedId(expandedId === paper.$id ? null : paper.$id)
                   }
                   paperUrl={paper.paper_url}
+                  subjectId={paper.subjectsHasGrades.subjects.$id}
+                  marking_sceme={paper.marking_sceme}
                 />
               ))}
               {visiblePapers.length === 0 && (

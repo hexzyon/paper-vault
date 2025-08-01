@@ -18,6 +18,7 @@ export default function AddNewPaperModal({
   const [type, setType] = useState("");
   const [type2, setType2] = useState("");
   const [term, setTerm] = useState("");
+  const [isMarkingSceme, setIsMarkingSceme] = useState(false);
 
   const [subjects, setSubjects] = useState<any[]>([]);
   const [grades, setGrades] = useState<any[]>([]);
@@ -34,6 +35,7 @@ export default function AddNewPaperModal({
       setTerm(existingPaper.term);
       setSubjectId(existingPaper.subjectsHasGrades?.subjects?.$id);
       setGradeId(existingPaper.subjectsHasGrades?.grades?.$id);
+      setIsMarkingSceme(existingPaper.marking_sceme);
     }
   }, [existingPaper]);
 
@@ -87,6 +89,7 @@ export default function AddNewPaperModal({
         term,
         status: isPublish, // true for publish, false for draft
         date: new Date().toISOString(), 
+        marking_sceme: isMarkingSceme,
       };
 
       if (existingPaper) {
@@ -236,6 +239,23 @@ export default function AddNewPaperModal({
               <option>Second</option>
               <option>Third</option>
             </select>
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="block text-sm md:text-lg text-gray-700 dark:text-gray-300 mt-2">
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                id="mainSubject"
+                checked={isMarkingSceme}
+                onChange={(e) => setIsMarkingSceme(e.target.checked)}
+                className="h-4 w-4 accent-rose-500"
+              />
+              <label htmlFor="mainSubject" className="text-sm md:text-lg text-gray-800 dark:text-gray-200">
+                Marking Sceme
+              </label>
+            </div>
+          </label>
           </div>
         </form>
 

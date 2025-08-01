@@ -175,7 +175,9 @@ export class AppwriteService {
     return databases.listDocuments(
       conf.appwriteDatabaseId,
       conf.appwritePapersCollectionId,
-      [Query.equal("subjectsHasGrades", subjectGradeId)]
+      [Query.equal("subjectsHasGrades", subjectGradeId),
+        Query.equal("status", true),
+      ]
     );
   }
 
@@ -374,6 +376,36 @@ export class AppwriteService {
     ]
   );
 }
+
+async getDownloadByDate(subjectId: string, date: string) {
+    return await databases.listDocuments(
+      conf.appwriteDatabaseId, 
+      conf.appwriteDownloadsCollectionId, 
+      [
+      Query.equal("subjects", subjectId),
+      Query.equal("date", date),
+    ]);
+  }
+
+  async updateDownload(docId: string, count: number) {
+    return await databases.updateDocument(
+      conf.appwriteDatabaseId, 
+      conf.appwriteDownloadsCollectionId,  
+      docId, {
+      download_count: count,
+    });
+  }
+
+  async createDownload(subjectId: string, date: string) {
+    return await databases.createDocument(
+      conf.appwriteDatabaseId, 
+      conf.appwriteDownloadsCollectionId, 
+      ID.unique(), {
+      subjects: subjectId,
+      date: date,
+      download_count: 1,
+    });
+  }
 
 }
 
