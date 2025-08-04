@@ -11,20 +11,6 @@ import { Upload } from 'lucide-react'
 
 type StatusType = 'Available' | 'Coming Soon'
 
-const mainSubjects: {
-  id: number
-  name: string
-  icon: JSX.Element
-  status: StatusType
-}[] = [
-    { id: 1, name: 'Mathematics', icon: <FaCalculator />, status: 'Available' },
-    { id: 2, name: 'Science', icon: <FaFlask />, status: 'Coming Soon' },
-    { id: 3, name: 'Buddhism', icon: <FaPagelines />, status: 'Coming Soon' },
-    { id: 4, name: 'English', icon: <FaLanguage />, status: 'Available' },
-    { id: 5, name: 'History', icon: <FaBook />, status: 'Available' },
-    { id: 6, name: 'Geography', icon: <FaGlobe />, status: 'Coming Soon' },
-  ]
-
 const statusBadge: Record<StatusType, string> = {
   'Available': 'bg-light_pink text-black dark:bg-dark_grey dark:text-white',
   'Coming Soon': 'bg-gray-200 text-black dark:bg-gray-500 dark:text-white',
@@ -93,7 +79,7 @@ export default function MainSubjects({ gradeId, subjects }: Props) {
         </AnimatePresence>
       </div>
 
-      {visibleCount < mainSubjects.length && (
+      {visibleCount < subjects.length && (
         <div className="mt-10">
           <button
             onClick={handleShowMore}

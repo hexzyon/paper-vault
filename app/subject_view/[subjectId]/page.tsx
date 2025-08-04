@@ -40,14 +40,24 @@ export default function SubjectViewPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const sub:any = await appwriteService.getSubjectsById(subjectId);
+
+        if (subjectId === "marking" && !gradeId) {
+          // Load all papers with a marking scheme
+          const res = await appwriteService.getMarkingPapersOnly();
+          setPapers(res.documents);
+          setGradeName("All");
+          setSubjectName("Marking Schemes");
+          return;
+        }
+
+        const sub: any = await appwriteService.getSubjectsById(subjectId);
         setSubjectName(sub.documents[0].subject_name);
 
-        const grade:any = await appwriteService.getGradesById(gradeId);
+        const grade: any = await appwriteService.getGradesById(gradeId);
         setGradeName(grade.documents[0].grade_name)
         // Check subjects_has_grades for given grade & subject
         const rel = (await appwriteService.findSubjectGradeRelation(gradeId, subjectId));
-        
+
         if (!rel) {
           setPapers([]);
           return;
@@ -85,7 +95,17 @@ export default function SubjectViewPage() {
 
           <main className="flex-1 pl-0 md:pl-4 py-3 mt-4 md:border-l md:border-dark_grey_500">
             <h1 className="text-2xl md:text-4xl font-bold text-dark_brown dark:text-white mb-4 mx-2">
-              Grade {gradeName.replace('Grade', '')} {subjectName} Subject Past Papers
+              {subjectId === 'marking' ? (
+                'All Marking Scheme Papers'
+              ) : subjectId === 'divisional' ? (
+                'All Divisional Past Papers'
+              ) : subjectId === 'provincial' ? (
+                'All Provincial Past Papers'
+              ) : subjectId === 'school' ? (
+                'All School Past Papers'
+              ) : (
+                <>Grade {gradeName.replace('Grade', '')} {subjectName} Subject Past Papers</>
+              )}
             </h1>
 
             <div className="w-full">

@@ -407,6 +407,18 @@ async getDownloadByDate(subjectId: string, date: string) {
     });
   }
 
+  async getMarkingPapersOnly() {
+  return databases.listDocuments(
+    conf.appwriteDatabaseId,
+    conf.appwritePapersCollectionId,
+    [
+      Query.equal("marking_scheme",true),
+      Query.equal("status", true),
+    ]
+  );
+}
+
+
 }
 
 const appwriteService = new AppwriteService();

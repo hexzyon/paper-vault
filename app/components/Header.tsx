@@ -82,7 +82,7 @@ export default function Header() {
                 {/* Desktop Nav */}
                 <nav className="hidden md:flex space-x-10 font-anek font-normal text-dark_brown dark:text-dark_white">
                     <a href="/" className="text-xl lg:text-2xl 2xl:text-4xl">Home</a>
-                    <a href="#" className="text-xl lg:text-2xl 2xl:text-4xl">Markings</a>
+                    <a href="/subject_view/marking" className="text-xl lg:text-2xl 2xl:text-4xl">Markings</a>
                     <a href="#" className="text-xl lg:text-2xl 2xl:text-4xl">Books</a>
                     <div className="relative z-50">
                         <NavigationMenu className="z-50 bg-white dark:bg-dark_grey text-dark_brown dark:text-white">
