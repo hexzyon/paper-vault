@@ -50,6 +50,30 @@ export default function SubjectViewPage() {
           return;
         }
 
+        if (subjectId === "divisional" && !gradeId) {
+          const res = await appwriteService.getPapersByType("Divisional");
+          setPapers(res.documents);
+          setGradeName("All");
+          setSubjectName("Divisional Papers");
+          return;
+        }
+
+        if (subjectId === "provincial" && !gradeId) {
+          const res = await appwriteService.getPapersByType("Provincial");
+          setPapers(res.documents);
+          setGradeName("All");
+          setSubjectName("Provincial Papers");
+          return;
+        }
+
+        if (subjectId === "school" && !gradeId) {
+          const res = await appwriteService.getPapersByType("School");
+          setPapers(res.documents);
+          setGradeName("All");
+          setSubjectName("School Papers");
+          return;
+        }
+
         const sub: any = await appwriteService.getSubjectsById(subjectId);
         setSubjectName(sub.documents[0].subject_name);
 

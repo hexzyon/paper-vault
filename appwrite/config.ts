@@ -175,7 +175,8 @@ export class AppwriteService {
     return databases.listDocuments(
       conf.appwriteDatabaseId,
       conf.appwritePapersCollectionId,
-      [Query.equal("subjectsHasGrades", subjectGradeId),
+      [
+        Query.equal("subjectsHasGrades", subjectGradeId),
         Query.equal("status", true),
       ]
     );
@@ -366,59 +367,60 @@ export class AppwriteService {
   }
 
   async getRecentPapers(limit = 3) {
-  return await databases.listDocuments(
-    conf.appwriteDatabaseId,
-    conf.appwritePapersCollectionId,
-    [
-      Query.orderDesc("date"), 
-      Query.limit(limit),
-      Query.equal("status", true),
-    ]
-  );
-}
-
-async getDownloadByDate(subjectId: string, date: string) {
     return await databases.listDocuments(
-      conf.appwriteDatabaseId, 
-      conf.appwriteDownloadsCollectionId, 
-      [
-      Query.equal("subjects", subjectId),
-      Query.equal("date", date),
-    ]);
+      conf.appwriteDatabaseId,
+      conf.appwritePapersCollectionId,
+      [Query.orderDesc("date"), Query.limit(limit), Query.equal("status", true)]
+    );
+  }
+
+  async getDownloadByDate(subjectId: string, date: string) {
+    return await databases.listDocuments(
+      conf.appwriteDatabaseId,
+      conf.appwriteDownloadsCollectionId,
+      [Query.equal("subjects", subjectId), Query.equal("date", date)]
+    );
   }
 
   async updateDownload(docId: string, count: number) {
     return await databases.updateDocument(
-      conf.appwriteDatabaseId, 
-      conf.appwriteDownloadsCollectionId,  
-      docId, {
-      download_count: count,
-    });
+      conf.appwriteDatabaseId,
+      conf.appwriteDownloadsCollectionId,
+      docId,
+      {
+        download_count: count,
+      }
+    );
   }
 
   async createDownload(subjectId: string, date: string) {
     return await databases.createDocument(
-      conf.appwriteDatabaseId, 
-      conf.appwriteDownloadsCollectionId, 
-      ID.unique(), {
-      subjects: subjectId,
-      date: date,
-      download_count: 1,
-    });
+      conf.appwriteDatabaseId,
+      conf.appwriteDownloadsCollectionId,
+      ID.unique(),
+      {
+        subjects: subjectId,
+        date: date,
+        download_count: 1,
+      }
+    );
   }
 
   async getMarkingPapersOnly() {
-  return databases.listDocuments(
-    conf.appwriteDatabaseId,
-    conf.appwritePapersCollectionId,
-    [
-      Query.equal("marking_scheme",true),
-      Query.equal("status", true),
-    ]
-  );
-}
+    return databases.listDocuments(
+      conf.appwriteDatabaseId,
+      conf.appwritePapersCollectionId,
+      [Query.equal("marking_scheme", true), Query.equal("status", true)]
+    );
+  }
 
-
+  async getPapersByType(type: string) {
+    return databases.listDocuments(
+      conf.appwriteDatabaseId,
+      conf.appwritePapersCollectionId,
+      [Query.equal("type", type), Query.equal("status", true)]
+    );
+  }
 }
 
 const appwriteService = new AppwriteService();
