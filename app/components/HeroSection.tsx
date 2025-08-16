@@ -1,21 +1,29 @@
 "use client"
 import Image from 'next/image';
 import BookImage from '../../public/bookA.png';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import appwriteService from '@/appwrite/config';
 
 export default function HeroSection() {
-    const [query, setQuery] = useState<string>('')
-    const [results, setResults] = useState<string[]>([])
+    const [query, setQuery] = useState('')
+    const [results, setResults] = useState<any[]>([])
+    const [allGrades, setAllGrades] = useState<any[]>([])
+    const router = useRouter()
 
-    const allData = [
-        'Grade 5 Scholarship',
-        'G.C.E. Ordinary Level',
-        'G.C.E. Advanced Level',
-        'IELTS',
-        'TOEFL',
-        'SAT Exam',
-        'Cambridge English'
-    ]
+    // Fetch grades from database
+    useEffect(() => {
+        const fetchGrades = async () => {
+            try {
+                const res = await appwriteService.getGrades()
+                setAllGrades(res.documents)
+            } catch (err) {
+                console.error('Error fetching grades:', err)
+            }
+        }
+
+        fetchGrades()
+    }, [])
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value
@@ -24,10 +32,22 @@ export default function HeroSection() {
         if (value.trim() === '') {
             setResults([])
         } else {
-            const filtered = allData.filter(item =>
-                item.toLowerCase().includes(value.toLowerCase())
+            const filtered = allGrades.filter((grade) =>
+                grade.grade_name.toLowerCase().includes(value.toLowerCase())
             )
             setResults(filtered)
+        }
+    }
+
+    const handleSearch = () => {
+        const selected = allGrades.find(
+            (grade) => grade.grade_name.toLowerCase() === query.toLowerCase()
+        )
+
+        if (selected) {
+            router.push(`/grade_view/${selected.$id}`)
+        } else {
+            alert('Please select a valid grade')
         }
     }
 
@@ -106,7 +126,7 @@ export default function HeroSection() {
                             placeholder="Search"
                             className="flex-grow w-10/12 pl-3 md:pl-0 bg-transparent focus:outline-none text-gray-700 dark:text-dark_grey_100 2xl:text-3xl"
                         />
-                        <button className="bg-dark_brown dark:bg-orange text-white px-4 md:px-6 py-1 md:py-2 rounded-full 2xl:text-3xl">
+                        <button onClick={handleSearch} className="bg-dark_brown dark:bg-orange text-white px-4 md:px-6 py-1 md:py-2 rounded-full 2xl:text-3xl">
                             Search
                         </button>
                     </div>
@@ -114,16 +134,16 @@ export default function HeroSection() {
                     {results.length > 0 && (
                         <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-dark_grey text-black dark:text-white border dark:border-white rounded-md shadow max-h-60 overflow-y-auto z-50 xl:w-[500px] 2xl:w-[600px]">
 
-                            {results.map((item, index) => (
+                            {results.map((grade, index) => (
                                 <div
-                                    key={index}
+                                    key={grade.$id}
                                     className="px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-dark_grey_500"
                                     onClick={() => {
-                                        setQuery(item)
+                                        setQuery(grade.grade_name)
                                         setResults([])
                                     }}
                                 >
-                                    {item}
+                                    {grade.grade_name}
                                 </div>
                             ))}
                         </div>

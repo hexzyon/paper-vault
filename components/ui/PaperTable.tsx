@@ -1,50 +1,8 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Pencil, Trash2 } from "lucide-react";
-
-const paperData = [
-  {
-    title: "Mathematics Grade 5 Paper",
-    subject: "Maths",
-    grade: "Grade 5 Scholarship",
-    language: "English",
-    type: "Divisional",
-    type2: "Kalutara",
-    year: "2025",
-    term: "First",
-    date: "12.15.2025",
-    status: "Published",
-  },
-  {
-    title: "Physics Term Paper",
-    subject: "Physics",
-    grade: "Grade 12",
-    language: "English",
-    type: "National",
-    type2: "Gampaha",
-    year: "2025",
-    term: "Second",
-    date: "12.16.2025",
-    status: "Draft",
-  },
-  {
-    title: "Biology Revision Paper",
-    subject: "Biology",
-    grade: "Grade 11",
-    language: "English",
-    type: "Zonal",
-    type2: "Kandy",
-    year: "2024",
-    term: "Third",
-    date: "11.10.2024",
-    status: "Published",
-  },
-  // Add more records for demo
-];
-
-while (paperData.length < 12) {
-  paperData.push({ ...paperData[paperData.length % 3] });
-}
+import appwriteService from "@/appwrite/config";
+import AddNewPaperModal from "./AddNewPaperModal";
 
 export default function PaperTable() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -55,19 +13,55 @@ export default function PaperTable() {
   const [selectedGrade, setSelectedGrade] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
 
+  const [papers, setPapers] = useState<any[]>([]);
+  const [subjects, setSubjects] = useState<any[]>([]);
+  const [grades, setGrades] = useState<any[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editPaper, setEditPaper] = useState<any | null>(null);
+
+  useEffect(() => {
+    const fetchPapers = async () => {
+      try {
+        const response = await appwriteService.getPapers();
+
+        const enhancedPapers = response.documents.map((paper: any) => ({
+          ...paper,
+          subject: paper.subjectsHasGrades?.subjects?.subject_name ?? "N/A",
+          grade: paper.subjectsHasGrades?.grades?.grade_name ?? "N/A",
+          status: paper.status === true ? "Published" : "Draft"
+        }));
+
+        setPapers(enhancedPapers);
+
+        // Get subjects
+        const subjectsResponse = await appwriteService.getSubjects();
+        setSubjects(subjectsResponse.documents);
+
+        // Get grades
+        const gradesResponse = await appwriteService.getGrades();
+        setGrades(gradesResponse.documents);
+
+      } catch (error) {
+        console.error("Failed to load papers:", error);
+      }
+    };
+
+    fetchPapers();
+  }, []);
+
   const filteredData = useMemo(() => {
-    return paperData.filter((item) => {
+    return papers.filter((item) => {
       const matchesSearch =
         item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.subject.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesSubject =
-        !selectedSubject || item.subject === selectedSubject;
+
+      const matchesSubject = !selectedSubject || item.subject === selectedSubject;
       const matchesGrade = !selectedGrade || item.grade === selectedGrade;
       const matchesStatus = !selectedStatus || item.status === selectedStatus;
 
       return matchesSearch && matchesSubject && matchesGrade && matchesStatus;
     });
-  }, [searchTerm, selectedSubject, selectedGrade, selectedStatus]);
+  }, [papers, searchTerm, selectedSubject, selectedGrade, selectedStatus]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -75,8 +69,7 @@ export default function PaperTable() {
   const totalPages = Math.max(1, Math.ceil(filteredData.length / itemsPerPage));
 
   return (
-    <div className="bg-white dark:bg-dark_grey_500 p-4 rounded-xl 
-    shadow-sm shadow-light_pink dark:shadow-dark_grey_100 border border-light_pink dark:border-dark_grey_100">
+    <div className="bg-white dark:bg-dark_grey_500 p-4 rounded-xl shadow-sm shadow-light_pink dark:shadow-dark_grey_100 border border-light_pink dark:border-dark_grey_100">
       <div className="flex flex-col md:flex-row gap-2 mb-4">
         <input
           value={searchTerm}
@@ -96,9 +89,11 @@ export default function PaperTable() {
           className="border rounded-md px-2 py-2 text-base w-full md:w-auto"
         >
           <option value="">All Subjects</option>
-          <option value="Maths">Maths</option>
-          <option value="Physics">Physics</option>
-          <option value="Biology">Biology</option>
+          {subjects.map((subj) => (
+            <option key={subj.$id} value={subj.subject_name}>
+              {subj.subject_name}
+            </option>
+          ))}
         </select>
         <select
           value={selectedGrade}
@@ -109,9 +104,11 @@ export default function PaperTable() {
           className="border rounded-md px-2 py-2 text-base w-full md:w-auto"
         >
           <option value="">All Grades</option>
-          <option value="Grade 5 Scholarship">Grade 5 Scholarship</option>
-          <option value="Grade 11">Grade 11</option>
-          <option value="Grade 12">Grade 12</option>
+          {grades.map((grd) => (
+            <option key={grd.$id} value={grd.grade_name}>
+              {grd.grade_name}
+            </option>
+          ))}
         </select>
         <select
           value={selectedStatus}
@@ -127,10 +124,8 @@ export default function PaperTable() {
         </select>
       </div>
 
-
       <div className="overflow-x-auto">
-        <table className="w-full table-auto border-separate border-spacing-y-3 text-left text-gray-700 dark:text-gray-300
-        shadow-sm shadow-light_pink dark:shadow-dark_grey_100 border border-light_pink dark:border-dark_grey_100 p-2 rounded-lg">
+        <table className="w-full table-auto border-separate border-spacing-y-3 text-left text-gray-700 dark:text-gray-300 shadow-sm shadow-light_pink dark:shadow-dark_grey_100 border border-light_pink dark:border-dark_grey_100 p-2 rounded-lg">
           <thead>
             <tr className="bg-gray-200 dark:bg-gray-700 text-md lg:text-lg">
               <th>Title</th>
@@ -157,7 +152,9 @@ export default function PaperTable() {
                 <td className="hidden lg:table-cell">{item.type2}</td>
                 <td className="hidden lg:table-cell">{item.year}</td>
                 <td className="hidden lg:table-cell">{item.term}</td>
-                <td className="hidden lg:table-cell">{item.date}</td>
+                <td className="hidden lg:table-cell">
+                  {new Date(item.date).toISOString().split("T")[0]}
+                </td>
                 <td>
                   <span
                     className={`${item.status === "Published"
@@ -169,19 +166,47 @@ export default function PaperTable() {
                   </span>
                 </td>
                 <td className="flex gap-2">
-                  <Pencil className="w-4 h-4 cursor-pointer text-blue-500" />
-                  <Trash2 className="w-4 h-4 cursor-pointer text-red-500" />
+                  <Pencil
+                    onClick={() => {
+                      setEditPaper(item);
+                      setIsModalOpen(true);
+                    }}
+                    className="w-4 h-4 cursor-pointer text-blue-500"
+                  />
+                  <Trash2
+                    onClick={async () => {
+                      if (confirm("Are you sure you want to delete this paper?")) {
+                        try {
+                          await appwriteService.deletePaper(item.$id);
+                          alert("Paper deleted");
+                          setPapers((prev) => prev.filter((p) => p.$id !== item.$id));
+                        } catch (err) {
+                          console.error(err);
+                          alert("Delete failed");
+                        }
+                      }
+                    }}
+                    className="w-4 h-4 cursor-pointer text-red-500"
+                  />
+
+                  {isModalOpen && (
+                    <AddNewPaperModal
+                      onClose={() => {
+                        setEditPaper(null);
+                        setIsModalOpen(false);
+                      }}
+                      existingPaper={editPaper}
+                    />
+                    )}
                 </td>
               </tr>
             ))}
           </tbody>
-
         </table>
       </div>
 
       <div className="mt-2 text-sm text-gray-500 dark:text-gray-200">
-        Showing {indexOfFirstItem + 1} to{" "}
-        {Math.min(indexOfLastItem, filteredData.length)} of {filteredData.length} results
+        Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, filteredData.length)} of {filteredData.length} results
       </div>
 
       <div className="flex justify-end mt-2 gap-2">

@@ -8,20 +8,103 @@ import FilterContent from '@/app/subject_view/components/FilterSideBar'
 import PaperCard from '@/app/subject_view/components/PaperCard'
 import { dummyPapers } from '@/app/subject_view/data'
 import { Filter } from 'lucide-react'
+import appwriteService from '@/appwrite/config'
 
 export default function SubjectViewPage() {
-  const params = useParams<{ subjectId: string }>()
-  const searchParams = useSearchParams()
-  const gradeId = searchParams.get('gradeId') || ''
+  const params = useParams<{ subjectId: string }>();
+  const searchParams = useSearchParams();
+  const gradeId = searchParams.get('gradeId') || '';
+  const subjectId = params.subjectId;
+  const [showFilters, setShowFilters] = useState(false);
+  const [query, setQuery] = useState('');
 
-  const subjectId = params.subjectId
-  const [showFilters, setShowFilters] = useState(false)
+  const [papers, setPapers] = useState<any[]>([]);
+  const [gradeName, setGradeName] = useState<string>("");
+  const [subjectName, setSubjectName] = useState<string>("");
+  type Filters = {
+    language: string;
+    type: string;
+    yearRange: [number, number];
+    examType: string;
+  };
 
-  const filteredPapers = dummyPapers.filter(
-    (paper) => paper.subjectId === subjectId && paper.gradeId === gradeId
-  )
+  const [filters, setFilters] = useState<Filters>({
+    language: '',
+    type: '',
+    yearRange: [2000, new Date().getFullYear()],
+    examType: '',
+  });
 
-  const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+
+        if (subjectId === "marking" && !gradeId) {
+          // Load all papers with a marking scheme
+          const res = await appwriteService.getMarkingPapersOnly();
+          setPapers(res.documents);
+          setGradeName("All");
+          setSubjectName("Marking Schemes");
+          return;
+        }
+
+        if (subjectId === "divisional" && !gradeId) {
+          const res = await appwriteService.getPapersByType("Divisional");
+          setPapers(res.documents);
+          setGradeName("All");
+          setSubjectName("Divisional Papers");
+          return;
+        }
+
+        if (subjectId === "provincial" && !gradeId) {
+          const res = await appwriteService.getPapersByType("Provincial");
+          setPapers(res.documents);
+          setGradeName("All");
+          setSubjectName("Provincial Papers");
+          return;
+        }
+
+        if (subjectId === "school" && !gradeId) {
+          const res = await appwriteService.getPapersByType("School");
+          setPapers(res.documents);
+          setGradeName("All");
+          setSubjectName("School Papers");
+          return;
+        }
+
+        const sub: any = await appwriteService.getSubjectsById(subjectId);
+        setSubjectName(sub.documents[0].subject_name);
+
+        const grade: any = await appwriteService.getGradesById(gradeId);
+        setGradeName(grade.documents[0].grade_name)
+        // Check subjects_has_grades for given grade & subject
+        const rel = (await appwriteService.findSubjectGradeRelation(gradeId, subjectId));
+
+        if (!rel) {
+          setPapers([]);
+          return;
+        }
+        // Fetch papers for this subjectsHasGrades ID
+        const res = await appwriteService.getPapersBySubjectGrade(rel.$id);
+        setPapers(res.documents);
+      } catch (err) {
+        console.error(err);
+        setPapers([]);
+      }
+    };
+    load();
+  }, [gradeId, subjectId]);
+
+  // Apply UI filters on the fetched papers
+  const visiblePapers = papers.filter(p => {
+    if (filters.language && p.language !== filters.language) return false;
+    if (filters.examType && p.type !== filters.examType) return false;
+    if (p.year < filters.yearRange[0] || p.year > filters.yearRange[1]) return false;
+    if (query && !p.title.toLowerCase().includes(query.toLowerCase())) return false;
+    return true;
+  });
 
   return (
     <main className="bg-white dark:bg-dark_grey min-h-screen text-black">
@@ -30,13 +113,23 @@ export default function SubjectViewPage() {
         <div className="flex flex-col md:flex-row font-anek">
           <aside className="md:w-1/4 w-full pr-4 py-4">
             <div className="hidden md:block space-y-6">
-              <FilterContent />
+              <FilterContent filters={filters} setFilters={setFilters} />
             </div>
           </aside>
 
           <main className="flex-1 pl-0 md:pl-4 py-3 mt-4 md:border-l md:border-dark_grey_500">
             <h1 className="text-2xl md:text-4xl font-bold text-dark_brown dark:text-white mb-4 mx-2">
-              Grade {gradeId.replace('grade', '')} Subject {subjectId} Past Papers
+              {subjectId === 'marking' ? (
+                'All Marking Scheme Papers'
+              ) : subjectId === 'divisional' ? (
+                'All Divisional Past Papers'
+              ) : subjectId === 'provincial' ? (
+                'All Provincial Past Papers'
+              ) : subjectId === 'school' ? (
+                'All School Past Papers'
+              ) : (
+                <>Grade {gradeName.replace('Grade', '')} {subjectName} Subject Past Papers</>
+              )}
             </h1>
 
             <div className="w-full">
@@ -57,6 +150,8 @@ export default function SubjectViewPage() {
                   <input
                     type="text"
                     placeholder="Search Papers..."
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
                     className="w-full border border-dark_grey_500 rounded-lg px-4 py-2 text-lg dark:bg-dark_grey dark:text-white dark:border-gray-600"
                   />
                 </div>
@@ -83,24 +178,34 @@ export default function SubjectViewPage() {
 
                 {/* Filter Content */}
                 <div className="p-4">
-                  <FilterContent />
+                  <FilterContent filters={filters} setFilters={setFilters} />
                 </div>
               </div>
 
             </div>
 
             <div className="mt-4">
-              {filteredPapers.map((paper) => (
-  <PaperCard
-    key={paper.id}
-    {...paper}
-    isExpanded={expandedCardId === String(paper.id)}
-    onToggle={() =>
-      setExpandedCardId(expandedCardId === String(paper.id) ? null : String(paper.id))
+              {visiblePapers.map(paper => (
+                <PaperCard
+                  key={paper.$id}
+                  title={paper.title}
+                  region={paper.type2 || ''}
+                  term={paper.term}
+                  isExpanded={expandedId === paper.$id}
+                  onToggle={() =>
+                    setExpandedId(expandedId === paper.$id ? null : paper.$id)
+                  }
+                  paperUrl={paper.paper_url}
+                  subjectId={paper.subjectsHasGrades.subjects.$id}
+                  marking_scheme={paper.marking_scheme}
+                />
+              ))}
+              {visiblePapers.length === 0 && (
+                <p className="text-center text-lg text-gray-500 dark:text-gray-400">
+                  No papers available.
+                </p>
+              )}
 
-    }
-  />
-))}
             </div>
           </main>
         </div>

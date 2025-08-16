@@ -24,36 +24,36 @@ interface ListItemProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
 const components = [
     {
         title: "G.C.E A/L Exam",
-        href: "/docs/primitives/alert-dialog",
+        href: "/grade_view/68875c0a0011269bfb0b",
         description:
             "A modal dialog that interrupts the user with important content and expects a response.",
     },
     {
         title: "G.C.E O/L Exam",
-        href: "/docs/primitives/hover-card",
+        href: "/grade_view/68875aff00224198d54e",
         description:
             "For sighted .",
     },
     {
         title: "Grade 5 Scholarship",
-        href: "/docs/primitives/progress",
+        href: "/grade_view/6874b3fd002287a1f192",
         description:
             "Displays an indicator ",
     },
     {
         title: "Provincial Exams",
-        href: "/docs/primitives/scroll-area",
+        href: "/subject_view/provincial",
         description: "Visually or semantically separates content.",
     },
     {
         title: "Divisional Exams",
-        href: "/docs/primitives/tabs",
+        href: "/subject_view/divisional",
         description:
             "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
     },
     {
         title: "School Based Exams",
-        href: "/docs/primitives/tooltip",
+        href: "/subject_view/school",
         description:
             "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
     },
@@ -82,7 +82,7 @@ export default function Header() {
                 {/* Desktop Nav */}
                 <nav className="hidden md:flex space-x-10 font-anek font-normal text-dark_brown dark:text-dark_white">
                     <a href="/" className="text-xl lg:text-2xl 2xl:text-4xl">Home</a>
-                    <a href="#" className="text-xl lg:text-2xl 2xl:text-4xl">Markings</a>
+                    <a href="/subject_view/marking" className="text-xl lg:text-2xl 2xl:text-4xl">Markings</a>
                     <a href="#" className="text-xl lg:text-2xl 2xl:text-4xl">Books</a>
                     <div className="relative z-50">
                         <NavigationMenu className="z-50 bg-white dark:bg-dark_grey text-dark_brown dark:text-white">
@@ -163,7 +163,7 @@ export default function Header() {
                 {/* Navigation Items */}
                 <nav className="space-y-6 text-lg font-medium">
                     <a href="/" className="block">Home</a>
-                    <a href="#" className="block">Markings</a>
+                    <a href="/subject_view/marking" className="block">Markings</a>
                     <a href="#" className="block">Books</a>
 
                     {/* Exams Dropdown */}

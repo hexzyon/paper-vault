@@ -1,6 +1,15 @@
 import BookRow from "./BookRow";
 
-export default function BookTable({ books }: { books: any[] }) {
+export default function BookTable({
+  books,
+  onEdit,
+  onDelete,
+}: {
+  books: any[];
+  onEdit: (book: any) => void;
+  onDelete: (id: string) => void;
+}) {
+
   return (
     <div className="overflow-x-auto border border-light_pink dark:border-dark_grey_100 shadow-sm shadow-light_pink dark:shadow-dark_grey_100 p-2">
       <table className="w-full table-auto border-separate border-spacing-y-3 text-left text-gray-700 dark:text-gray-300">
@@ -17,7 +26,10 @@ export default function BookTable({ books }: { books: any[] }) {
         </thead>
         <tbody>
           {books.map((book) => (
-            <BookRow key={book.id} book={book} />
+            <BookRow key={book.$id}
+              book={book}
+              onEdit={() => onEdit(book)}
+              onDelete={() => onDelete(book.$id)} />
           ))}
         </tbody>
       </table>
