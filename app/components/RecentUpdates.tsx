@@ -48,6 +48,44 @@ export default function RecentUpdates() {
     loadPapers();
   }, []);
 
+  // const handleDownload = useCallback(async () => {
+  //   const today = new Date().toISOString().split("T")[0];
+  //   console.log(subjectId);
+
+  //   try {
+  //     const existing = await appwriteService.getDownloadByDate(subjectId, today);
+
+  //     if (existing.total > 0 && existing.documents.length > 0) {
+  //       const doc = existing.documents[0];
+  //       const newCount = (doc.download_count ?? 0) + 1;
+
+  //       await appwriteService.updateDownload(doc.$id, newCount);
+  //     } else {
+  //       await appwriteService.createDownload(subjectId, today);
+  //     }
+
+  //     //drive download code
+  //     const fileId = paperUrl?.match(/\/d\/(.*?)\//)?.[1];
+
+  //     if (fileId) {
+  //       const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
+
+  //       const a = document.createElement('a');
+  //       a.href = downloadUrl;
+  //       a.target = '_blank';
+  //       a.rel = 'noopener noreferrer';
+  //       document.body.appendChild(a);
+  //       a.click();
+  //       document.body.removeChild(a);
+  //     } else {
+  //       alert('Invalid Google Drive URL');
+  //     }
+
+  //   } catch (err) {
+  //     console.error("Download tracking failed:", err);
+  //   }
+  // }, [subjectId]);
+
   return (
     <section className="font-anek items-center justify-center p-2 mt-1 md:mt-4 mb-8">
       <div className="flex items-center justify-center my-6 mb-6 md:mb-12">

@@ -64,17 +64,8 @@ const AccountPage = () => {
                     <UserActivityChart />
                 </div>
 
-                <div className="grid gap-4">
+                <div className="grid gap-4 mb-6">
                     <PopularDownloadsChart />
-                </div>
-
-                <div className="w-full flex justify-center my-10">
-                    <Link
-                        href={"/user/logout"}
-                        className="bg-gray-200/70 rounded-xl px-6 py-3 inline-block hover:bg-gray-100 duration-150"
-                    >
-                        Logout
-                    </Link>
                 </div>
             </div>
         </main>

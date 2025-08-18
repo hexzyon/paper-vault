@@ -62,7 +62,7 @@ export default function PaperCard({
   return (
     <div className="border rounded-xl shadow-md shadow-light_pink dark:shadow-dark_grey_100 p-4 mb-4 bg-white dark:bg-dark_grey_500 dark:border-gray-400">
       <div className="flex justify-between items-center cursor-pointer" onClick={onToggle}>
-        <h3 className="text-lg font-semibold text-dark_brown dark:text-white">{marking_scheme? <span>Marking - </span>:""}{title}</h3>
+        <h3 className="text-lg font-semibold text-dark_brown dark:text-white">{marking_scheme ? <span>Marking - </span> : ""}{title}</h3>
         {isExpanded ? <ChevronDown className="text-dark_brown dark:text-white" /> : <ChevronRight className="text-dark_brown dark:text-white" />}
       </div>
 
