@@ -421,6 +421,14 @@ export class AppwriteService {
       [Query.equal("type", type), Query.equal("status", true)]
     );
   }
+
+  async getPapersByTitle(type: string) {
+    return databases.listDocuments(
+      conf.appwriteDatabaseId,
+      conf.appwritePapersCollectionId,
+      [Query.equal("title", decodeURIComponent(type)), Query.equal("status", true)]
+    );
+  }
 }
 
 const appwriteService = new AppwriteService();
