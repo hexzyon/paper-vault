@@ -10,6 +10,8 @@ export default function FilterBar({ onFilter }: { onFilter: (filters: any) => vo
     status: "",
   });
 
+  const [tempQuery, setTempQuery] = useState("");
+
   const [subjects, setSubjects] = useState<string[]>([]);
   const [grades, setGrades] = useState<string[]>([]);
   const [statusList, setStatusList] = useState<string[]>(["Published", "Draft"]);
@@ -41,10 +43,16 @@ export default function FilterBar({ onFilter }: { onFilter: (filters: any) => vo
       <input
         type="text"
         placeholder="Search here..."
-        value={filters.search}
-        onChange={(e) => handleFilterChange("search", e.target.value)}
+        value={tempQuery}
+        onChange={(e) => setTempQuery(e.target.value)}
         className="border border-gray-500 md:flex-1 px-3 py-2 rounded-md text-base w-full"
       />
+      <button
+        onClick={(e) => handleFilterChange("search", tempQuery)}
+        className="bg-dark_brown dark:bg-dark_grey_100 text-white dark:text-dark_black px-2 md:px-4 py-1 rounded-lg 2xl:text-3xl"
+      >
+        Search
+      </button>
 
       <select
         value={filters.subject}

@@ -108,7 +108,7 @@ export default function SubjectViewPage() {
 
   
 const handleSearch = () => {
-  setQuery(tempQuery); // update actual search query only on button click
+  setQuery(tempQuery); 
 };
 
   // Apply UI filters on the fetched papers

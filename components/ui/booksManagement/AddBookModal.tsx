@@ -20,14 +20,13 @@ export default function AddBookModal({
   const [subjectGradePairs, setSubjectGradePairs] = useState<any[]>([]);
 
   useEffect(() => {
-    if (existingBook) {
-      setTitle(existingBook.title);
-      setLanguage(existingBook.language);
-      setGradeId(existingBook.subjectsHasGrades?.grades?.$id);
-      setSubjectId(existingBook.subjectsHasGrades?.subjects?.$id);
-    }
-  }, [existingBook]);
-
+  if (existingBook && grades.length > 0 && subjects.length > 0) {
+    setTitle(existingBook.title);
+    setLanguage(existingBook.language);
+    setGradeId(existingBook.subjectsHasGrades?.grades?.$id || "");
+    setSubjectId(existingBook.subjectsHasGrades?.subjects?.$id || "");
+  }
+}, [existingBook, grades, subjects]);
 
   // Load grades, subjects, and subject-grade pairs
   useEffect(() => {
