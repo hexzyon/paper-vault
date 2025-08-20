@@ -17,6 +17,7 @@ export default function SubjectViewPage() {
   const subjectId = params.subjectId;
   const [showFilters, setShowFilters] = useState(false);
   const [query, setQuery] = useState('');
+  const [tempQuery, setTempQuery] = useState("");
 
   const [papers, setPapers] = useState<any[]>([]);
   const [gradeName, setGradeName] = useState<string>("");
@@ -74,6 +75,14 @@ export default function SubjectViewPage() {
           return;
         }
 
+        if (subjectId != null && !gradeId) {
+          const res = await appwriteService.getPapersByTitle(subjectId);
+          setPapers(res.documents);
+          setGradeName("All");
+          setSubjectName(subjectId);
+          return;
+        }
+
         const sub: any = await appwriteService.getSubjectsById(subjectId);
         setSubjectName(sub.documents[0].subject_name);
 
@@ -96,6 +105,11 @@ export default function SubjectViewPage() {
     };
     load();
   }, [gradeId, subjectId]);
+
+  
+const handleSearch = () => {
+  setQuery(tempQuery); 
+};
 
   // Apply UI filters on the fetched papers
   const visiblePapers = papers.filter(p => {
@@ -127,6 +141,8 @@ export default function SubjectViewPage() {
                 'All Provincial Past Papers'
               ) : subjectId === 'school' ? (
                 'All School Past Papers'
+              ) : gradeId === '' ?(
+                <>Search Result: {decodeURIComponent(subjectName)}</>
               ) : (
                 <>Grade {gradeName.replace('Grade', '')} {subjectName} Subject Past Papers</>
               )}
@@ -146,14 +162,20 @@ export default function SubjectViewPage() {
                   </button>
                 </div>
 
-                <div className="w-3/4 md:w-full">
+                <div className="flex items-center justify-center bg-white dark:bg-dark_grey px-1 py-1 w-full">
                   <input
                     type="text"
                     placeholder="Search Papers..."
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
+                    value={tempQuery}
+                    onChange={(e) => setTempQuery(e.target.value)}
                     className="w-full border border-dark_grey_500 rounded-lg px-4 py-2 text-lg dark:bg-dark_grey dark:text-white dark:border-gray-600"
                   />
+                  <button
+                  onClick={handleSearch}
+                  className="bg-dark_brown dark:bg-orange text-white m-1 px-2 md:px-6 py-3 rounded-lg 2xl:text-3xl"
+                >
+                  Search
+                </button>
                 </div>
               </div>
 

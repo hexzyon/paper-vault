@@ -14,6 +14,7 @@ interface Paper {
   date: string;
   status: string;
   paper_url: string;
+  subjectId: string;
 }
 
 export default function RecentUpdates() {
@@ -37,6 +38,7 @@ export default function RecentUpdates() {
           paper_url: doc.paper_url,
           subjectsHasGrades: doc.subjectsHasGrades,
           downloads: doc.downloads,
+          subjectId: doc.subjectsHasGrades.subjects.$id,
         }));
 
         setPapers(papers);
@@ -46,6 +48,44 @@ export default function RecentUpdates() {
     };
 
     loadPapers();
+  }, []);
+
+  const handleDownload = useCallback(async (subjectId: string, paperUrl: string) => {
+    const today = new Date().toISOString().split("T")[0];
+    console.log(subjectId);
+
+    try {
+      const existing = await appwriteService.getDownloadByDate(subjectId, today);
+
+      if (existing.total > 0 && existing.documents.length > 0) {
+        const doc = existing.documents[0];
+        const newCount = (doc.download_count ?? 0) + 1;
+
+        await appwriteService.updateDownload(doc.$id, newCount);
+      } else {
+        await appwriteService.createDownload(subjectId, today);
+      }
+
+      //drive download code
+      const fileId = paperUrl?.match(/\/d\/(.*?)\//)?.[1];
+
+      if (fileId) {
+        const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
+
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } else {
+        alert('Invalid Google Drive URL');
+      }
+
+    } catch (err) {
+      console.error("Download tracking failed:", err);
+    }
   }, []);
 
   return (
@@ -64,9 +104,9 @@ export default function RecentUpdates() {
             <p className="inline-block bg-light_pink dark:bg-dark_grey px-2 py-1 rounded text-xs text-black dark:text-white 2xl:text-lg  xl:text-md">{paper.term}</p>
             <div className="flex flex-col md:flex-row md:items-center md:justify-between mt-3">
               <p className="text-sm text-gray-500 dark:text-dark_white 2xl:text-lg">Updated: {new Date(paper.date).toISOString().split("T")[0]}</p>
-              <a
-            href={paper.paper_url || '#'}
-            download className="mt-2 md:mt-0 bg-orange text-white py-1 px-4 rounded-lg hover:bg-dark-brown transition 2xl:text-xl">Download</a>
+              <button
+            onClick={() => handleDownload(paper.subjectId, paper.paper_url)}
+            className="mt-2 md:mt-0 bg-orange text-white py-1 px-4 rounded-lg hover:bg-dark-brown transition 2xl:text-xl">Download</button>
             </div>
           </div>
         ))}

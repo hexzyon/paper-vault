@@ -1,4 +1,7 @@
 "use client";
+
+import { useState } from "react";
+
 export default function Filters({
   searchTerm,
   onSearch,
@@ -9,14 +12,27 @@ export default function Filters({
   subjects, 
   grades
 }: any) {
+
+  const [tempQuery, setTempQuery] = useState("");
+
+  const handleSearch = () => {
+    onSearch(tempQuery);
+  };
+
   return (
     <div className="grid grid-cols-6 md:flex-row gap-3 mb-4">
       <input
-        value={searchTerm}
-        onChange={(e) => onSearch(e.target.value)}
+        value={tempQuery}
+        onChange={(e) => setTempQuery(e.target.value)}
         placeholder="Search here..."
-        className="col-span-12 md:col-span-3 border border-gray-500 dark:border-dark_grey_100 rounded-md px-3 py-1 text-lg"
+        className="col-span-6 md:col-span-3 border border-gray-500 dark:border-dark_grey_100 rounded-md px-3 py-1 text-lg"
       />
+      <button
+          onClick={handleSearch}
+          className="bg-dark_brown col-span-6 md:col-span-1 dark:bg-dark_grey_100 text-white dark:text-dark_black px-2 md:px-2 py-1 rounded-lg 2xl:text-3xl"
+        >
+          Search
+        </button>
       <select
         value={subjectFilter}
         onChange={(e) => onSubjectFilter(e.target.value)}

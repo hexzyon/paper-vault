@@ -29,12 +29,23 @@ export default function Footer() {
                     <h4 className="font-medium text-dark-brown text-xl xl:text-2xl mb-2">Contact</h4>
                     <div className="flex mb-1 justify-center md:justify-start items-center">
                         <EnvelopeIcon className="w-4 h-4 md:w-6 md:h-6 text-[#0A0302] dark:text-white" />
-                        <p className="ml-4 xl:text-lg">papervault@gmail.com</p>
+                        <a
+                            href="mailto:papervault@gmail.com"
+                            className="ml-4 xl:text-lg hover:underline"
+                        >
+                            papervault@gmail.com
+                        </a>
                     </div>
 
                     <div className="flex mb-1 justify-center md:justify-start items-center">
                         <PhoneIcon className="w-4 h-4 md:w-6 md:h-6 text-[#0A0302] dark:text-white" />
-                        <p className="ml-4 xl:text-lg">+94 71 123 4567</p>
+                        <a
+                            href="tel:+94711234567"
+                            className="ml-4 xl:text-lg hover:underline"
+                        >
+                            +94 71 123 4567
+                        </a>
+
                     </div>
 
                 </div>

@@ -9,6 +9,7 @@ export default function PaperTable() {
   const itemsPerPage = 9;
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [tempQuery, setTempQuery] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedGrade, setSelectedGrade] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
@@ -18,6 +19,11 @@ export default function PaperTable() {
   const [grades, setGrades] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editPaper, setEditPaper] = useState<any | null>(null);
+
+  const handleSearch = () => {
+    setSearchTerm(tempQuery);
+    setCurrentPage(1);
+  };
 
   useEffect(() => {
     const fetchPapers = async () => {
@@ -72,14 +78,19 @@ export default function PaperTable() {
     <div className="bg-white dark:bg-dark_grey_500 p-4 rounded-xl shadow-sm shadow-light_pink dark:shadow-dark_grey_100 border border-light_pink dark:border-dark_grey_100">
       <div className="flex flex-col md:flex-row gap-2 mb-4">
         <input
-          value={searchTerm}
+          value={tempQuery}
           onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setCurrentPage(1);
+            setTempQuery(e.target.value);
           }}
           className="border border-gray-500 md:flex-1 rounded-md px-3 py-2 bg-white text-dark_brown dark:text-dark_grey text-lg w-full md:w-auto"
           placeholder="Search here..."
         />
+        <button
+          onClick={handleSearch}
+          className="bg-dark_brown dark:bg-dark_grey_100 text-white dark:text-dark_black px-2 md:px-6 py-1 rounded-lg 2xl:text-3xl"
+        >
+          Search
+        </button>
         <select
           value={selectedSubject}
           onChange={(e) => {
@@ -197,7 +208,7 @@ export default function PaperTable() {
                       }}
                       existingPaper={editPaper}
                     />
-                    )}
+                  )}
                 </td>
               </tr>
             ))}

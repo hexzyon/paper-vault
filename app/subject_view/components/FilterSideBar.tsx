@@ -92,10 +92,10 @@ export default function FilterContent({ filters, setFilters }: Props) {
           onClick={() => setRangeExpanded(!rangeExpanded)}
         >
           <h3 className="text-lg font-semibold">Select Year</h3>
-          {rangeExpanded ? <ChevronDown /> : <ChevronRight />}
+          {!rangeExpanded ? <ChevronDown /> : <ChevronRight />}
         </div>
 
-        {rangeExpanded ? (
+        {!rangeExpanded ? (
           <div className="grid grid-cols-5 md:grid-cols-3 lg:grid-cols-5 gap-2 max-h-40 overflow-y-auto mt-4">
             {years.map((yr) => (
               <button
@@ -112,46 +112,6 @@ export default function FilterContent({ filters, setFilters }: Props) {
           </div>
         ) : (
           <>
-            <div className="relative h-10 flex items-center mt-4">
-              <div className="absolute w-full h-2 bg-gray-200 rounded-md dark:bg-gray-500" />
-              <div
-                className="absolute h-2 bg-dark_brown rounded-md dark:bg-dark_white"
-                style={{
-                  left: `${((filters.yearRange[0] - minYear) / (maxYear - minYear)) * 100}%`,
-                  right: `${100 - ((filters.yearRange[1] - minYear) / (maxYear - minYear)) * 100}%`,
-                }}
-              />
-              <input
-                type="range"
-                min={minYear}
-                max={maxYear}
-                value={filters.yearRange[0]}
-                onChange={(e) =>
-                  setFilters({
-                    ...filters,
-                    yearRange: [Number(e.target.value), filters.yearRange[1]],
-                  })
-                }
-                className="absolute w-full bg-transparent appearance-none pointer-events-auto"
-              />
-              <input
-                type="range"
-                min={minYear}
-                max={maxYear}
-                value={filters.yearRange[1]}
-                onChange={(e) =>
-                  setFilters({
-                    ...filters,
-                    yearRange: [filters.yearRange[0], Number(e.target.value)],
-                  })
-                }
-                className="absolute w-full bg-transparent appearance-none pointer-events-auto"
-              />
-            </div>
-            <div className="flex justify-between mt-4 text-sm">
-              <span>{filters.yearRange[0]}</span>
-              <span>{filters.yearRange[1]}</span>
-            </div>
           </>
         )}
       </div>
