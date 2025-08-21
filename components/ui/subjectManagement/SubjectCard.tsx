@@ -37,7 +37,7 @@ export default function SubjectCard({ subject }: { subject: any }) {
       </div>
       <hr className="solid my-4 border-light_pink dark:border-dark_grey_100 border"/>
       <div className="justify-center flex">
-  <a href="/user/past_papers" className="flex w-full items-center justify-center gap-2 text-rose-500 dark:text-white font-medium text-lg">
+  <a href={`/user/past_papers?filter=${subject.id}`} className="flex w-full items-center justify-center gap-2 text-rose-500 dark:text-white font-medium text-lg">
     <Eye className="w-4 h-4" /> View Papers
   </a>
 </div>

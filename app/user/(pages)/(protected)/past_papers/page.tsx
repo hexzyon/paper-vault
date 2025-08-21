@@ -5,9 +5,14 @@ import PaperTable from "@/components/ui/PaperTable";
 import AddNewPaperModal from "@/components/ui/AddNewPaperModal";
 import { PlusCircle } from "lucide-react";
 import UserHeader from "@/components/ui/UserHeader";
+import { useSearchParams } from "next/navigation";
 
 export default function PastPapersPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [refreshTable, setRefreshTable] = useState(0); 
+
+  const searchParams = useSearchParams();
+  const filter = searchParams.get("filter");
 
   return (
     <main className="bg-white dark:bg-dark_grey min-h-screen text-black font-anek overflow-hidden">
@@ -27,10 +32,13 @@ export default function PastPapersPage() {
           </button>
         </div>
 
-        <PaperTable />
+        <PaperTable refreshTrigger={refreshTable} urlFilter={filter} />
 
         {isModalOpen && (
-          <AddNewPaperModal onClose={() => setIsModalOpen(false)} />
+          <AddNewPaperModal onClose={() => {
+            setIsModalOpen(false);
+            setRefreshTable(prev => prev + 1);
+          }} />
         )}
       </div>
 

@@ -4,7 +4,13 @@ import { Pencil, Trash2 } from "lucide-react";
 import appwriteService from "@/appwrite/config";
 import AddNewPaperModal from "./AddNewPaperModal";
 
-export default function PaperTable() {
+interface PaperTableProps {
+  refreshTrigger: number; 
+  urlFilter?: string | null;
+}
+
+export default function PaperTable({ refreshTrigger, urlFilter }: PaperTableProps) {
+  const [refreshTable, setRefreshTable] = useState(0); 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
 
@@ -53,7 +59,7 @@ export default function PaperTable() {
     };
 
     fetchPapers();
-  }, []);
+  }, [refreshTrigger, refreshTable]);
 
   const filteredData = useMemo(() => {
     return papers.filter((item) => {
@@ -65,7 +71,13 @@ export default function PaperTable() {
       const matchesGrade = !selectedGrade || item.grade === selectedGrade;
       const matchesStatus = !selectedStatus || item.status === selectedStatus;
 
-      return matchesSearch && matchesSubject && matchesGrade && matchesStatus;
+      console.log(urlFilter);
+      const matchesUrl =
+      !urlFilter ||
+      item.subjectsHasGrades.$id === urlFilter || 
+      item.title.toLowerCase().includes(urlFilter.toLowerCase());
+
+      return matchesSearch && matchesSubject && matchesGrade && matchesStatus && matchesUrl;
     });
   }, [papers, searchTerm, selectedSubject, selectedGrade, selectedStatus]);
 
@@ -205,6 +217,7 @@ export default function PaperTable() {
                       onClose={() => {
                         setEditPaper(null);
                         setIsModalOpen(false);
+                        setRefreshTable(prev => prev + 1);
                       }}
                       existingPaper={editPaper}
                     />
