@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import GradeGroup from "@/components/ui/gradeManagement/GradeGroup";
 import AddGradeModal from "@/components/ui/gradeManagement/AddGradeModal";
 import { Plus } from "lucide-react";
@@ -30,44 +30,50 @@ const categoryDescriptions: Record<string, string> = {
 export default function GradeManagementPage() {
   const [showModal, setShowModal] = useState(false);
   const [groupedGrades, setGroupedGrades] = useState<GroupedGrades>({});
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [editingGrade, setEditingGrade] = useState<Grade | null>(null);
 
-  useEffect(() => {
-    const fetchGrades = async () => {
-      try {
-        const res = await appwriteService.getGrades();
-        const grades: any = res.documents;
+  const handleCardClick = (grade: Grade) => {
+    setEditingGrade(grade);
+    setShowModal(true);
+  };
 
-        // Group grades by education_level
-        const groups: GroupedGrades = {};
+  const fetchGrades = useCallback(async () => {
+    try {
+      const res = await appwriteService.getGrades();
+      const grades: any = res.documents;
 
-        grades.forEach((grade: Grade) => {
-          const category = grade.education_level;
-          if (!groups[category]) {
-            groups[category] = {
-              description: categoryDescriptions[category] || "",
-              grades: [],
-            };
-          }
-          groups[category].grades.push(grade);
+      const groups: GroupedGrades = {};
+      grades.forEach((grade: Grade) => {
+        const category = grade.education_level;
+        if (!groups[category]) {
+          groups[category] = {
+            description: categoryDescriptions[category] || "",
+            grades: [],
+          };
+        }
+        groups[category].grades.push(grade);
+      });
+
+      // Sort inside each group
+      Object.values(groups).forEach((group) => {
+        group.grades.sort((a, b) => {
+          const numA = parseInt(a.grade_name.match(/\d+/)?.[0] || "0");
+          const numB = parseInt(b.grade_name.match(/\d+/)?.[0] || "0");
+          return numA - numB;
         });
+      });
 
-        // Sort grades by numeric value inside grade_name
-        Object.values(groups).forEach((group) => {
-          group.grades.sort((a, b) => {
-            const numA = parseInt(a.grade_name.match(/\d+/)?.[0] || "0");
-            const numB = parseInt(b.grade_name.match(/\d+/)?.[0] || "0");
-            return numA - numB;
-          });
-        });
-
-        setGroupedGrades(groups);
-      } catch (error) {
-        console.error("Failed to fetch grades:", error);
-      }
-    };
-
-    fetchGrades();
+      setGroupedGrades(groups);
+    } catch (error) {
+      console.error("Failed to fetch grades:", error);
+    }
   }, []);
+
+  // Refetch whenever refreshTrigger changes
+  useEffect(() => {
+    fetchGrades();
+  }, [fetchGrades, refreshTrigger]);
 
   return (
     <main className="bg-white dark:bg-dark_grey min-h-screen text-black font-anek overflow-hidden">
@@ -97,12 +103,17 @@ export default function GradeManagementPage() {
               title={category}
               description={categoryDescriptions[category] || ""}
               grades={group.grades}
+              onClick={handleCardClick}
             />
           );
         })}
 
 
-        {showModal && <AddGradeModal onClose={() => setShowModal(false)} />}
+        {showModal && <AddGradeModal onClose={() => {
+          setShowModal(false);
+          setEditingGrade(null);
+          setRefreshTrigger((prev) => prev + 1);
+        }} grade={editingGrade}  />}
       </div>
     </main>
   );

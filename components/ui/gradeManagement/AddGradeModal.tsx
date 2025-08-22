@@ -2,62 +2,112 @@
 
 import { Check, Upload, X } from "lucide-react";
 import { useState } from "react";
-import { databases, storage, ID } from "@/appwrite/config"; 
+import { databases, storage, ID } from "@/appwrite/config";
 import conf from "@/conf/config";
 
 const DB_ID = conf.appwriteDatabaseId;
 const COLLECTION_ID = conf.appwriteGradesCollectionId;
 const BUCKET_ID = conf.appwriteStorageId;
 
-export default function AddGradeModal({ onClose }: { onClose: () => void }) {
+export default function AddGradeModal({ onClose, grade }: { onClose: () => void; grade?: any }) {
   const [file, setFile] = useState<File | null>(null);
-  const [gradeName, setGradeName] = useState("");
-  const [educationLevel, setEducationLevel] = useState("Primary Education");
+  const [gradeName, setGradeName] = useState(grade?.grade_name || "");
+  const [educationLevel, setEducationLevel] = useState(grade?.education_level || "Primary Education");
   const [loading, setLoading] = useState(false);
+
+  function extractFileId(fileUrl: string): string {
+    try {
+      const parts = fileUrl.split("/files/");
+      if (parts.length < 2) throw new Error("Invalid file URL");
+
+      // FILE_ID is before the next "/" after /files/
+      const fileId = parts[1].split("/")[0];
+      return fileId;
+    } catch (error) {
+      console.error("Error extracting fileId:", error);
+      throw new Error("Invalid file URL");
+    }
+  }
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      let imageUrl = "";
+      // === UPDATE MODE ===
+      if (grade) {
+        let imageUrl = grade.image_url;
 
-      if (file) {
-        // Validate file type
-        if (!file.type.startsWith("image/")) {
-          alert("Only image files are allowed.");
-          setLoading(false);
-          return;
+        // If a new image is selected
+        if (file) {
+          if (!file.type.startsWith("image/")) {
+            alert("Only image files are allowed.");
+            setLoading(false);
+            return;
+          }
+          if (file.size > 500 * 1024) {
+            alert("Image must be smaller than 500KB.");
+            setLoading(false);
+            return;
+          }
+
+          const fileId = extractFileId(imageUrl);
+          if (!fileId) {
+            console.error("Could not extract fileId from URL");
+            return; 
+          }
+          await storage.deleteFile(BUCKET_ID, fileId);
+          const webpFile = await convertToWebp(file);
+          const fileUpload = await storage.createFile(BUCKET_ID, ID.unique(), webpFile);
+          imageUrl = storage.getFileView(BUCKET_ID, fileUpload.$id);
         }
 
-        // Validate file size < 500KB
-        if (file.size > 500 * 1024) {
-          alert("Image must be smaller than 500KB.");
-          setLoading(false);
-          return;
+        // Update ONLY the image_url field
+        await databases.updateDocument(DB_ID, COLLECTION_ID, grade.$id, {
+          image_url: imageUrl,
+        });
+
+        alert("Grade image updated successfully!");
+      }
+      // === CREATE MODE ===
+      else {
+        let imageUrl = "";
+        if (file) {
+          if (!file.type.startsWith("image/")) {
+            alert("Only image files are allowed.");
+            setLoading(false);
+            return;
+          }
+          if (file.size > 500 * 1024) {
+            alert("Image must be smaller than 500KB.");
+            setLoading(false);
+            return;
+          }
+
+          const webpFile = await convertToWebp(file);
+          const fileUpload = await storage.createFile(BUCKET_ID, ID.unique(), webpFile);
+          imageUrl = storage.getFileView(BUCKET_ID, fileUpload.$id);
         }
 
-        // Convert to WEBP
-        const webpFile = await convertToWebp(file);
-        const fileUpload = await storage.createFile(BUCKET_ID, ID.unique(), webpFile);
-        imageUrl = storage.getFileView(BUCKET_ID, fileUpload.$id);
+        await databases.createDocument(DB_ID, COLLECTION_ID, ID.unique(), {
+          grade_name: gradeName,
+          education_level: educationLevel,
+          image_url: imageUrl,
+        });
+
+        alert("Grade added successfully!");
       }
 
-      await databases.createDocument(DB_ID, COLLECTION_ID, ID.unique(), {
-        grade_name: gradeName,
-        education_level: educationLevel,
-        image_url: imageUrl,
-      });
-
-      alert("Grade added successfully!");
       onClose();
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      alert("Failed to add grade");
+      alert("Failed to save grade");
     } finally {
       setLoading(false);
     }
   };
+
 
   const convertToWebp = (file: File): Promise<File> => {
     return new Promise((resolve, reject) => {
@@ -105,32 +155,36 @@ export default function AddGradeModal({ onClose }: { onClose: () => void }) {
           ✕
         </button>
         <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">
-          Add New Grade
+          {grade ? "Update Grade Image" : "Add New Grade"}
         </h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <label className="text-sm md:text-lg text-gray-700 dark:text-gray-300">
-            Grade/Level
-          </label>
-          <input
-            placeholder="Enter Grade Level"
-            className="border rounded-md px-3 py-1 text-base"
-            value={gradeName}
-            onChange={(e) => setGradeName(e.target.value)}
-            required
-          />
+          {!grade && (
+            <>
+              <label className="text-sm md:text-lg text-gray-700 dark:text-gray-300">
+                Grade/Level
+              </label>
+              <input
+                placeholder="Enter Grade Level"
+                className="border rounded-md px-3 py-1 text-base"
+                value={gradeName}
+                onChange={(e) => setGradeName(e.target.value)}
+                required
+              />
 
-          <label className="text-sm md:text-lg text-gray-700 dark:text-gray-300">
-            Education Level
-          </label>
-          <select
-            className="border rounded-md px-3 py-1 text-base"
-            value={educationLevel}
-            onChange={(e) => setEducationLevel(e.target.value)}
-          >
-            <option>Primary Education</option>
-            <option>Secondary Education</option>
-            <option>Higher Education</option>
-          </select>
+              <label className="text-sm md:text-lg text-gray-700 dark:text-gray-300">
+                Education Level
+              </label>
+              <select
+                className="border rounded-md px-3 py-1 text-base"
+                value={educationLevel}
+                onChange={(e) => setEducationLevel(e.target.value)}
+              >
+                <option>Primary Education</option>
+                <option>Secondary Education</option>
+                <option>Higher Education</option>
+              </select>
+            </>
+          )}
 
           <label className="text-sm md:text-lg text-gray-700 dark:text-gray-300">
             Cover Image
@@ -160,7 +214,7 @@ export default function AddGradeModal({ onClose }: { onClose: () => void }) {
               className="bg-rose-500 flex text-white px-4 py-2 rounded-md hover:bg-rose-600 disabled:opacity-60"
             >
               <Check className="w-4 h-4 mt-1 mr-2" />
-              {loading ? "Saving..." : "Save Grade"}
+              {loading ? "Saving..." : grade ? "Update" : "Save"}
             </button>
           </div>
         </form>
