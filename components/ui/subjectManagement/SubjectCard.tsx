@@ -1,9 +1,14 @@
 "use client";
 import { Eye, MoreVertical, Upload } from "lucide-react";
+import { useState } from "react";
+import AddSubjectModal from "./AddSubjectModal";
 
 export default function SubjectCard({ subject }: { subject: any }) {
+  
+    const [showModal, setShowModal] = useState(false);
+
   return (
-    <div className="bg-white dark:bg-dark_grey_500 p-4 rounded-xl 
+    <div onClick={() => setShowModal(true)} className="bg-white dark:bg-dark_grey_500 p-4 rounded-xl 
     shadow shadow-light_pink dark:shadow-dark_grey_100 border border-light_pink dark:border-dark_grey_100
     text-gray-800 dark:text-white">
       <div className="flex justify-between items-center mb-2">
@@ -41,7 +46,7 @@ export default function SubjectCard({ subject }: { subject: any }) {
     <Eye className="w-4 h-4" /> View Papers
   </a>
 </div>
-      
+      {showModal && <AddSubjectModal onClose={() => setShowModal(false)} subjectToEdit={subject} />}
     </div>
   );
 }

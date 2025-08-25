@@ -11,7 +11,7 @@ const SUBJECTS_GRADES_COLLECTION_ID = conf.appwriteSubjectGradeCollectionId;
 const GRADES_COLLECTION_ID = conf.appwriteGradesCollectionId;
 const BUCKET_ID = conf.appwriteStorageId;
 
-export default function AddSubjectModal({ onClose }: { onClose: () => void }) {
+export default function AddSubjectModal({ onClose, subjectToEdit }: { onClose: () => void; subjectToEdit?: any | null; }) {
   const [file, setFile] = useState<File | null>(null);
   const [subjectName, setSubjectName] = useState("");
   const [gradeId, setGradeId] = useState("");
@@ -19,6 +19,13 @@ export default function AddSubjectModal({ onClose }: { onClose: () => void }) {
   const [loading, setLoading] = useState(false);
   const [isMainSubject, setIsMainSubject] = useState(false);
 
+  useEffect(() => {
+    if (subjectToEdit) {
+      setSubjectName(subjectToEdit.name || "");
+      setGradeId(subjectToEdit.gradeId || "");
+      setIsMainSubject(subjectToEdit.main_subject || false);
+    }
+  }, [subjectToEdit]);
 
   // Fetch grades from DB
   useEffect(() => {
@@ -37,66 +44,117 @@ export default function AddSubjectModal({ onClose }: { onClose: () => void }) {
     e.preventDefault();
     setLoading(true);
 
-    if (!subjectName || !gradeId || !file) {
-      alert("Please fill all fields and upload icon.");
+    if (!subjectName || !gradeId) {
+      alert("Please fill all fields.");
       setLoading(false);
       return;
     }
 
-    // Check file type
-    if (!file.type.startsWith("image/")) {
-      alert("Uploaded file is not an image.");
+    if (!subjectToEdit && !file) {
+      alert("Please upload an icon.");
       setLoading(false);
       return;
     }
 
-    // Check file size (< 500KB)
-    if (file.size > 500 * 1024) {
-      alert("Image size must be less than 500KB.");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const convertedFile = await convertImageToWebP(file);
-
-      // Step 1: Upload file
-      const fileUpload = await storage.createFile(BUCKET_ID, ID.unique(), convertedFile);
-      const iconUrl = storage.getFileView(BUCKET_ID, fileUpload.$id);
-
-      // Step 2: Check or create subject
-      const existingSubjects = await databases.listDocuments(DATABASE_ID, SUBJECTS_COLLECTION_ID, [
-        Query.equal("subject_name", subjectName),
-      ]);
-
-      let subjectId = "";
-
-      if (existingSubjects.total > 0) {
-        subjectId = existingSubjects.documents[0].$id;
-      } else {
-        const subject = await databases.createDocument(DATABASE_ID, SUBJECTS_COLLECTION_ID, ID.unique(), {
-          subject_name: subjectName,
-
-        });
-        subjectId = subject.$id;
+    if (file) {
+      // Check file type
+      if (!file.type.startsWith("image/")) {
+        alert("Uploaded file is not an image.");
+        setLoading(false);
+        return;
       }
 
-      // Step 3: Create relation
-      await databases.createDocument(DATABASE_ID, SUBJECTS_GRADES_COLLECTION_ID, ID.unique(), {
-        subjects: subjectId,
-        grades: gradeId,
-        icon_url: iconUrl,
-        main_subject: isMainSubject, 
-      });
-
-      alert("Subject added successfully!");
-      onClose();
-    } catch (error) {
-      console.error("Error adding subject:", error);
-      alert("Failed to add subject.");
-    } finally {
-      setLoading(false);
+      // Check file size (< 500KB)
+      if (file.size > 500 * 1024) {
+        alert("Image size must be less than 500KB.");
+        setLoading(false);
+        return;
+      }
     }
+
+
+    if (subjectToEdit) {
+      // Update Mode
+      try {
+        let iconUrl = subjectToEdit.icon_url;
+
+        if (file) {
+          // upload new file & replace old
+          const convertedFile = await convertImageToWebP(file);
+          const fileUpload = await storage.createFile(BUCKET_ID, ID.unique(), convertedFile);
+          iconUrl = storage.getFileView(BUCKET_ID, fileUpload.$id);
+
+          // TODO: optionally delete old image here
+        }
+
+        // update subject_grades relation
+        await databases.updateDocument(
+          DATABASE_ID,
+          SUBJECTS_GRADES_COLLECTION_ID,
+          subjectToEdit.id,   // relation document id
+          {
+            main_subject: isMainSubject,
+            icon_url: iconUrl,
+          }
+        );
+
+        alert("Subject updated successfully!");
+        onClose();
+      } catch (err) {
+        console.error("Error updating subject", err);
+        alert("Failed to update subject");
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      try {
+        if (file) {
+          const convertedFile = await convertImageToWebP(file);
+
+          // Step 1: Upload file
+          const fileUpload = await storage.createFile(BUCKET_ID, ID.unique(), convertedFile);
+          const iconUrl = storage.getFileView(BUCKET_ID, fileUpload.$id);
+
+          // Step 2: Check or create subject
+          const existingSubjects = await databases.listDocuments(DATABASE_ID, SUBJECTS_COLLECTION_ID, [
+            Query.equal("subject_name", subjectName),
+          ]);
+
+          let subjectId = "";
+
+          if (existingSubjects.total > 0) {
+            subjectId = existingSubjects.documents[0].$id;
+          } else {
+            const subject = await databases.createDocument(DATABASE_ID, SUBJECTS_COLLECTION_ID, ID.unique(), {
+              subject_name: subjectName,
+
+            });
+            subjectId = subject.$id;
+          }
+
+          // Step 3: Create relation
+          await databases.createDocument(DATABASE_ID, SUBJECTS_GRADES_COLLECTION_ID, ID.unique(), {
+            subjects: subjectId,
+            grades: gradeId,
+            icon_url: iconUrl,
+            main_subject: isMainSubject,
+          });
+
+          alert("Subject added successfully!");
+          onClose();
+        } else {
+          alert("File did not select.");
+          return;
+        }
+      } catch (error) {
+        console.error("Error adding subject:", error);
+        alert("Failed to add subject.");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+
   };
 
   const convertImageToWebP = (file: File): Promise<File> => {
@@ -147,7 +205,7 @@ export default function AddSubjectModal({ onClose }: { onClose: () => void }) {
           ✕
         </button>
         <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">
-          Add New Subject
+          {subjectToEdit ? "Update Subject" : "Add New Subject"}
         </h2>
         <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
           <label className="block text-sm md:text-lg text-gray-700 dark:text-gray-300">
@@ -157,6 +215,7 @@ export default function AddSubjectModal({ onClose }: { onClose: () => void }) {
             placeholder="Enter Subject Name"
             className="border rounded-md px-3 py-1 text-base"
             value={subjectName}
+            disabled={!!subjectToEdit}
             onChange={(e) => setSubjectName(e.target.value)}
           />
 
@@ -166,6 +225,7 @@ export default function AddSubjectModal({ onClose }: { onClose: () => void }) {
           <select
             className="border rounded-md px-3 py-2 text-base"
             value={gradeId}
+            disabled={!!subjectToEdit}
             onChange={(e) => setGradeId(e.target.value)}
           >
             <option value="">Select Grade</option>
@@ -221,7 +281,7 @@ export default function AddSubjectModal({ onClose }: { onClose: () => void }) {
               className="bg-rose-500 flex text-white px-4 py-2 rounded-md hover:bg-rose-600"
             >
               <Check className="w-4 h-4 mt-1 mr-2" />
-              {loading ? "Saving..." : "Save Subject"}
+              {loading ? "Saving..." : subjectToEdit ? "Update Subject" : "Save Subject"}
             </button>
           </div>
         </form>
